@@ -1,3 +1,5 @@
+package dk.statsbiblioteket.newspaper.mfpakintegration;
+
 import java.util.List;
 import java.util.Map;
 
@@ -5,6 +7,9 @@ import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.DataSource;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Event;
 
+/**
+ *
+ */
 public class MfPak implements DataSource {
     private MfPakConfiguration configuration;
     @Override

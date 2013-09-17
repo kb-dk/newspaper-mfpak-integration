@@ -1,3 +1,8 @@
+package dk.statsbiblioteket.newspaper.mfpakintegration;
+
+/**
+ * Models the configurable properties of the MKPak component.
+ */
 public class MfPakConfiguration {
     private String databaseUrl;
     private String databaseUser;
