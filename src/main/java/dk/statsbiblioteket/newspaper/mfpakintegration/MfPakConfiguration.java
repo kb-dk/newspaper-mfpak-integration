@@ -4,6 +4,7 @@ package dk.statsbiblioteket.newspaper.mfpakintegration;
  * Models the configurable properties of the MKPak component.
  */
 public class MfPakConfiguration {
+    private String databaseDriver = "org.postgresql.Driver";
     private String databaseUrl;
     private String databaseUser;
     private String databasePassword;
@@ -27,5 +28,9 @@ public class MfPakConfiguration {
     }
     public void setDatabasePassword(String databasePassword) {
         this.databasePassword = databasePassword;
+    }
+
+    public String getDatabaseDriver() {
+        return databaseDriver;
     }
 }
