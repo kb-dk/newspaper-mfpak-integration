@@ -1,5 +1,6 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,16 +31,41 @@ public class MfPakDataSource implements DataSource {
 
     @Override
     public List<Batch> getBatches(boolean includeDetails, Map<String, String> filters) {
-        return null;
+        Batch batch1 = new Batch();
+        Batch batch2 = new Batch();
+        batch1.setBatchID("4001");
+        batch2.setBatchID("4002");
+        batch2.setEventList(new ArrayList<Event>());
+        List<Event> events = new ArrayList<Event>();
+        Event event1 = new Event();
+        event1.setEventID("Shipped");
+        event1.setSucces(true);
+        Event event2 = new Event();
+        event2.setEventID("Received");
+        event2.setSucces(true);
+        events.add(event1);
+        events.add(event2);
+        batch2.setEventList(events);
+        List<Batch> batches = new ArrayList<Batch>();
+        batches.add(batch1);
+        batches.add(batch2);
+        return batches;
     }
 
     @Override
     public Batch getBatch(String batchID, boolean includeDetails) {
-        return null;
+        Batch returnValue = new Batch();
+        returnValue.setBatchID(batchID);
+        returnValue.setEventList(new ArrayList<Event>() {});
+        return returnValue;
     }
 
     @Override
     public Event getBatchEvent(String batchID, String eventID, boolean includeDetails) {
-        return null;
+        Event returnValue = new Event();
+        returnValue.setEventID(eventID);
+        if (includeDetails) returnValue.setDetails("Here are some details.");
+        returnValue.setSucces(true);
+        return returnValue;
     }
 }
