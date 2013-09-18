@@ -19,6 +19,11 @@ public class MfPak implements DataSource {
     }
 
     @Override
+    public boolean isRunNrInBatchID() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public List<Batch> getBatches(boolean includeDetails, Map<String, String> filters) {
         return null;
     }
