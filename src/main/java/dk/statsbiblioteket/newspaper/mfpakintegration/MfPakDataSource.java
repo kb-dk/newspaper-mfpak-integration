@@ -11,16 +11,21 @@ import dk.statsbiblioteket.newspaper.processmonitor.datasources.Event;
 /**
  *
  */
-public class MfPak implements DataSource {
+public class MfPakDataSource implements DataSource {
     private MfPakDAO dao;
 
-    public MfPak(MfPakConfiguration configuration) {
+    public MfPakDataSource(MfPakConfiguration configuration) {
         dao = new MfPakDAO(configuration);
     }
 
+    /**
+     * mfpak manages the physical dispatch of batches and know nothing about Run-Numbers. Therefore this
+     * method always returns false in this implementation.
+     * @return
+     */
     @Override
     public boolean isRunNrInBatchID() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     @Override
