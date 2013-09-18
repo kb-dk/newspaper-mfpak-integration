@@ -39,10 +39,10 @@ public class MfPakDataSource implements DataSource {
         List<Event> events = new ArrayList<Event>();
         Event event1 = new Event();
         event1.setEventID("Shipped");
-        event1.setSucces(true);
+        event1.setSuccess(true);
         Event event2 = new Event();
         event2.setEventID("Received");
-        event2.setSucces(true);
+        event2.setSuccess(true);
         events.add(event1);
         events.add(event2);
         batch2.setEventList(events);
@@ -65,7 +65,7 @@ public class MfPakDataSource implements DataSource {
         Event returnValue = new Event();
         returnValue.setEventID(eventID);
         if (includeDetails) returnValue.setDetails("Here are some details.");
-        returnValue.setSucces(true);
+        returnValue.setSuccess(true);
         return returnValue;
     }
 }
