@@ -1,6 +1,6 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -8,12 +8,17 @@ import dk.statsbiblioteket.newspaper.mfpakintegration.database.MfPakDAO;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.DataSource;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Event;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class MfPakDataSource implements DataSource {
     private MfPakDAO dao;
+
+    /** The log.*/
+      private Logger log = LoggerFactory.getLogger(getClass());
 
     public MfPakDataSource(MfPakConfiguration configuration) {
         dao = new MfPakDAO(configuration);
@@ -31,41 +36,31 @@ public class MfPakDataSource implements DataSource {
 
     @Override
     public List<Batch> getBatches(boolean includeDetails, Map<String, String> filters) {
-        Batch batch1 = new Batch();
-        Batch batch2 = new Batch();
-        batch1.setBatchID("4001");
-        batch2.setBatchID("4002");
-        batch2.setEventList(new ArrayList<Event>());
-        List<Event> events = new ArrayList<Event>();
-        Event event1 = new Event();
-        event1.setEventID("Shipped");
-        event1.setSucces(true);
-        Event event2 = new Event();
-        event2.setEventID("Received");
-        event2.setSucces(true);
-        events.add(event1);
-        events.add(event2);
-        batch2.setEventList(events);
-        List<Batch> batches = new ArrayList<Batch>();
-        batches.add(batch1);
-        batches.add(batch2);
-        return batches;
+        try {
+            return dao.getAllBatches();
+        } catch (SQLException e) {
+            log.error("SQL Error: ", e);
+            return null;
+        }
     }
 
     @Override
     public Batch getBatch(String batchID, boolean includeDetails) {
-        Batch returnValue = new Batch();
-        returnValue.setBatchID(batchID);
-        returnValue.setEventList(new ArrayList<Event>() {});
-        return returnValue;
+        try {
+            return dao.getBatchByBarcode(batchID);
+        } catch (SQLException e) {
+            log.error("SQL Error: ", e);
+            return null;
+        }
     }
 
     @Override
     public Event getBatchEvent(String batchID, String eventID, boolean includeDetails) {
-        Event returnValue = new Event();
-        returnValue.setEventID(eventID);
-        if (includeDetails) returnValue.setDetails("Here are some details.");
-        returnValue.setSucces(true);
-        return returnValue;
+        try {
+            return dao.getEvent(batchID, eventID);
+        } catch (SQLException e) {
+            log.error("SQL Error: ", e);
+            return null;
+        }
     }
 }

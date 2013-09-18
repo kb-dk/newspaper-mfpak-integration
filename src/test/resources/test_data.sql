@@ -24,3 +24,5 @@ UPDATE "BatchEvent" SET "StatusId" = (SELECT "Id" from "Status" WHERE "Name"='Se
 INSERT INTO "BatchEvent" ("BatchId") SELECT "BatchId" from "BatchEvent" WHERE "Id" = LASTVAL();
 UPDATE "BatchEvent" SET "StatusId" = (SELECT "Id" from "Status" WHERE "Name"='Under udpakning') WHERE "Id" = LASTVAL();
 
+--A Batch wtih no events
+INSERT INTO "Batch" ("Barcode") values ('4005');
