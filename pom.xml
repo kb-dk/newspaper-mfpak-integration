@@ -10,7 +10,7 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <groupId>newspaper-mfpak-integration</groupId>
+  <groupId>dk.statsbiblioteket.newspaper</groupId>
   <artifactId>newspaper-mfpak-integration</artifactId>
   <version>0.1-SNAPSHOT</version>
 
