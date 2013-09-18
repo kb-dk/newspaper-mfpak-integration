@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>newspaper-parent</groupId>
+    <groupId>dk.statsbiblioteket.newspaper</groupId>
     <artifactId>newspaper-parent</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
