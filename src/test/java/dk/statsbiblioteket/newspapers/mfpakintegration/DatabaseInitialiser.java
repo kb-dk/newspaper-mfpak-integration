@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.newspapers.mfpak_integration;
+package dk.statsbiblioteket.newspapers.mfpakintegration;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
