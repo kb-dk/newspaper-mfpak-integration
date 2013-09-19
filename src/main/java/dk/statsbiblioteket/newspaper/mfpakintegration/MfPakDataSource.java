@@ -9,6 +9,7 @@ import dk.statsbiblioteket.newspaper.mfpakintegration.database.MfPakDAO;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.DataSource;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Event;
+import dk.statsbiblioteket.newspaper.processmonitor.datasources.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,27 +40,37 @@ public class MfPakDataSource implements DataSource {
             return dao.getAllBatches();
         } catch (SQLException e) {
             log.error("SQL Error: ", e);
-            return null;
+            return null;  //This is wrong behaviour. Should throw a checked exception
         }
     }
 
     @Override
-    public Batch getBatch(String batchID, boolean includeDetails) {
+    public Batch getBatch(String batchID, boolean includeDetails) throws NotFoundException {
         try {
-            return dao.getBatchByBarcode(batchID);
+            Batch batch = dao.getBatchByBarcode(batchID);
+            if (batch == null) {
+                throw new NotFoundException("Batch '" + batchID + "' not found.");
+            } else {
+                return batch;
+            }
         } catch (SQLException e) {
             log.error("SQL Error: ", e);
-            return null;
+            return null;  //This is wrong behaviour. Should throw a checked exception
         }
     }
 
     @Override
-    public Event getBatchEvent(String batchID, String eventID, boolean includeDetails) {
+    public Event getBatchEvent(String batchID, String eventID, boolean includeDetails) throws NotFoundException {
         try {
-            return dao.getEvent(batchID, eventID);
+            Event event = dao.getEvent(batchID, eventID);
+            if (event == null) {
+                throw new NotFoundException("Did not find event '" + eventID + "' for batch '" + batchID + "'");
+            } else {
+                return event;
+            }
         } catch (SQLException e) {
             log.error("SQL Error: ", e);
-            return null;
+            return null; //This is wrong behaviour. Should throw a checked exception
         }
     }
 }
