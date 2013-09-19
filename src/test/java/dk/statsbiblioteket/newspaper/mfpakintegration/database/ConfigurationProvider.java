@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.newspapers.mfpakintegration;
+package dk.statsbiblioteket.newspaper.mfpakintegration.database;
 
 import java.io.FileInputStream;
 import java.io.IOException;

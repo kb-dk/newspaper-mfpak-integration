@@ -1,11 +1,10 @@
-package dk.statsbiblioteket.newspapers.mfpakintegration;
+package dk.statsbiblioteket.newspaper.mfpakintegration.database;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
-import dk.statsbiblioteket.newspaper.mfpakintegration.database.MfPakDAO;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

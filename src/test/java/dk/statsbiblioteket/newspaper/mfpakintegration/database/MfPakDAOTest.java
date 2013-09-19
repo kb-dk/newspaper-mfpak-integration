@@ -3,7 +3,6 @@ package dk.statsbiblioteket.newspaper.mfpakintegration.database;
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Event;
-import dk.statsbiblioteket.newspapers.mfpakintegration.ConfigurationProvider;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
