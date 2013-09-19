@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.DataSources;
-import dk.statsbiblioteket.newspaper.mfpakintegration.MfPakConfiguration;
+import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

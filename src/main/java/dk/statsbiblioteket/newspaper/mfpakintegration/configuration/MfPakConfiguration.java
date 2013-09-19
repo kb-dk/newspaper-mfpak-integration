@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.newspaper.mfpakintegration;
+package dk.statsbiblioteket.newspaper.mfpakintegration.configuration;
 
 /**
  * Models the configurable properties of the MKPak component.
@@ -32,5 +32,15 @@ public class MfPakConfiguration {
 
     public String getDatabaseDriver() {
         return databaseDriver;
+    }
+
+    @Override
+    public String toString() {
+        return "MfPakConfiguration{" +
+                "databaseDriver='" + databaseDriver + '\'' +
+                ", databaseUrl='" + databaseUrl + '\'' +
+                ", databaseUser='" + databaseUser + '\'' +
+                ", databasePassword='" + databasePassword + '\'' +
+                '}';
     }
 }

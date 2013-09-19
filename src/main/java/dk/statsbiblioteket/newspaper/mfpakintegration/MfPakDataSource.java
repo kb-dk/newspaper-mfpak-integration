@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 import dk.statsbiblioteket.newspaper.mfpakintegration.database.MfPakDAO;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.DataSource;
@@ -15,10 +16,8 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class MfPakDataSource implements DataSource {
+    private Logger log = LoggerFactory.getLogger(getClass());
     private MfPakDAO dao;
-
-    /** The log.*/
-      private Logger log = LoggerFactory.getLogger(getClass());
 
     public MfPakDataSource(MfPakConfiguration configuration) {
         dao = new MfPakDAO(configuration);

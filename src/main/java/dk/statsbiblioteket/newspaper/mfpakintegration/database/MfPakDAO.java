@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dk.statsbiblioteket.newspaper.mfpakintegration.MfPakConfiguration;
+import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Event;
 import org.slf4j.Logger;
@@ -26,6 +26,12 @@ public class MfPakDAO {
 
     public MfPakDAO(MfPakConfiguration configuration) {
         this.configuration = configuration;
+        try {
+            Class.forName(configuration.getDatabaseDriver());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Unable to find database driver '" + configuration.getDatabaseDriver() +
+                    "' in classpath.", e);
+        }
     }
 
     private Connection getConnection() {
@@ -63,11 +69,11 @@ public class MfPakDAO {
             if (batch != null) {
                if ("Sendt".equals(status)) {
                    event.setEventID("Shipping");
-                   event.setSucces(true);
+                   event.setSuccess(true);
                    batch.getEventList().add(event);
                } else if ("Under udpakning".equals(status)) {
                    event.setEventID("Received");
-                   event.setSucces(true);
+                   event.setSuccess(true);
                    batch.getEventList().add(event);
                }  else {
                    log.debug("Ignoring an event of type '" + status + "'");
@@ -110,11 +116,11 @@ public class MfPakDAO {
                 Timestamp created = rs2.getTimestamp("created");
                 if ("Sendt".equals(status)) {
                    event.setEventID("Shipping");
-                   event.setSucces(true);
+                   event.setSuccess(true);
                    batch.getEventList().add(event);
                } else if ("Under udpakning".equals(status)) {
                    event.setEventID("Received");
-                   event.setSucces(true);
+                   event.setSuccess(true);
                    batch.getEventList().add(event);
                }  else {
                    log.debug("Ignoring an event of type '" + status + "'");
