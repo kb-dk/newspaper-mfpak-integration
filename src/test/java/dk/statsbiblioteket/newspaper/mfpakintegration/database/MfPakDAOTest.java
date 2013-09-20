@@ -41,27 +41,27 @@ public class MfPakDAOTest {
         MfPakDAO dao = new MfPakDAO(configuration);
         List<Batch> batches = dao.getAllBatches();
         assertTrue("Should have at least four batches", batches.size() > 3);
-        int shipping = 0;
-        int received = 0;
+        int shipped = 0;
+        int created = 0;
         for (Batch batch: batches) {
             for (Event event: batch.getEventList() ) {
-                if (event.getEventID().equals("Shipping")) {
-                    shipping++;
-                } else if (event.getEventID().equals("Received")) {
-                    received++;
+                if (event.getEventID().equals("Shipped")) {
+                    shipped++;
+                } else if (event.getEventID().equals("Created")) {
+                    created++;
                 } else {
                     throw new RuntimeException("Unknown event type " + event.getEventID());
                 }
             }
         }
-        assertTrue("Should have at least one Shipping event", shipping > 0);
-        assertTrue("Should have at least one Received event", received > 0);
+        assertTrue("Should have at least one Shipping event", shipped > 0);
+        assertTrue("Should have at least one Received event", created > 0);
     }
 
     @Test(groups = {"integrationTest"})
     public void testGetBatchByBarcode() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
-        Batch batch = dao.getBatchByBarcode("4004");
+        Batch batch = dao.getBatchByBarcode(4004);
         assertNotNull("Should get non-null batch", batch);
         assertEquals("Batch should have two events.", 2, batch.getEventList().size());
     }
@@ -69,7 +69,7 @@ public class MfPakDAOTest {
     @Test(groups = {"integrationTest"})
     public void testGetEvent() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
-        Event event = dao.getEvent("4003", "Received");
+        Event event = dao.getEvent(4002, "Created");
         assertNotNull("Should have found this event.", event);
     }
 }

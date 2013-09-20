@@ -38,7 +38,7 @@ public class MfPakTCKTestSuite extends TCKTestSuite {
 
     @Override
     public String getValidBatchID() {
-        return "4001";
+        return "4004";
     }
 
     @Override
@@ -48,7 +48,7 @@ public class MfPakTCKTestSuite extends TCKTestSuite {
 
     @Override
     public String getValidAndSucessfullEventIDForValidBatch() {
-        return "Shipping";
+        return "Shipped";
     }
 
     @Override

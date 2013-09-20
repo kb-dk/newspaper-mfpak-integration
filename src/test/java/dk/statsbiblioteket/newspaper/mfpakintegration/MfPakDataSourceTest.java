@@ -32,21 +32,21 @@ public class MfPakDataSourceTest {
         MfPakDataSource source = new MfPakDataSource(configuration);
         List<Batch> batches = source.getBatches(true, null);
         assertTrue("Should have at least four batches", batches.size() > 3);
-        int shipping = 0;
-        int received = 0;
+        int created = 0;
+        int shipped = 0;
         for (Batch batch: batches) {
             for (Event event: batch.getEventList() ) {
-                if (event.getEventID().equals("Shipping")) {
-                    shipping++;
-                } else if (event.getEventID().equals("Received")) {
-                    received++;
+                if (event.getEventID().equals("Created")) {
+                    created++;
+                } else if (event.getEventID().equals("Shipped")) {
+                    shipped++;
                 } else {
                     throw new RuntimeException("Unknown event type " + event.getEventID());
                 }
             }
         }
-        assertTrue("Should have at least one Shipping event", shipping > 0);
-        assertTrue("Should have at least one Received event", received > 0);
+        assertTrue("Should have at least one Shipping event", created > 0);
+        assertTrue("Should have at least one Received event", shipped > 0);
     }
 
     @Test(groups = {"integrationTest"}, expectedExceptions = NotWorkingProperlyException.class)

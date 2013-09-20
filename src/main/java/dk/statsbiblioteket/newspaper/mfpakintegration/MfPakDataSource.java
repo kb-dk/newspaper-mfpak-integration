@@ -43,9 +43,15 @@ public class MfPakDataSource implements DataSource {
 
     @Override
     public Batch getBatch(String batchID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
+        int batchIdInt;
+        try {
+            batchIdInt = Integer.parseInt(batchID);
+        } catch (NumberFormatException e) {
+            throw new NotFoundException("Batch '" + batchID + "' not found in mfpak (it is not an integer).");
+        }
         Batch batch = null;
         try {
-            batch = dao.getBatchByBarcode(batchID);
+            batch = dao.getBatchByBarcode(batchIdInt);
         } catch (Exception e) {
             String message = "mfpak DataSource not working.";
             throw new NotWorkingProperlyException(message, e);
@@ -59,9 +65,15 @@ public class MfPakDataSource implements DataSource {
 
     @Override
     public Event getBatchEvent(String batchID, String eventID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
+        int batchIdInt;
+        try {
+            batchIdInt = Integer.parseInt(batchID);
+        } catch (NumberFormatException e) {
+            throw new NotFoundException("Batch '" + batchID + "' not found in mfpak (it is not an integer).");
+        }
         Event event = null;
         try {
-            event = dao.getEvent(batchID, eventID);
+            event = dao.getEvent(batchIdInt, eventID);
         } catch (Exception e) {
             String message = "mfpak DataSource not working.";
             throw new NotWorkingProperlyException(message, e);

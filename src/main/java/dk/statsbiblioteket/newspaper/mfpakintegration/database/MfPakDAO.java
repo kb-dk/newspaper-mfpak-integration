@@ -48,31 +48,31 @@ public class MfPakDAO {
     public List<Batch> getAllBatches() throws SQLException {
         Map<String, Batch> batchesById = new HashMap<String, Batch>();
         Connection con = getConnection();
-        String getAllBarcodes = "select  \"Batch\".\"Id\" AS id,\"Batch\".\"Barcode\" AS barcode FROM \"Batch\"";
+        String getAllBarcodes = "select  batchId, rowId from batch";
         final Statement statement = con.createStatement();
         ResultSet rs = statement.executeQuery(getAllBarcodes);
         while (rs.next()) {
-            String barcode = rs.getString("barcode");
+            String barcode = rs.getString("batchId");
             Batch batch = new Batch();
             batch.setBatchID(barcode);
             batch.setEventList(new ArrayList<Event>());
-            batchesById.put(rs.getString("id"), batch);
+            batchesById.put(rs.getString("rowId"), batch);
         }
-        String getAllEvents = "select \"BatchId\" AS batchid, \"Name\" AS status, \"BatchEvent\".\"Created\" AS created from \"BatchEvent\",\"Status\" WHERE \"BatchEvent\".\"StatusId\"=\"Status\".\"Id\"";
+        String getAllEvents = "SELECT batchrowId, name, batchstatus.created from batchstatus, status where statusrowId = status.rowId ";
         rs = statement.executeQuery(getAllEvents);
         while (rs.next()) {
-            String batchId = rs.getString("batchid");
+            String batchId = rs.getString("batchrowId");
             Timestamp createdTimestamp = rs.getTimestamp("created");  //We expect to add this to the API at some later point in time.
-            String status = rs.getString("status");
+            String status = rs.getString("name");
             Event event = new Event();
             Batch batch = batchesById.get(batchId);
             if (batch != null) {
-               if ("Sendt".equals(status)) {
-                   event.setEventID("Shipping");
+               if ("Initial".equals(status)) {
+                   event.setEventID("Created");
                    event.setSuccess(true);
                    batch.getEventList().add(event);
-               } else if ("Under udpakning".equals(status)) {
-                   event.setEventID("Received");
+               } else if ("Batch shipped to supplier".equals(status)) {
+                   event.setEventID("Shipped");
                    event.setSuccess(true);
                    batch.getEventList().add(event);
                }  else {
@@ -91,10 +91,10 @@ public class MfPakDAO {
      * @param barcode
      * @return the batch.
      */
-    public Batch getBatchByBarcode(String barcode) throws SQLException {
+    public Batch getBatchByBarcode(int barcode) throws SQLException {
         Connection con = getConnection();
         Statement stmt = con.createStatement();
-        String getBatchId = "select  \"Id\" AS id FROM \"Batch\" WHERE \"Barcode\"='"+barcode+"'";
+        String getBatchId = "select  rowId FROM batch WHERE batchId='"+barcode+"'";
         ResultSet rs = stmt.executeQuery(getBatchId);
         boolean batchExists = rs.next();
         if (!batchExists) {
@@ -103,23 +103,22 @@ public class MfPakDAO {
             return null;
         } else {
             Batch batch = new Batch();
-            batch.setBatchID(barcode);
-            String id = rs.getString("id");
+            batch.setBatchID(""+barcode);
+            String id = rs.getString("rowId");
             batch.setEventList(new ArrayList<Event>());
-            String getEvents = "SELECT \"Name\" AS status, \"BatchEvent\".\"Created\" AS created from \"BatchEvent\",\"Status\" " +
-                    "WHERE \"BatchEvent\".\"StatusId\"=\"Status\".\"Id\" AND \"BatchEvent\".\"BatchId\"='" + id + "'";
+            String getEvents = "SELECT name, batchstatus.created from batchstatus, status WHERE batchstatus.statusrowId=status.rowId AND batchstatus.batchrowId='" + id + "'";
             Statement stmt2 = con.createStatement();
             ResultSet rs2 = stmt2.executeQuery(getEvents);
             while (rs2.next()) {
                 Event event = new Event();
-                String status = rs2.getString("status");
+                String status = rs2.getString("name");
                 Timestamp created = rs2.getTimestamp("created");
-                if ("Sendt".equals(status)) {
-                   event.setEventID("Shipping");
+                if ("Initial".equals(status)) {
+                   event.setEventID("Created");
                    event.setSuccess(true);
                    batch.getEventList().add(event);
-               } else if ("Under udpakning".equals(status)) {
-                   event.setEventID("Received");
+               } else if ("Batch shipped to supplier".equals(status)) {
+                   event.setEventID("Shipped");
                    event.setSuccess(true);
                    batch.getEventList().add(event);
                }  else {
@@ -141,7 +140,7 @@ public class MfPakDAO {
      * @param eventStatus
      * @return the event.
      */
-    public Event getEvent(String batchBarcode, String eventStatus) throws SQLException {
+    public Event getEvent(int batchBarcode, String eventStatus) throws SQLException {
         Batch batch = getBatchByBarcode(batchBarcode);
         for (Event event: batch.getEventList()) {
             if (event.getEventID().equals(eventStatus)) {
