@@ -31,6 +31,13 @@ public class MfPakDataSource implements DataSource {
         return false;
     }
 
+    /**
+     * Get all the batches known to this DataSource.
+     * @param includeDetails ignored in thus implementation.
+     * @param filters ignored in this implementation.
+     * @return the batches.
+     * @throws NotWorkingProperlyException if there is a problem communicating with the DataSource.
+     */
     @Override
     public List<Batch> getBatches(boolean includeDetails, Map<String, String> filters) throws NotWorkingProperlyException {
         try {
@@ -41,6 +48,14 @@ public class MfPakDataSource implements DataSource {
         }
     }
 
+    /**
+     * Returns a specific batch given its id (barcode).
+     * @param batchID The id of the batch to find.
+     * @param includeDetails ignored in this implementation.
+     * @return the batch.
+     * @throws NotFoundException if the batch doesn't exist.
+     * @throws NotWorkingProperlyException if there is a problem communicating with the DataSource.
+     */
     @Override
     public Batch getBatch(String batchID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
         int batchIdInt;
@@ -63,6 +78,15 @@ public class MfPakDataSource implements DataSource {
         }
     }
 
+    /**
+     * Return a specific event for a specific batch.
+     * @param batchID The id of the event to which the batch is attached.
+     * @param eventID The id of the event.
+     * @param includeDetails ignored in this implementation.
+     * @return the event.
+     * @throws NotFoundException if the event doesn't exist.
+     * @throws NotWorkingProperlyException if there is a problem communicating with the DataSource.
+     */
     @Override
     public Event getBatchEvent(String batchID, String eventID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
         int batchIdInt;

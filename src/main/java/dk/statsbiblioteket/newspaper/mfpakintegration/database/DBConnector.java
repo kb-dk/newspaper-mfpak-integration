@@ -10,6 +10,10 @@ import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfigu
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Utility class to initialise a connection pool from an MfPakConfiguration instance and obtain database connections
+ * from it.
+ */
 public class DBConnector {
     /** The log.*/
     private Logger log = LoggerFactory.getLogger(getClass());
