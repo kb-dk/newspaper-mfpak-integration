@@ -13,6 +13,7 @@ import java.util.Map;
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Event;
+import dk.statsbiblioteket.newspaper.processmonitor.datasources.EventID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,11 +69,11 @@ public class MfPakDAO {
             Batch batch = batchesById.get(batchId);
             if (batch != null) {
                if ("Initial".equals(status)) {
-                   event.setEventID("Created");
+                   event.setEventID(EventID.Initial);
                    event.setSuccess(true);
                    batch.getEventList().add(event);
                } else if ("Batch shipped to supplier".equals(status)) {
-                   event.setEventID("Shipped");
+                   event.setEventID(EventID.Shipped_to_supplier);
                    event.setSuccess(true);
                    batch.getEventList().add(event);
                }  else {
@@ -114,11 +115,11 @@ public class MfPakDAO {
                 String status = rs2.getString("name");
                 Timestamp created = rs2.getTimestamp("created");
                 if ("Initial".equals(status)) {
-                   event.setEventID("Created");
+                   event.setEventID(EventID.Initial);
                    event.setSuccess(true);
                    batch.getEventList().add(event);
                } else if ("Batch shipped to supplier".equals(status)) {
-                   event.setEventID("Shipped");
+                   event.setEventID(EventID.Shipped_to_supplier);
                    event.setSuccess(true);
                    batch.getEventList().add(event);
                }  else {

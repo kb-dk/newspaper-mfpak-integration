@@ -1,34 +1,27 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration;
 
+import java.io.IOException;
+
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 import dk.statsbiblioteket.newspaper.mfpakintegration.database.ConfigurationProvider;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.DataSource;
+import dk.statsbiblioteket.newspaper.processmonitor.datasources.EventID;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.TCKTestSuite;
 import org.testng.annotations.BeforeMethod;
 
-import java.io.IOException;
-
-/**
- * Created with IntelliJ IDEA.
- * User: csr
- * Date: 9/20/13
- * Time: 11:05 AM
- * To change this template use File | Settings | File Templates.
- */
 public class MfPakTCKTestSuite extends TCKTestSuite {
 
     private MfPakConfiguration configuration;
 
-       @BeforeMethod(groups = {"integrationTest"})
+    @BeforeMethod(groups = {"integrationTest"})
        public void loadConfiguration() throws IOException {
            ConfigurationProvider configurationProvider = new ConfigurationProvider();
            configuration = configurationProvider.loadConfiguration();
        }
 
-
     @Override
     public boolean isRunNrInBatchID() {
-        return false;
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -47,12 +40,7 @@ public class MfPakTCKTestSuite extends TCKTestSuite {
     }
 
     @Override
-    public String getValidAndSucessfullEventIDForValidBatch() {
-        return "Shipped";
-    }
-
-    @Override
-    public String getInvalidEventIDForValidBatch() {
-        return "LostAtSea";
+    public EventID getValidAndSucessfullEventIDForValidBatch() {
+        return EventID.Shipped_to_supplier;
     }
 }
