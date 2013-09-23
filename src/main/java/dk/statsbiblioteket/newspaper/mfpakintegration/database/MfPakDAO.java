@@ -141,7 +141,7 @@ public class MfPakDAO {
      * @param eventStatus
      * @return the event.
      */
-    public Event getEvent(int batchBarcode, String eventStatus) throws SQLException {
+    public Event getEvent(int batchBarcode, EventID eventStatus) throws SQLException {
         Batch batch = getBatchByBarcode(batchBarcode);
         for (Event event: batch.getEventList()) {
             if (event.getEventID().equals(eventStatus)) {

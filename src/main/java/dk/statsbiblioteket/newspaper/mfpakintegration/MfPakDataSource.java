@@ -1,12 +1,16 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 import dk.statsbiblioteket.newspaper.mfpakintegration.database.MfPakDAO;
-import dk.statsbiblioteket.newspaper.processmonitor.datasources.*;
+import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
+import dk.statsbiblioteket.newspaper.processmonitor.datasources.DataSource;
+import dk.statsbiblioteket.newspaper.processmonitor.datasources.Event;
+import dk.statsbiblioteket.newspaper.processmonitor.datasources.EventID;
+import dk.statsbiblioteket.newspaper.processmonitor.datasources.NotFoundException;
+import dk.statsbiblioteket.newspaper.processmonitor.datasources.NotWorkingProperlyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,7 +92,7 @@ public class MfPakDataSource implements DataSource {
      * @throws NotWorkingProperlyException if there is a problem communicating with the DataSource.
      */
     @Override
-    public Event getBatchEvent(String batchID, String eventID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
+    public Event getBatchEvent(String batchID, EventID eventID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
         int batchIdInt;
         try {
             batchIdInt = Integer.parseInt(batchID);

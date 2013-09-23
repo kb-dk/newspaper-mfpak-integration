@@ -1,26 +1,18 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration.database;
 
-import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
-import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
-import dk.statsbiblioteket.newspaper.processmonitor.datasources.Event;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
+import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
+import dk.statsbiblioteket.newspaper.processmonitor.datasources.Event;
+import dk.statsbiblioteket.newspaper.processmonitor.datasources.EventID;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-/**
- * Created with IntelliJ IDEA.
- * User: csr
- * Date: 9/18/13
- * Time: 1:52 PM
- * To change this template use File | Settings | File Templates.
- */
+import static org.junit.Assert.*;
+
 public class MfPakDAOTest {
 
     private MfPakConfiguration configuration;
@@ -45,9 +37,9 @@ public class MfPakDAOTest {
         int created = 0;
         for (Batch batch: batches) {
             for (Event event: batch.getEventList() ) {
-                if (event.getEventID().equals("Shipped")) {
+                if (event.getEventID().equals(EventID.Shipped_to_supplier)) {
                     shipped++;
-                } else if (event.getEventID().equals("Created")) {
+                } else if (event.getEventID().equals(EventID.Initial)) {
                     created++;
                 } else {
                     throw new RuntimeException("Unknown event type " + event.getEventID());
@@ -69,7 +61,7 @@ public class MfPakDAOTest {
     @Test(groups = {"integrationTest"})
     public void testGetEvent() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
-        Event event = dao.getEvent(4002, "Created");
+        Event event = dao.getEvent(4002, EventID.Initial);
         assertNotNull("Should have found this event.", event);
     }
 }

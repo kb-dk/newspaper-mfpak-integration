@@ -1,17 +1,18 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration;
 
 
+import java.io.IOException;
+import java.util.List;
+
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 import dk.statsbiblioteket.newspaper.mfpakintegration.database.ConfigurationProvider;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Event;
+import dk.statsbiblioteket.newspaper.processmonitor.datasources.EventID;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.NotFoundException;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.NotWorkingProperlyException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
-import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -36,9 +37,9 @@ public class MfPakDataSourceTest {
         int shipped = 0;
         for (Batch batch: batches) {
             for (Event event: batch.getEventList() ) {
-                if (event.getEventID().equals("Created")) {
+                if (event.getEventID().equals(EventID.Initial)) {
                     created++;
-                } else if (event.getEventID().equals("Shipped")) {
+                } else if (event.getEventID().equals(EventID.Shipped_to_supplier)) {
                     shipped++;
                 } else {
                     throw new RuntimeException("Unknown event type " + event.getEventID());
@@ -64,6 +65,6 @@ public class MfPakDataSourceTest {
     @Test(groups = {"integrationTest"}, expectedExceptions = NotFoundException.class)
     public void testGetBatchEvent() throws Exception {
         MfPakDataSource source = new MfPakDataSource(configuration);
-        source.getBatchEvent("4001", "barfoo", false);
+        source.getBatchEvent("4001", EventID.Initial, false);
     }
 }
