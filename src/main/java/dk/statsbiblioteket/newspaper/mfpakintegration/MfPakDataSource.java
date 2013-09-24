@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Provides a MfPak system implementation of a newspaper process datasource.
  */
 public class MfPakDataSource implements DataSource {
     private Logger log = LoggerFactory.getLogger(getClass());
@@ -61,16 +61,10 @@ public class MfPakDataSource implements DataSource {
      * @throws NotWorkingProperlyException if there is a problem communicating with the DataSource.
      */
     @Override
-    public Batch getBatch(String batchID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
-        int batchIdInt;
-        try {
-            batchIdInt = Integer.parseInt(batchID);
-        } catch (NumberFormatException e) {
-            throw new NotFoundException("Batch '" + batchID + "' not found in mfpak (it is not an integer).");
-        }
+    public Batch getBatch(int batchID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
         Batch batch = null;
         try {
-            batch = dao.getBatchByBarcode(batchIdInt);
+            batch = dao.getBatchByBarcode(batchID);
         } catch (Exception e) {
             String message = "mfpak DataSource not working.";
             throw new NotWorkingProperlyException(message, e);
@@ -92,16 +86,10 @@ public class MfPakDataSource implements DataSource {
      * @throws NotWorkingProperlyException if there is a problem communicating with the DataSource.
      */
     @Override
-    public Event getBatchEvent(String batchID, EventID eventID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
-        int batchIdInt;
-        try {
-            batchIdInt = Integer.parseInt(batchID);
-        } catch (NumberFormatException e) {
-            throw new NotFoundException("Batch '" + batchID + "' not found in mfpak (it is not an integer).");
-        }
+    public Event getBatchEvent(int batchID, EventID eventID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
         Event event = null;
         try {
-            event = dao.getEvent(batchIdInt, eventID);
+            event = dao.getEvent(batchID, eventID);
         } catch (Exception e) {
             String message = "mfpak DataSource not working.";
             throw new NotWorkingProperlyException(message, e);

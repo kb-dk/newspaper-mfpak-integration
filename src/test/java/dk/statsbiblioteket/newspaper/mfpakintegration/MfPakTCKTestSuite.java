@@ -30,13 +30,13 @@ public class MfPakTCKTestSuite extends TCKTestSuite {
      }
 
     @Override
-    public String getValidBatchID() {
-        return "4004";
+    public int getValidBatchID() {
+        return 4004;
     }
 
     @Override
-    public String getInvalidBatchID() {
-        return "4242";
+    public int getInvalidBatchID() {
+        return 4242;
     }
 
     @Override

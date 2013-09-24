@@ -53,7 +53,7 @@ public class MfPakDAO {
         final Statement statement = con.createStatement();
         ResultSet rs = statement.executeQuery(getAllBarcodes);
         while (rs.next()) {
-            String barcode = rs.getString("batchId");
+            int barcode = rs.getInt("batchId");
             Batch batch = new Batch();
             batch.setBatchID(barcode);
             batch.setEventList(new ArrayList<Event>());
@@ -65,20 +65,13 @@ public class MfPakDAO {
             String batchId = rs.getString("batchrowId");
             Timestamp createdTimestamp = rs.getTimestamp("created");  //We expect to add this to the API at some later point in time.
             String status = rs.getString("name");
-            Event event = new Event();
             Batch batch = batchesById.get(batchId);
             if (batch != null) {
-               if ("Initial".equals(status)) {
-                   event.setEventID(EventID.Initial);
-                   event.setSuccess(true);
-                   batch.getEventList().add(event);
-               } else if ("Batch shipped to supplier".equals(status)) {
-                   event.setEventID(EventID.Shipped_to_supplier);
-                   event.setSuccess(true);
-                   batch.getEventList().add(event);
-               }  else {
-                   log.debug("Ignoring an event of type '" + status + "'");
-               }
+                try {
+                    batch.getEventList().add(createEvent(status));
+                } catch (IllegalArgumentException e) {
+                    log.warn(e.getMessage());
+                }
             } else {
                 log.warn("Found an event '" + status + "' attached to an unknown batch with id '" + batchId);
             }
@@ -95,7 +88,7 @@ public class MfPakDAO {
     public Batch getBatchByBarcode(int barcode) throws SQLException {
         Connection con = getConnection();
         Statement stmt = con.createStatement();
-        String getBatchId = "select  rowId FROM batch WHERE batchId='"+barcode+"'";
+        String getBatchId = "select rowId FROM batch WHERE batchId='"+barcode+"'";
         ResultSet rs = stmt.executeQuery(getBatchId);
         boolean batchExists = rs.next();
         if (!batchExists) {
@@ -104,27 +97,20 @@ public class MfPakDAO {
             return null;
         } else {
             Batch batch = new Batch();
-            batch.setBatchID(""+barcode);
+            batch.setBatchID(barcode);
             String id = rs.getString("rowId");
             batch.setEventList(new ArrayList<Event>());
             String getEvents = "SELECT name, batchstatus.created from batchstatus, status WHERE batchstatus.statusrowId=status.rowId AND batchstatus.batchrowId='" + id + "'";
             Statement stmt2 = con.createStatement();
             ResultSet rs2 = stmt2.executeQuery(getEvents);
             while (rs2.next()) {
-                Event event = new Event();
                 String status = rs2.getString("name");
                 Timestamp created = rs2.getTimestamp("created");
-                if ("Initial".equals(status)) {
-                   event.setEventID(EventID.Initial);
-                   event.setSuccess(true);
-                   batch.getEventList().add(event);
-               } else if ("Batch shipped to supplier".equals(status)) {
-                   event.setEventID(EventID.Shipped_to_supplier);
-                   event.setSuccess(true);
-                   batch.getEventList().add(event);
-               }  else {
-                   log.debug("Ignoring an event of type '" + status + "'");
-               }
+                try {
+                    batch.getEventList().add(createEvent(status));
+                } catch (IllegalArgumentException e) {
+                    log.warn(e.getMessage());
+                }
             }
             stmt2.close();
             if (rs.next()) {
@@ -133,6 +119,42 @@ public class MfPakDAO {
             stmt.close();
             return batch;
         }
+    }
+
+    /**
+     * Creates a event object based on the status in the MfPak DB.
+     * @param status The name in the status table for this batch.
+     * @return The corresponding event object.
+     */
+    private Event createEvent(String status) {
+        Event event = new Event();
+        event.setSuccess(true);
+        switch(status) {
+            case "Initial":
+                event.setEventID(EventID.Initial);
+                break;
+            case "Batch added to shipping container":
+                event.setEventID(EventID.Added_to_shipping_container);
+                break;
+            case "Batch shipped to supplier":
+                event.setEventID(EventID.Shipped_to_supplier);
+                break;
+            case "Batch shipped from supplier":
+                event.setEventID(EventID.Shipped_from_supplier);
+                break;
+            case "Batch received from supplier":
+                event.setEventID(EventID.Received_from_supplier);
+                break;
+            case "Batch follow-up":
+                event.setEventID(EventID.FollowUp);
+                break;
+            case "Batch approved":
+                event.setEventID(EventID.Approved);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown batch status " + status);
+        }
+        return event;
     }
 
     /**

@@ -32,7 +32,7 @@ public class MfPakDAOTest {
     public void testGetAllBatches() throws Exception {
         MfPakDAO dao = new MfPakDAO(configuration);
         List<Batch> batches = dao.getAllBatches();
-        assertTrue("Should have at least four batches", batches.size() > 3);
+        assertTrue("Should have at least four batches", batches.size() >= 4);
         int shipped = 0;
         int created = 0;
         for (Batch batch: batches) {
@@ -41,13 +41,11 @@ public class MfPakDAOTest {
                     shipped++;
                 } else if (event.getEventID().equals(EventID.Initial)) {
                     created++;
-                } else {
-                    throw new RuntimeException("Unknown event type " + event.getEventID());
                 }
             }
         }
-        assertTrue("Should have at least one Shipping event", shipped > 0);
-        assertTrue("Should have at least one Received event", created > 0);
+        assertTrue("Should have at least one Shipping event", shipped >= 1);
+        assertTrue("Should have at least one Received event", created >= 1);
     }
 
     @Test(groups = {"integrationTest"})
@@ -55,7 +53,7 @@ public class MfPakDAOTest {
         MfPakDAO dao = new MfPakDAO(configuration);
         Batch batch = dao.getBatchByBarcode(4004);
         assertNotNull("Should get non-null batch", batch);
-        assertEquals("Batch should have two events.", 2, batch.getEventList().size());
+        assertEquals("Batch should have three events.", 3, batch.getEventList().size());
     }
 
     @Test(groups = {"integrationTest"})

@@ -9,6 +9,9 @@ import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfigu
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Enables loading of the configuration from external folder to emulate configuration injection.
+ */
 public class  ConfigurationProvider {
     private Logger log = LoggerFactory.getLogger(getClass());
     private final Properties properties = new Properties();
