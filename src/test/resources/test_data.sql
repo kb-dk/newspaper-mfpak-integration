@@ -25,6 +25,9 @@ UPDATE batchstatus SET statusrowId = (SELECT rowId from status WHERE "name"='Bat
 -- and again but for "shipping"
 INSERT INTO batchstatus (statusrowId,batchrowId) SELECT 1,batchrowId from batchstatus WHERE rowId = LASTVAL();
 UPDATE batchstatus SET statusrowId = (SELECT rowId from status WHERE "name"='Batch shipped to supplier') WHERE rowId = LASTVAL();
+-- and again bur for "received from supplier"
+INSERT INTO batchstatus (statusrowId,batchrowId) SELECT 1,batchrowId from batchstatus WHERE rowId = LASTVAL();
+UPDATE batchstatus SET statusrowId = (SELECT rowId from status WHERE "name"='Batch received from supplier') WHERE rowId = LASTVAL();
 
 
 --A Batch wtih no events
