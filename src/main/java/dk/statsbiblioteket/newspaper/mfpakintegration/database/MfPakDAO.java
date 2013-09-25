@@ -55,7 +55,7 @@ public class MfPakDAO {
         while (rs.next()) {
             int barcode = rs.getInt("batchId");
             Batch batch = new Batch();
-            batch.setBatchID(barcode);
+            batch.setBatchID(new Long(barcode));
             batch.setEventList(new ArrayList<Event>());
             batchesById.put(rs.getString("rowId"), batch);
         }
@@ -97,7 +97,7 @@ public class MfPakDAO {
             return null;
         } else {
             Batch batch = new Batch();
-            batch.setBatchID(barcode);
+            batch.setBatchID(new Long(barcode));
             String id = rs.getString("rowId");
             batch.setEventList(new ArrayList<Event>());
             String getEvents = "SELECT name, batchstatus.created from batchstatus, status WHERE batchstatus.statusrowId=status.rowId AND batchstatus.batchrowId='" + id + "'";

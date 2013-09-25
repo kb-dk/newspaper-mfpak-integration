@@ -26,16 +26,6 @@ public class MfPakDataSource implements DataSource {
     }
 
     /**
-     * mfpak manages the physical dispatch of batches and know nothing about Run-Numbers. Therefore this
-     * method always returns false in this implementation.
-     * @return
-     */
-    @Override
-    public boolean isRunNrInBatchID() {
-        return false;
-    }
-
-    /**
      * Get all the batches known to this DataSource.
      * @param includeDetails ignored in thus implementation.
      * @param filters ignored in this implementation.
@@ -61,10 +51,10 @@ public class MfPakDataSource implements DataSource {
      * @throws NotWorkingProperlyException if there is a problem communicating with the DataSource.
      */
     @Override
-    public Batch getBatch(int batchID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
+    public Batch getBatch(Long batchID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
         Batch batch = null;
         try {
-            batch = dao.getBatchByBarcode(batchID);
+            batch = dao.getBatchByBarcode(batchID.intValue());
         } catch (Exception e) {
             String message = "mfpak DataSource not working.";
             throw new NotWorkingProperlyException(message, e);
@@ -86,10 +76,10 @@ public class MfPakDataSource implements DataSource {
      * @throws NotWorkingProperlyException if there is a problem communicating with the DataSource.
      */
     @Override
-    public Event getBatchEvent(int batchID, EventID eventID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
+    public Event getBatchEvent(Long batchID, EventID eventID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
         Event event = null;
         try {
-            event = dao.getEvent(batchID, eventID);
+            event = dao.getEvent(batchID.intValue(), eventID);
         } catch (Exception e) {
             String message = "mfpak DataSource not working.";
             throw new NotWorkingProperlyException(message, e);

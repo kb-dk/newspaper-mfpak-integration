@@ -58,11 +58,11 @@ public class MfPakDataSourceTest {
     @Test(groups = {"integrationTest"}, expectedExceptions = NotFoundException.class)
     public void testGetBatch() throws Exception {
         MfPakDataSource source = new MfPakDataSource(configuration);
-        source.getBatch(999, true);
+        source.getBatch(999L, true);
     }
     @Test(groups = {"integrationTest"}, expectedExceptions = NotFoundException.class)
     public void testGetBatchEvent() throws Exception {
         MfPakDataSource source = new MfPakDataSource(configuration);
-        source.getBatchEvent(4001, EventID.Initial, false);
+        source.getBatchEvent(4001L, EventID.Initial, false);
     }
 }

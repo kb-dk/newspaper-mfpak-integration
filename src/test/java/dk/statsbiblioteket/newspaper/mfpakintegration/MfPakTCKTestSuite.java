@@ -20,23 +20,18 @@ public class MfPakTCKTestSuite extends TCKTestSuite {
        }
 
     @Override
-    public boolean isRunNrInBatchID() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public DataSource getDataSource() {
          return new MfPakDataSource(configuration);
      }
 
     @Override
-    public int getValidBatchID() {
-        return 4004;
+    public Long getValidBatchID() {
+        return 4004L;
     }
 
     @Override
-    public int getInvalidBatchID() {
-        return 4242;
+    public Long getInvalidBatchID() {
+        return 4242L;
     }
 
     @Override
