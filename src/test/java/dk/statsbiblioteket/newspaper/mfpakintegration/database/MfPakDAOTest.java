@@ -53,7 +53,7 @@ public class MfPakDAOTest {
         MfPakDAO dao = new MfPakDAO(configuration);
         Batch batch = dao.getBatchByBarcode(4004);
         assertNotNull("Should get non-null batch", batch);
-        assertEquals("Batch should have three events.", 3, batch.getEventList().size());
+        assertEquals("Batch should have three events.", 4, batch.getEventList().size());
     }
 
     @Test(groups = {"integrationTest"})
