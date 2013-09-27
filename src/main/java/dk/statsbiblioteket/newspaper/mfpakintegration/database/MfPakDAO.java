@@ -53,9 +53,9 @@ public class MfPakDAO {
         try (Connection con = getConnection(); Statement statement = con.createStatement()) {
             try (ResultSet rs = statement.executeQuery(getAllBarcodes)) {
                 while (rs.next()) {
-                    int barcode = rs.getInt("batchId");
+                    long barcode = rs.getInt("batchId");
                     Batch batch = new Batch();
-                    batch.setBatchID(new Long(barcode));
+                    batch.setBatchID(barcode);
                     batch.setEventList(new ArrayList<Event>());
                     batchesById.put(rs.getString("rowId"), batch);
                 }
@@ -89,7 +89,7 @@ public class MfPakDAO {
      * @param barcode
      * @return the batch.
      */
-    public Batch getBatchByBarcode(int barcode) throws SQLException {
+    public Batch getBatchByBarcode(long barcode) throws SQLException {
         try (Connection con = getConnection(); Statement stmt = con.createStatement()) {
             String getBatchId = "select rowId FROM batch WHERE batchId='" + barcode + "'";
             try (ResultSet rs = stmt.executeQuery(getBatchId)) {
@@ -169,7 +169,7 @@ public class MfPakDAO {
      * @param eventStatus
      * @return the event.
      */
-    public Event getEvent(int batchBarcode, EventID eventStatus) throws SQLException {
+    public Event getEvent(long batchBarcode, EventID eventStatus) throws SQLException {
         Batch batch = getBatchByBarcode(batchBarcode);
         for (Event event : batch.getEventList()) {
             if (event.getEventID().equals(eventStatus)) {

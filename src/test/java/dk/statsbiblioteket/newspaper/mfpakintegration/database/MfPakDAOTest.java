@@ -1,9 +1,5 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration.database;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.List;
-
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Event;
@@ -11,7 +7,13 @@ import dk.statsbiblioteket.newspaper.processmonitor.datasources.EventID;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.junit.Assert.*;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class MfPakDAOTest {
 
@@ -51,7 +53,7 @@ public class MfPakDAOTest {
     @Test(groups = {"integrationTest"})
     public void testGetBatchByBarcode() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
-        Batch batch = dao.getBatchByBarcode(4004);
+        Batch batch = dao.getBatchByBarcode(4004l);
         assertNotNull("Should get non-null batch", batch);
         assertEquals("Batch should have three events.", 4, batch.getEventList().size());
     }
@@ -59,7 +61,7 @@ public class MfPakDAOTest {
     @Test(groups = {"integrationTest"})
     public void testGetEvent() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
-        Event event = dao.getEvent(4002, EventID.Initial);
+        Event event = dao.getEvent(4002l, EventID.Initial);
         assertNotNull("Should have found this event.", event);
     }
 }

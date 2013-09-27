@@ -1,8 +1,5 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration;
 
-import java.util.List;
-import java.util.Map;
-
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 import dk.statsbiblioteket.newspaper.mfpakintegration.database.MfPakDAO;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
@@ -13,6 +10,9 @@ import dk.statsbiblioteket.newspaper.processmonitor.datasources.NotFoundExceptio
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.NotWorkingProperlyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Provides a MfPak system implementation of a newspaper process datasource.
@@ -54,7 +54,7 @@ public class MfPakDataSource implements DataSource {
     public Batch getBatch(Long batchID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
         Batch batch = null;
         try {
-            batch = dao.getBatchByBarcode(batchID.intValue());
+            batch = dao.getBatchByBarcode(batchID);
         } catch (Exception e) {
             String message = "mfpak DataSource not working.";
             throw new NotWorkingProperlyException(message, e);
@@ -79,7 +79,7 @@ public class MfPakDataSource implements DataSource {
     public Event getBatchEvent(Long batchID, EventID eventID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
         Event event = null;
         try {
-            event = dao.getEvent(batchID.intValue(), eventID);
+            event = dao.getEvent(batchID, eventID);
         } catch (Exception e) {
             String message = "mfpak DataSource not working.";
             throw new NotWorkingProperlyException(message, e);
