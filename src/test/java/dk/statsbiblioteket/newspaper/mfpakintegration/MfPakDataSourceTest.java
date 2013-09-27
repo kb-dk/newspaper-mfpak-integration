@@ -1,9 +1,6 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration;
 
 
-import java.io.IOException;
-import java.util.List;
-
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 import dk.statsbiblioteket.newspaper.mfpakintegration.database.ConfigurationProvider;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
@@ -13,6 +10,9 @@ import dk.statsbiblioteket.newspaper.processmonitor.datasources.NotFoundExceptio
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.NotWorkingProperlyException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.io.IOException;
+import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -58,7 +58,7 @@ public class MfPakDataSourceTest {
     @Test(groups = {"integrationTest"}, expectedExceptions = NotFoundException.class)
     public void testGetBatch() throws Exception {
         MfPakDataSource source = new MfPakDataSource(configuration);
-        source.getBatch(999L, true);
+        source.getBatch(1999L, true);
     }
     @Test(groups = {"integrationTest"}, expectedExceptions = NotFoundException.class)
     public void testGetBatchEvent() throws Exception {
