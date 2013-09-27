@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class MfPakDAO {
      * @return The list of batches.
      */
     public List<Batch> getAllBatches() throws SQLException {
-        Map<String, Batch> batchesById = new HashMap<String, Batch>();
+        Map<String, Batch> batchesById = new HashMap<>();
         String getAllBarcodes = "select  batchId, rowId from batch";
         try (Connection con = getConnection(); Statement statement = con.createStatement()) {
             try (ResultSet rs = statement.executeQuery(getAllBarcodes)) {
@@ -69,7 +70,7 @@ public class MfPakDAO {
                     Batch batch = batchesById.get(batchId);
                     if (batch != null) {
                         try {
-                            batch.getEventList().add(createEvent(status));
+                            batch.getEventList().add(createEvent(status,createdTimestamp));
                         } catch (IllegalArgumentException e) {
                             log.warn(e.getMessage());
                         }
@@ -80,7 +81,7 @@ public class MfPakDAO {
             }
         }
 
-        return new ArrayList<Batch>(batchesById.values());
+        return new ArrayList<>(batchesById.values());
     }
 
     /**
@@ -109,7 +110,7 @@ public class MfPakDAO {
                                 String status = rs2.getString("name");
                                 Timestamp created = rs2.getTimestamp("created");
                                 try {
-                                    batch.getEventList().add(createEvent(status));
+                                    batch.getEventList().add(createEvent(status, created));
                                 } catch (IllegalArgumentException e) {
                                     log.warn(e.getMessage());
                                 }
@@ -128,12 +129,15 @@ public class MfPakDAO {
     /**
      * Creates a event object based on the status in the MfPak DB.
      *
+     *
      * @param status The name in the status table for this batch.
+     * @param createdTimestamp
      * @return The corresponding event object.
      */
-    private static Event createEvent(String status) {
+    private static Event createEvent(String status, Date createdTimestamp) {
         Event event = new Event();
         event.setSuccess(true);
+        event.setDate(createdTimestamp);
         switch (status) {
             case "Initial":
                 event.setEventID(EventID.Initial);
