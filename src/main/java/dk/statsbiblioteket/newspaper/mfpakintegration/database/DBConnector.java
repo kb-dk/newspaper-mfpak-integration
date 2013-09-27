@@ -1,14 +1,14 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration.database;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Properties;
-
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.DataSources;
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * Utility class to initialise a connection pool from an MfPakConfiguration instance and obtain database connections
