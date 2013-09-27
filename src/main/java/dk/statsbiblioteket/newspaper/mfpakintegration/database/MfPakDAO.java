@@ -22,7 +22,7 @@ import java.util.Map;
  * Handles all calls to the actual database backend.
  */
 public class MfPakDAO {
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private static Logger log = LoggerFactory.getLogger(MfPakDAO.class);
     protected DBConnector connector = null;
     private final MfPakConfiguration configuration;
     public static final String GET_BATCH_ID = "SELECT rowId FROM batch WHERE batchId=?";
