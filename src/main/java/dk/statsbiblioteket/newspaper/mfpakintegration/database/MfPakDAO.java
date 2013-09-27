@@ -8,9 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,6 +25,10 @@ public class MfPakDAO {
     private Logger log = LoggerFactory.getLogger(getClass());
     protected DBConnector connector = null;
     private final MfPakConfiguration configuration;
+    public static final String GET_BATCH_ID = "SELECT rowId FROM batch WHERE batchId=?";
+    public static final String GET_EVENTS = "SELECT name, batchstatus.created FROM batchstatus, status WHERE batchstatus.statusrowId=status.rowId AND batchstatus.batchrowId=?";
+    public static final String GET_ALL_BARCODES = "SELECT  batchId, rowId FROM batch";
+    public static final String GET_ALL_EVENTS = "SELECT batchrowId, name, batchstatus.created from batchstatus, status where statusrowId = status.rowId ";
 
     public MfPakDAO(MfPakConfiguration configuration) {
         this.configuration = configuration;
@@ -50,9 +54,10 @@ public class MfPakDAO {
      */
     public List<Batch> getAllBatches() throws SQLException {
         Map<String, Batch> batchesById = new HashMap<>();
-        String getAllBarcodes = "select  batchId, rowId from batch";
-        try (Connection con = getConnection(); Statement statement = con.createStatement()) {
-            try (ResultSet rs = statement.executeQuery(getAllBarcodes)) {
+        try (Connection con = getConnection();
+             PreparedStatement statement = con.prepareStatement(GET_ALL_BARCODES);
+             PreparedStatement statement2 = con.prepareStatement(GET_ALL_EVENTS)) {
+            try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     long barcode = rs.getInt("batchId");
                     Batch batch = new Batch();
@@ -61,8 +66,7 @@ public class MfPakDAO {
                     batchesById.put(rs.getString("rowId"), batch);
                 }
             }
-            String getAllEvents = "SELECT batchrowId, name, batchstatus.created from batchstatus, status where statusrowId = status.rowId ";
-            try (ResultSet rs = statement.executeQuery(getAllEvents)) {
+            try (ResultSet rs = statement2.executeQuery()) {
                 while (rs.next()) {
                     String batchId = rs.getString("batchrowId");
                     Timestamp createdTimestamp = rs.getTimestamp("created");  //We expect to add this to the API at some later point in time.
@@ -70,7 +74,7 @@ public class MfPakDAO {
                     Batch batch = batchesById.get(batchId);
                     if (batch != null) {
                         try {
-                            batch.getEventList().add(createEvent(status,createdTimestamp));
+                            batch.getEventList().add(createEvent(status, createdTimestamp));
                         } catch (IllegalArgumentException e) {
                             log.warn(e.getMessage());
                         }
@@ -90,22 +94,22 @@ public class MfPakDAO {
      * @param barcode
      * @return the batch.
      */
-    public Batch getBatchByBarcode(long barcode) throws SQLException {
-        try (Connection con = getConnection(); Statement stmt = con.createStatement()) {
-            String getBatchId = "select rowId FROM batch WHERE batchId='" + barcode + "'";
-            try (ResultSet rs = stmt.executeQuery(getBatchId)) {
+    public Batch getBatchByBarcode(Long barcode) throws SQLException {
+        try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(GET_BATCH_ID)) {
+            stmt.setInt(1, barcode.intValue());
+            try (ResultSet rs = stmt.executeQuery()) {
                 boolean batchExists = rs.next();
                 if (!batchExists) {
                     log.warn("No such batch found: '" + barcode + "'");
                     return null;
                 } else {
                     Batch batch = new Batch();
-                    batch.setBatchID((long) barcode);
-                    String id = rs.getString("rowId");
+                    batch.setBatchID(barcode);
+                    int id = rs.getInt("rowId");
                     batch.setEventList(new ArrayList<Event>());
-                    String getEvents = "SELECT name, batchstatus.created from batchstatus, status WHERE batchstatus.statusrowId=status.rowId AND batchstatus.batchrowId='" + id + "'";
-                    try (Statement stmt2 = con.createStatement()) {
-                        try (ResultSet rs2 = stmt2.executeQuery(getEvents)) {
+                    try (PreparedStatement stmt2 = con.prepareStatement(GET_EVENTS)) {
+                        stmt2.setInt(1, id);
+                        try (ResultSet rs2 = stmt2.executeQuery()) {
                             while (rs2.next()) {
                                 String status = rs2.getString("name");
                                 Timestamp created = rs2.getTimestamp("created");
@@ -129,8 +133,7 @@ public class MfPakDAO {
     /**
      * Creates a event object based on the status in the MfPak DB.
      *
-     *
-     * @param status The name in the status table for this batch.
+     * @param status           The name in the status table for this batch.
      * @param createdTimestamp
      * @return The corresponding event object.
      */
