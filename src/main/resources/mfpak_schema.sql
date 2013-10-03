@@ -1,7 +1,7 @@
 drop table if exists NewsPaper cascade;
 create table NewsPaper
 (
-	RowId SERIAL PRIMARY KEY ,
+	RowId SERIAL PRIMARY KEY , 	
 	NewsPaperId VARCHAR (255),
 	Created TIMESTAMP default NOW()
 );
@@ -9,7 +9,7 @@ create table NewsPaper
 drop table if exists NewsPaperTitle cascade;
 create table NewsPaperTitle
 (
-	RowId SERIAL PRIMARY KEY ,
+	RowId SERIAL PRIMARY KEY , 	
 	NewsPaperRowId int references NewsPaper(RowId),
 	Name VARCHAR (255) NOT NULL,
 	FromDate DATE,
@@ -20,36 +20,44 @@ create table NewsPaperTitle
 );
 
 drop table if exists Consignment  cascade;
-create table Consignment
+create table Consignment 
 (
-	RowId SERIAL PRIMARY KEY ,
-	ConsignmentId VARCHAR (50) UNIQUE NOT NULL,
+	RowId SERIAL PRIMARY KEY , 
+	ConsignmentId VARCHAR (50) UNIQUE NOT NULL, 
 	DriverName VARCHAR (255),  --name of the person who handled the container
 	DestinationIsSB boolean NOT NULL,
-	Created TIMESTAMP default NOW()
+	Created TIMESTAMP default NOW()	
 );
 
 drop table if exists ShippingContainer cascade;
-create table ShippingContainer
+create table ShippingContainer 
 (
-	RowId SERIAL PRIMARY KEY,
+	RowId SERIAL PRIMARY KEY, 
 	CreatedBy VARCHAR (255),  --name of the person who handled the container
-	ShippingContainerId VARCHAR (50) UNIQUE NOT NULL,
+	ShippingContainerId VARCHAR (50) UNIQUE NOT NULL, 
+	Created TIMESTAMP default NOW()
+);
+
+drop table if exists ConsignmentContent cascade;
+create table ConsignmentContent 
+(
+	RowId SERIAL PRIMARY KEY, 
+	ConsignmentRowId int references Consignment(RowId) NOT NULL,
+	ShippingContainerRowId int references ShippingContainer(RowId) NOT NULL,
+	BatchRowId int references Batch(RowId) NOT NULL,
 	Created TIMESTAMP default NOW()
 );
 
 drop table if exists Batch cascade;
 create table Batch
 (
-	RowId SERIAL PRIMARY KEY,
-	BatchId INT,          -- this is the SB barcode
+	RowId SERIAL PRIMARY KEY, 
+	BatchId BIGINT,          -- this is the SB barcode
 	CartonNumber INT NOT NULL,
 	Picture BYTEA,
 	Weight NUMERIC(9,3),
-	MultiFilm boolean,  -- this is a summary of the batch content. True if a Batch has more than 15 entries in BatchContent, else false
-	NewsPaperRowId INT  references NewsPaper(RowId),
-	ShippingContainerRowId INT references ShippingContainer(RowId),
-	ConsignmentRowId INT references Consignment(RowId),
+	MultiFilm boolean,  -- this is a summary of the batch content. True if a Batch has more than 15 entries in BatchContent, else false 
+	NewsPaperRowId INT references NewsPaper(RowId),
 	Created TIMESTAMP default NOW(),
 	Modified TIMESTAMP
 );
@@ -60,8 +68,9 @@ create type TYPEFACE AS ENUM ('fracture', 'mixed', 'latin');
 drop table if exists BatchContent cascade;
 create table BatchContent
 (
-	RowId SERIAL PRIMARY KEY,
+	RowId SERIAL PRIMARY KEY, 
 	BatchRowId INT references Batch(RowId),
+	NewsPaperTitleRowId INT references NewsPaperTitle(RowId),
 	FromDate DATE,
 	ToDate DATE,
 	Exposures INT,
@@ -72,9 +81,9 @@ create table BatchContent
 );
 
 drop table if exists Status cascade;
-create table Status
+create table Status 
 (
-	RowId SERIAL PRIMARY KEY ,
+	RowId SERIAL PRIMARY KEY , 	
 	Name VARCHAR (255),
 	Created TIMESTAMP default NOW()
 );
@@ -82,15 +91,15 @@ create table Status
 insert into Status (Name) values ('Initial');
 insert into Status (Name) values ('Batch added to shipping container');
 insert into Status (Name) values ('Batch shipped to supplier');  --this is the state when the consigment id is added at SB.
-insert into Status (Name) values ('Batch shipped from supplier'); --supplier call procedure with consigmentid,
+insert into Status (Name) values ('Batch shipped from supplier'); --supplier call procedure with consigmentid, 
 insert into Status (Name) values ('Batch received from supplier');
 insert into Status (Name) values ('Batch follow-up');
 insert into Status (Name) values ('Batch approved');
 
 drop table if exists BatchStatus cascade;
-create table BatchStatus
+create table BatchStatus 
 (
-	RowId SERIAL PRIMARY KEY,
+	RowId SERIAL PRIMARY KEY, 
 	BatchRowId int NOT NULL references Batch(RowId),
 	StatusRowId int NOT NULL references Status(RowId),
 	Created TIMESTAMP  default NOW()
@@ -98,38 +107,74 @@ create table BatchStatus
 
 --copy of the batch if changed occur who, where and what, picture not included
 drop table if exists BatchHistory;
-create table BatchHistory
+create table BatchHistory 
 (
-	RowId SERIAL PRIMARY KEY,
+	RowId SERIAL PRIMARY KEY, 
 	BatchRowId INT  references Batch(RowId),
-	BatchId INT,          -- this is the SB barcode
+	BatchId BIGINT,          -- this is the SB barcode
 	CartonNumber INT NOT NULL,
 	Weight NUMERIC(9,3),
+	MultiFilm boolean,
 	NewsPaperRowId INT  references NewsPaper(RowId),
-	ShippingContainerRowId INT references ShippingContainer(RowId),
-	ConsignmentRowId INT references Consignment(RowId),
 	PcIp inet,
 	CreatedBy VARCHAR (255),
 	Created TIMESTAMP default NOW()
 );
 
-
 --keep track of last update from spreadsheet
 drop table if exists System cascade;
-create table System
-(
+create table System 
+(	
 	Key VARCHAR (50) PRIMARY KEY,
-	Value VARCHAR (255),
+	Value TEXT,
 	Modified TIMESTAMP default NOW(),
 	Created TIMESTAMP default NOW()
 );
 
-insert into system (key, value) values ('Last spreadsheet update', 'YYYYMMDDHHMMSS');
---
---drop table if exists Order cascade;
---create table Order
---(
---	RowId SERIAL PRIMARY KEY,
---	OrderId INT UNIQUE NOT NULL ,
---	Created TIMESTAMP  default NOW(),
---);
+insert into System (key, value) values ('Spreadsheet load version', '1');
+
+drop table if exists Order_ cascade;
+create table Order_ 
+(
+	RowId SERIAL PRIMARY KEY, 
+	OrderId INT UNIQUE NOT NULL ,
+	Created TIMESTAMP  default NOW()
+);
+
+DROP FUNCTION if exists shipped(VARCHAR(50), VARCHAR(50), INTEGER);
+DROP LANGUAGE plpgsql;
+CREATE  LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION shipped(consignment_id VARCHAR(50), shippingcontainer_id VARCHAR(50), batch_id INTEGER ) 
+RETURNS INT LANGUAGE plpgsql  AS $$
+
+DECLARE 
+	consignment_row_id INTEGER; 
+	shipping_container_row_id INTEGER; 
+	batch_row_id INTEGER; 
+
+BEGIN
+
+SELECT INTO consignment_row_id rowid FROM consignment WHERE consignmentid = consignment_id;
+IF NOT FOUND THEN
+        INSERT INTO consignment (consignmentid, destinationissb) VALUES (consignment_id, 't');
+        SELECT INTO consignment_row_id lastval();
+END IF;
+
+SELECT INTO shipping_container_row_id rowid FROM shipping_container WHERE shippingcontainerid = shippingcontainer_id;
+IF NOT FOUND THEN
+         INSERT INTO shippingcontainer (shippingcontainerid, createdby) VALUES (shippingcontainer_id,'ninestars');
+         SELECT INTO shipping_container_row_id lastval();
+END IF;
+
+SELECT INTO batch_row_id rowid FROM batch WHERE batchid = batch_id;
+IF NOT FOUND THEN
+      RETURN 1;
+END IF;
+
+INSERT INTO consignmentcontent (consignmentrowid, shippingcontainerrowid, batchrowid) VALUES (consignment_row_id, shipping_container_row_id, batch_row_id);
+INSERT INTO batchstatus(batchrowid, statusrowid) VALUES (batch_row_id,4);
+RETURN 0;
+END; 
+$$ ;
+
