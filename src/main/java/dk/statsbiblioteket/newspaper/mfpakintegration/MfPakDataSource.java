@@ -51,7 +51,7 @@ public class MfPakDataSource implements DataSource {
      * @throws NotWorkingProperlyException if there is a problem communicating with the DataSource.
      */
     @Override
-    public Batch getBatch(Long batchID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
+    public Batch getBatch(Long batchID, Integer roundTripNumber, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
         Batch batch = null;
         try {
             batch = dao.getBatchByBarcode(batchID);
@@ -76,7 +76,7 @@ public class MfPakDataSource implements DataSource {
      * @throws NotWorkingProperlyException if there is a problem communicating with the DataSource.
      */
     @Override
-    public Event getBatchEvent(Long batchID, EventID eventID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
+    public Event getBatchEvent(Long batchID, Integer roundTripNumber, EventID eventID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
         Event event = null;
         try {
             event = dao.getEvent(batchID, eventID);

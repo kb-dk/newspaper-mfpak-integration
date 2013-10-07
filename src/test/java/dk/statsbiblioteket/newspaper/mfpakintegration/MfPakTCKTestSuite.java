@@ -1,13 +1,14 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration;
 
-import java.io.IOException;
-
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 import dk.statsbiblioteket.newspaper.mfpakintegration.database.ConfigurationProvider;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.DataSource;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.EventID;
 import dk.statsbiblioteket.newspaper.processmonitor.datasources.TCKTestSuite;
+import dk.statsbiblioteket.util.Pair;
 import org.testng.annotations.BeforeMethod;
+
+import java.io.IOException;
 
 public class MfPakTCKTestSuite extends TCKTestSuite {
 
@@ -25,13 +26,13 @@ public class MfPakTCKTestSuite extends TCKTestSuite {
      }
 
     @Override
-    public Long getValidBatchID() {
-        return 4004L;
+    public Pair<Long,Integer> getValidBatchID() {
+        return new Pair<>(4004L,1);
     }
 
     @Override
-    public Long getInvalidBatchID() {
-        return 4242L;
+    public Pair<Long,Integer> getInvalidBatchID() {
+        return new Pair<Long, Integer>(4242L,null);
     }
 
     @Override
