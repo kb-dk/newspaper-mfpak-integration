@@ -59,7 +59,7 @@ public class MfPakDAO {
              PreparedStatement statement2 = con.prepareStatement(GET_ALL_EVENTS)) {
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
-                    long barcode = rs.getInt("batchId");
+                    long barcode = rs.getLong("batchId");
                     Batch batch = new Batch();
                     batch.setBatchID(barcode);
                     batch.setEventList(new ArrayList<Event>());
