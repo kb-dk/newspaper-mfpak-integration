@@ -29,6 +29,7 @@ public class MfPakDAO {
     public static final String GET_EVENTS = "SELECT name, batchstatus.created FROM batchstatus, status WHERE batchstatus.statusrowId=status.rowId AND batchstatus.batchrowId=?";
     public static final String GET_ALL_BARCODES = "SELECT  batchId, rowId FROM batch";
     public static final String GET_ALL_EVENTS = "SELECT batchrowId, name, batchstatus.created from batchstatus, status where statusrowId = status.rowId ";
+    public static final String GET_NEWSPAPER_ID = "SELECT NewsPaperId FROM NewsPaper WHERE RowId = (SELECT NewsPaperRowId FROM Batch WHERE BatchId = ?) ";
 
     public MfPakDAO(MfPakConfiguration configuration) {
         this.configuration = configuration;
@@ -125,6 +126,31 @@ public class MfPakDAO {
                         log.warn("Found more than one batch with the barcode '" + barcode + "'");
                     }
                     return batch;
+                }
+            }
+        }
+    }
+    
+    /**
+     * Returns the newspaper id for a batch with the given id (barcode), or null if no newspaper id is found.
+     *
+     * @param barcode for the batch
+     * @return The id of the news paper found for batch with barcode.
+     */
+    public String getNewspaperID(Long barcode) throws SQLException {
+        try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(GET_NEWSPAPER_ID)) {
+            stmt.setLong(1, barcode);
+            try (ResultSet rs = stmt.executeQuery()) {
+                boolean newspaperIDExists = rs.next();
+                if (!newspaperIDExists) {
+                    log.warn("No newspaper ID for batch: '" + barcode + "' found!");
+                    return null;
+                } else {
+                    String newspaperID = rs.getString(1);
+                    if (rs.next()) {
+                        log.warn("Found more than one batch with the barcode '" + barcode + "'");
+                    }
+                    return newspaperID;
                 }
             }
         }

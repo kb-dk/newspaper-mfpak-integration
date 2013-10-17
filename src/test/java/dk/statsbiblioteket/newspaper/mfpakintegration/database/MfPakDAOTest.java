@@ -64,4 +64,11 @@ public class MfPakDAOTest {
         Event event = dao.getEvent(4002l, EventID.Initial);
         assertNotNull("Should have found this event.", event);
     }
+    
+    @Test(groups = {"integrationTest"})
+    public void testGetNewspaperID() throws SQLException {
+        MfPakDAO dao = new MfPakDAO(configuration);
+        String daoNewspaperID = dao.getNewspaperID(4001L);
+        assertTrue("boersen".equals(daoNewspaperID));
+    }
 }

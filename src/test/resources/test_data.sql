@@ -1,7 +1,9 @@
 SET search_path TO public;
 
+INSERT INTO newspaper (NewsPaperId) VALUES ('boersen');
+
 -- This creates a batch
-INSERT INTO batch (batchid, cartonnumber) values (4001, 0);
+INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (4001, 0, LASTVAL());
 
 -- This creates an event attached to the just created Batch using LASTVAL() to get the BatchId
 INSERT INTO batchstatus (statusrowId, batchrowId) SELECT rowId, LASTVAL() from status WHERE name='Batch shipped to supplier';
