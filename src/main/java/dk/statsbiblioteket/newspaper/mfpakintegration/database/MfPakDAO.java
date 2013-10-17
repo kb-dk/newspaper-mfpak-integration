@@ -1,9 +1,8 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration.database;
 
+import dk.statsbiblioteket.medieplatform.autonomous.Batch;
+import dk.statsbiblioteket.medieplatform.autonomous.Event;
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
-import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
-import dk.statsbiblioteket.newspaper.processmonitor.datasources.Event;
-import dk.statsbiblioteket.newspaper.processmonitor.datasources.EventID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,9 +59,9 @@ public class MfPakDAO {
              PreparedStatement statement2 = con.prepareStatement(GET_ALL_EVENTS)) {
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
-                    long barcode = rs.getLong("batchId");
+                    Long barcode = rs.getLong("batchId");
                     Batch batch = new Batch();
-                    batch.setBatchID(barcode);
+                    batch.setBatchID(barcode.toString());
                     batch.setEventList(new ArrayList<Event>());
                     batchesById.put(rs.getString("rowId"), batch);
                 }
@@ -95,9 +94,9 @@ public class MfPakDAO {
      * @param barcode
      * @return the batch.
      */
-    public Batch getBatchByBarcode(Long barcode) throws SQLException {
+    public Batch getBatchByBarcode(String barcode) throws SQLException {
         try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(GET_BATCH_ID)) {
-            stmt.setInt(1, barcode.intValue());
+            stmt.setLong(1, Long.parseLong(barcode));//TODO parse errors?
             try (ResultSet rs = stmt.executeQuery()) {
                 boolean batchExists = rs.next();
                 if (!batchExists) {
@@ -137,9 +136,9 @@ public class MfPakDAO {
      * @param barcode for the batch
      * @return The id of the news paper found for batch with barcode.
      */
-    public String getNewspaperID(Long barcode) throws SQLException {
+    public String getNewspaperID(String barcode) throws SQLException {
         try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(GET_NEWSPAPER_ID)) {
-            stmt.setLong(1, barcode);
+            stmt.setLong(1, Long.parseLong(barcode));
             try (ResultSet rs = stmt.executeQuery()) {
                 boolean newspaperIDExists = rs.next();
                 if (!newspaperIDExists) {
@@ -169,25 +168,25 @@ public class MfPakDAO {
         event.setDate(createdTimestamp);
         switch (status) {
             case "Initial":
-                event.setEventID(EventID.Initial);
+                event.setEventID("Initial");
                 break;
             case "Batch added to shipping container":
-                event.setEventID(EventID.Added_to_shipping_container);
+                event.setEventID("Added_to_shipping_container");
                 break;
             case "Batch shipped to supplier":
-                event.setEventID(EventID.Shipped_to_supplier);
+                event.setEventID("Shipped_to_supplier");
                 break;
             case "Batch shipped from supplier":
-                event.setEventID(EventID.Shipped_from_supplier);
+                event.setEventID("Shipped_from_supplier");
                 break;
             case "Batch received from supplier":
-                event.setEventID(EventID.Received_from_supplier);
+                event.setEventID("Received_from_supplier");
                 break;
             case "Batch follow-up":
-                event.setEventID(EventID.FollowUp);
+                event.setEventID("FollowUp");
                 break;
             case "Batch approved":
-                event.setEventID(EventID.Approved);
+                event.setEventID("Approved");
                 break;
             default:
                 throw new IllegalArgumentException("Unknown batch status " + status);
@@ -202,7 +201,7 @@ public class MfPakDAO {
      * @param eventStatus
      * @return the event.
      */
-    public Event getEvent(long batchBarcode, EventID eventStatus) throws SQLException {
+    public Event getEvent(String batchBarcode, String eventStatus) throws SQLException {
         Batch batch = getBatchByBarcode(batchBarcode);
         for (Event event : batch.getEventList()) {
             if (event.getEventID().equals(eventStatus)) {
