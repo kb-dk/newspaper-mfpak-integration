@@ -40,7 +40,7 @@ INSERT INTO batch (batchid, cartonnumber) values (4005, 87);
 INSERT INTO newspaper (NewsPaperId) VALUES ('adresseavisen1759');
 
 -- This creates a batch
-INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028241, 0, LASTVAL());
+INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028241, 0, (SELECT rowid from newspaper where NewsPaperId = 'adresseavisen1759'));
 
 -- This creates an event attached to the just created Batch using LASTVAL() to get the BatchId
 INSERT INTO batchstatus (statusrowId, batchrowId) SELECT rowId, LASTVAL() from status WHERE name='Batch shipped to supplier';
