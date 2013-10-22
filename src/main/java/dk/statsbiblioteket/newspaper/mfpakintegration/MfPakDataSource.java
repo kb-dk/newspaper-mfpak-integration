@@ -1,13 +1,12 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration;
 
+import dk.statsbiblioteket.medieplatform.autonomous.Batch;
+import dk.statsbiblioteket.medieplatform.autonomous.Event;
+import dk.statsbiblioteket.medieplatform.autonomous.NotFoundException;
+import dk.statsbiblioteket.medieplatform.autonomous.processmonitor.datasources.DataSource;
+import dk.statsbiblioteket.medieplatform.autonomous.processmonitor.datasources.NotWorkingProperlyException;
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 import dk.statsbiblioteket.newspaper.mfpakintegration.database.MfPakDAO;
-import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
-import dk.statsbiblioteket.newspaper.processmonitor.datasources.DataSource;
-import dk.statsbiblioteket.newspaper.processmonitor.datasources.Event;
-import dk.statsbiblioteket.newspaper.processmonitor.datasources.EventID;
-import dk.statsbiblioteket.newspaper.processmonitor.datasources.NotFoundException;
-import dk.statsbiblioteket.newspaper.processmonitor.datasources.NotWorkingProperlyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +32,8 @@ public class MfPakDataSource implements DataSource {
      * @throws NotWorkingProperlyException if there is a problem communicating with the DataSource.
      */
     @Override
-    public List<Batch> getBatches(boolean includeDetails, Map<String, String> filters) throws NotWorkingProperlyException {
+    public List<Batch> getBatches(boolean includeDetails, Map<String, String> filters) throws
+                                                                                       NotWorkingProperlyException {
         try {
             return dao.getAllBatches();
         } catch (Exception e) {
@@ -51,7 +51,7 @@ public class MfPakDataSource implements DataSource {
      * @throws NotWorkingProperlyException if there is a problem communicating with the DataSource.
      */
     @Override
-    public Batch getBatch(Long batchID, Integer roundTripNumber, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
+    public Batch getBatch(String batchID, Integer roundTripNumber, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
         Batch batch = null;
         try {
             batch = dao.getBatchByBarcode(batchID);
@@ -76,7 +76,7 @@ public class MfPakDataSource implements DataSource {
      * @throws NotWorkingProperlyException if there is a problem communicating with the DataSource.
      */
     @Override
-    public Event getBatchEvent(Long batchID, Integer roundTripNumber, EventID eventID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
+    public Event getBatchEvent(String batchID, Integer roundTripNumber, String eventID, boolean includeDetails) throws NotFoundException, NotWorkingProperlyException {
         Event event = null;
         try {
             event = dao.getEvent(batchID, eventID);

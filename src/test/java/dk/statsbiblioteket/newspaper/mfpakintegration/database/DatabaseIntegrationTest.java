@@ -1,13 +1,13 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration.database;
 
+import dk.statsbiblioteket.medieplatform.autonomous.Batch;
+import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-
-import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
-import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 public class DatabaseIntegrationTest {
     private MfPakConfiguration configuration;

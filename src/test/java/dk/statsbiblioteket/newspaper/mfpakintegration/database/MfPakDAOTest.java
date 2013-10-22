@@ -1,9 +1,8 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration.database;
 
+import dk.statsbiblioteket.medieplatform.autonomous.Batch;
+import dk.statsbiblioteket.medieplatform.autonomous.Event;
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
-import dk.statsbiblioteket.newspaper.processmonitor.datasources.Batch;
-import dk.statsbiblioteket.newspaper.processmonitor.datasources.Event;
-import dk.statsbiblioteket.newspaper.processmonitor.datasources.EventID;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -39,9 +38,9 @@ public class MfPakDAOTest {
         int created = 0;
         for (Batch batch: batches) {
             for (Event event: batch.getEventList() ) {
-                if (event.getEventID().equals(EventID.Shipped_to_supplier)) {
+                if (event.getEventID().equals("Shipped_to_supplier")) {
                     shipped++;
-                } else if (event.getEventID().equals(EventID.Initial)) {
+                } else if (event.getEventID().equals("Initial")) {
                     created++;
                 }
             }
@@ -53,7 +52,7 @@ public class MfPakDAOTest {
     @Test(groups = {"integrationTest"})
     public void testGetBatchByBarcode() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
-        Batch batch = dao.getBatchByBarcode(4004l);
+        Batch batch = dao.getBatchByBarcode("4004");
         assertNotNull("Should get non-null batch", batch);
         assertEquals("Batch should have three events.", 4, batch.getEventList().size());
     }
@@ -61,14 +60,14 @@ public class MfPakDAOTest {
     @Test(groups = {"integrationTest"})
     public void testGetEvent() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
-        Event event = dao.getEvent(4002l, EventID.Initial);
+        Event event = dao.getEvent("4002", "Initial");
         assertNotNull("Should have found this event.", event);
     }
     
     @Test(groups = {"integrationTest"})
     public void testGetNewspaperID() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
-        String daoNewspaperID = dao.getNewspaperID(4001L);
+        String daoNewspaperID = dao.getNewspaperID("4001");
         assertTrue("boersen".equals(daoNewspaperID));
     }
 }
