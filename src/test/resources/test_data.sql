@@ -34,3 +34,13 @@ UPDATE batchstatus SET statusrowId = (SELECT rowId from status WHERE "name"='Bat
 
 --A Batch wtih no events
 INSERT INTO batch (batchid, cartonnumber) values (4005, 87);
+
+
+-- Entry for the batch ID in our testdata   
+INSERT INTO newspaper (NewsPaperId) VALUES ('adresseavisen1759');
+
+-- This creates a batch
+INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028241, 0, LASTVAL());
+
+-- This creates an event attached to the just created Batch using LASTVAL() to get the BatchId
+INSERT INTO batchstatus (statusrowId, batchrowId) SELECT rowId, LASTVAL() from status WHERE name='Batch shipped to supplier';
