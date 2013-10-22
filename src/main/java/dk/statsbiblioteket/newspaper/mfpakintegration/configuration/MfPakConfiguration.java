@@ -40,7 +40,6 @@ public class MfPakConfiguration {
                 "databaseDriver='" + databaseDriver + '\'' +
                 ", databaseUrl='" + databaseUrl + '\'' +
                 ", databaseUser='" + databaseUser + '\'' +
-                ", databasePassword='" + databasePassword + '\'' +
                 '}';
     }
 }
