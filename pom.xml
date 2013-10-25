@@ -29,8 +29,8 @@
 
     <scm>
         <url>https://github.com/statsbiblioteket/newspaper-mfpak-integration</url>
-        <connection>scm:https://github.com/statsbiblioteket/newspaper-mfpak-integration.git</connection>
-        <developerConnection>scm:git@github.com:statsbiblioteket/newspaper-mfpak-integration.git</developerConnection>
+        <connection>scm:git:https://github.com/statsbiblioteket/newspaper-mfpak-integration.git</connection>
+        <developerConnection>scm:git:git@github.com:statsbiblioteket/newspaper-mfpak-integration.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
