@@ -77,30 +77,30 @@ public class MfPakDAOTest {
     
     @Test(groups = {"integrationTest"})
     public void testGetNewspaperEntity() throws SQLException, ParseException {
-        final String newspaperID = "adresseavisen1759";
-        final String expectedNewspaperTitle = "Kiøbenhavns Kongelig alene priviligerede Adresse-Contoirs Efterretninger";
-        final String expectedPublicationLocation = "København";
+        String NEWSPAPER_ID = "adresseavisen1759";
+        String EXPECTED_NEWSPAPER_TITLE = "Kiøbenhavns Kongelig alene priviligerede Adresse-Contoirs Efterretninger";
+        String EXPECTED_PUBLICATION_LOCATION = "København";
         MfPakDAO dao = new MfPakDAO(configuration);
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date validDate = df.parse("1800-03-03");
         
-        NewspaperEntity entity = dao.getNewspaperEntity(newspaperID, validDate);
+        NewspaperEntity entity = dao.getNewspaperEntity(NEWSPAPER_ID, validDate);
         assertNotNull("The newspaper entity should not be null", entity);
-        assertEquals(newspaperID, entity.getNewspaperID());
-        assertEquals(expectedNewspaperTitle, entity.getNewspaperTitle());
-        assertEquals(expectedPublicationLocation, entity.getPublicationLocation());
+        assertEquals(NEWSPAPER_ID, entity.getNewspaperID());
+        assertEquals(EXPECTED_NEWSPAPER_TITLE, entity.getNewspaperTitle());
+        assertEquals(EXPECTED_PUBLICATION_LOCATION, entity.getPublicationLocation());
         assertTrue(validDate.after(entity.getStartDate()));
         assertTrue(validDate.before(entity.getEndDate()));
     }
     
     @Test(groups = {"integrationTest"})
     public void testGetNewspaperEntityBadDate() throws SQLException, ParseException {
-        final String newspaperID = "adresseavisen1759";
+        String NEWSPAPER_ID = "adresseavisen1759";
         MfPakDAO dao = new MfPakDAO(configuration);
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date validDate = df.parse("1900-03-03");
         
-        NewspaperEntity entity = dao.getNewspaperEntity(newspaperID, validDate);
+        NewspaperEntity entity = dao.getNewspaperEntity(NEWSPAPER_ID, validDate);
         assertNull(entity);
 
     }
