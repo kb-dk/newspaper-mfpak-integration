@@ -135,8 +135,9 @@ public class MfPakDAO {
      *
      * @param barcode for the batch
      * @return The id of the news paper found for batch with barcode.
+     * @throws InconsistentDatabaseException if more than one newspaperID is found.
      */
-    public String getNewspaperID(String barcode) throws SQLException {
+    public String getNewspaperID(String barcode) throws SQLException, InconsistentDatabaseException {
         try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(GET_NEWSPAPER_ID)) {
             stmt.setLong(1, Long.parseLong(barcode));
             try (ResultSet rs = stmt.executeQuery()) {
@@ -147,7 +148,7 @@ public class MfPakDAO {
                 } else {
                     String newspaperID = rs.getString(1);
                     if (rs.next()) {
-                        log.warn("Found more than one batch with the barcode '" + barcode + "'");
+                        throw new InconsistentDatabaseException("Found more than one batch with the barcode '" + barcode + "'");
                     }
                     return newspaperID;
                 }
@@ -161,8 +162,9 @@ public class MfPakDAO {
      * @param date the date for which the entity information is wanted. 
      * @return NewspaperEntity the entity information about the newspaper. Null if no entity information can be
      *      found for a newspaperID on the given date 
+     * @throws InconsistentDatabaseException if more than one NewspaperEntity is found
      */
-    public NewspaperEntity getNewspaperEntity(String newspaperID, Date date) throws SQLException {
+    public NewspaperEntity getNewspaperEntity(String newspaperID, Date date) throws SQLException, InconsistentDatabaseException {
         String selectSql = "SELECT Name, PublicationLocation, FromDate, ToDate FROM NewsPaperTitle"
                 + " WHERE NewsPaperRowId = (SELECT RowId FROM NewsPaper WHERE NewsPaperId = ?)"
                 + " AND FromDate <= ?" 
@@ -182,8 +184,9 @@ public class MfPakDAO {
                     entity.setStartDate(rs.getDate(3));
                     entity.setEndDate(rs.getDate(4));
                     if (rs.next()) {
-                        log.warn("Found more than one newspaper entity for newspaperID '" 
+                        throw new InconsistentDatabaseException("Found more than one newspaper entity for newspaperID '" 
                                 + newspaperID + "' on date '" + date + "'");
+
                     }
                 } else {
                     log.warn("No newspaper entity for newspaperID '" + newspaperID + "' on date '" + date + "' found!");
