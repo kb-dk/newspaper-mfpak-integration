@@ -40,7 +40,13 @@ INSERT INTO batch (batchid, cartonnumber) values (4005, 87);
 INSERT INTO newspaper (NewsPaperId) VALUES ('adresseavisen1759');
 
 -- This creates a batch
-INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028241, 0, (SELECT rowid from newspaper where NewsPaperId = 'adresseavisen1759'));
+INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028241, 0, (SELECT rowid FROM newspaper WHERE NewsPaperId = 'adresseavisen1759'));
 
 -- This creates an event attached to the just created Batch using LASTVAL() to get the BatchId
-INSERT INTO batchstatus (statusrowId, batchrowId) SELECT rowId, LASTVAL() from status WHERE name='Batch shipped to supplier';
+INSERT INTO batchstatus (statusrowId, batchrowId) SELECT rowId, LASTVAL() FROM status WHERE name='Batch shipped to supplier';
+
+INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, ToDate, DDA, PublicationLocation) VALUES 
+( (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'adresseavisen1759'), 
+    'Kiøbenhavns Kongelig alene priviligerede Adresse-Contoirs Efterretninger',
+'1759-05-04', '1854-12-30', '1-35', 'København');
+

@@ -154,6 +154,44 @@ public class MfPakDAO {
             }
         }
     }
+    
+    /**
+     * Method to look-up a newspaper entity information based on the newspaperID and a date.
+     * @param newspaperID the ID of the newspaper
+     * @param date the date for which the entity information is wanted. 
+     * @return NewspaperEntity the entity information about the newspaper. Null if no entity information can be
+     *      found for a newspaperID on the given date 
+     */
+    public NewspaperEntity getNewspaperEntity(String newspaperID, Date date) throws SQLException {
+        String selectSql = "SELECT Name, PublicationLocation, FromDate, ToDate FROM NewsPaperTitle"
+                + " WHERE NewsPaperRowId = (SELECT RowId FROM NewsPaper WHERE NewsPaperId = ?)"
+                + " AND FromDate <= ?" 
+                + " AND ToDate >= ?";
+        NewspaperEntity entity = null;
+        try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(selectSql)) {
+            stmt.setString(1, newspaperID);
+            stmt.setDate(2, new java.sql.Date(date.getTime()));
+            stmt.setDate(3, new java.sql.Date(date.getTime()));
+            try (ResultSet rs = stmt.executeQuery()) {
+                boolean newspaperEntityExists = rs.next();
+                if (newspaperEntityExists) {
+                    entity = new NewspaperEntity();
+                    entity.setNewspaperID(newspaperID);
+                    entity.setNewspaperTitle(rs.getString(1));
+                    entity.setPublicationLocation(rs.getString(2));
+                    entity.setStartDate(rs.getDate(3));
+                    entity.setEndDate(rs.getDate(4));
+                    if (rs.next()) {
+                        log.warn("Found more than one newspaper entity for newspaperID '" 
+                                + newspaperID + "' on date '" + date + "'");
+                    }
+                } else {
+                    log.warn("No newspaper entity for newspaperID '" + newspaperID + "' on date '" + date + "' found!");
+                }
+            }
+        }
+        return entity;
+    }
 
     /**
      * Creates a event object based on the status in the MfPak DB.

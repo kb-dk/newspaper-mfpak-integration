@@ -3,16 +3,19 @@ package dk.statsbiblioteket.newspaper.mfpakintegration.database;
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.Event;
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.testng.AssertJUnit.*;
+
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class MfPakDAOTest {
 
@@ -33,6 +36,7 @@ public class MfPakDAOTest {
     public void testGetAllBatches() throws Exception {
         MfPakDAO dao = new MfPakDAO(configuration);
         List<Batch> batches = dao.getAllBatches();
+        
         assertTrue("Should have at least four batches", batches.size() >= 4);
         int shipped = 0;
         int created = 0;
@@ -69,5 +73,35 @@ public class MfPakDAOTest {
         MfPakDAO dao = new MfPakDAO(configuration);
         String daoNewspaperID = dao.getNewspaperID("4001");
         assertTrue("boersen".equals(daoNewspaperID));
+    }
+    
+    @Test(groups = {"integrationTest"})
+    public void testGetNewspaperEntity() throws SQLException, ParseException {
+        final String newspaperID = "adresseavisen1759";
+        final String expectedNewspaperTitle = "Kiøbenhavns Kongelig alene priviligerede Adresse-Contoirs Efterretninger";
+        final String expectedPublicationLocation = "København";
+        MfPakDAO dao = new MfPakDAO(configuration);
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date validDate = df.parse("1800-03-03");
+        
+        NewspaperEntity entity = dao.getNewspaperEntity(newspaperID, validDate);
+        assertNotNull("The newspaper entity should not be null", entity);
+        assertEquals(newspaperID, entity.getNewspaperID());
+        assertEquals(expectedNewspaperTitle, entity.getNewspaperTitle());
+        assertEquals(expectedPublicationLocation, entity.getPublicationLocation());
+        assertTrue(validDate.after(entity.getStartDate()));
+        assertTrue(validDate.before(entity.getEndDate()));
+    }
+    
+    @Test(groups = {"integrationTest"})
+    public void testGetNewspaperEntityBadDate() throws SQLException, ParseException {
+        final String newspaperID = "adresseavisen1759";
+        MfPakDAO dao = new MfPakDAO(configuration);
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date validDate = df.parse("1900-03-03");
+        
+        NewspaperEntity entity = dao.getNewspaperEntity(newspaperID, validDate);
+        assertNull(entity);
+
     }
 }
