@@ -17,8 +17,7 @@ public class NewspaperEntity {
     private String newspaperID;
     private String newspaperTitle;
     private String publicationLocation;
-    private Date startDate;
-    private Date endDate;
+    private NewspaperDateRange newspaperDateRange;
     
     public String getNewspaperID() {
         return newspaperID;
@@ -44,19 +43,11 @@ public class NewspaperEntity {
         this.publicationLocation = publicationLocation;
     }
     
-    public Date getStartDate() {
-        return startDate;
+    public NewspaperDateRange getNewspaperDateRange() {
+        return newspaperDateRange;
     }
-    
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-    
-    public Date getEndDate() {
-        return endDate;
-    }
-    
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+
+    public void setNewspaperDateRange(NewspaperDateRange newspaperDateRange) {
+        this.newspaperDateRange = newspaperDateRange;
     }
 }

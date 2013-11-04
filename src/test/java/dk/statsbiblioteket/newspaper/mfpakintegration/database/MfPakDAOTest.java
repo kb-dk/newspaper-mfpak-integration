@@ -92,8 +92,8 @@ public class MfPakDAOTest {
         assertEquals(NEWSPAPER_ID, entity.getNewspaperID());
         assertEquals(EXPECTED_NEWSPAPER_TITLE, entity.getNewspaperTitle());
         assertEquals(EXPECTED_PUBLICATION_LOCATION, entity.getPublicationLocation());
-        assertTrue(validDate.after(entity.getStartDate()));
-        assertTrue(validDate.before(entity.getEndDate()));
+        assertTrue(validDate.after(entity.getNewspaperDateRange().getFromDate()));
+        assertTrue(validDate.before(entity.getNewspaperDateRange().getToDate()));
     }
     
     @Test(groups = {"integrationTest"})
@@ -126,12 +126,7 @@ public class MfPakDAOTest {
     public void testgetBatchDateRangesNoBatch() throws SQLException, ParseException {
         MfPakDAO dao = new MfPakDAO(configuration);
         String NON_EXISTING_BATCH_ID = "999999999999";
-        try {
         List<NewspaperDateRange> dateRanges = dao.getBatchDateRanges(NON_EXISTING_BATCH_ID);
-        assertTrue(false); // Where is assertFail()??
-        } catch (InconsistentDatabaseException e) {
-            assertNotNull(e); //Yay we got the expected exception..
-        }
-        
+        assertNull("There should not be any date ranges for the non-existing batch", dateRanges);
     }
 }

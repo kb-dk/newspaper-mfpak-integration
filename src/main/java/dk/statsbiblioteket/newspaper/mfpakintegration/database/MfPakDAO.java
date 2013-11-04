@@ -166,7 +166,7 @@ public class MfPakDAO {
      * @throws InconsistentDatabaseException if more than one NewspaperEntity is found
      */
     public NewspaperEntity getNewspaperEntity(String newspaperID, Date date) throws SQLException, InconsistentDatabaseException {
-        String selectSql = "SELECT Name, PublicationLocation, FromDate, ToDate FROM NewsPaperTitle"
+        final String selectSql = "SELECT Name, PublicationLocation, FromDate, ToDate FROM NewsPaperTitle"
                 + " WHERE NewsPaperRowId = (SELECT RowId FROM NewsPaper WHERE NewsPaperId = ?)"
                 + " AND FromDate <= ?" 
                 + " AND ToDate >= ?";
@@ -182,12 +182,11 @@ public class MfPakDAO {
                     entity.setNewspaperID(newspaperID);
                     entity.setNewspaperTitle(rs.getString("Name"));
                     entity.setPublicationLocation(rs.getString("PublicationLocation"));
-                    entity.setStartDate(rs.getDate("FromDate"));
-                    entity.setEndDate(rs.getDate("ToDate"));
+                    NewspaperDateRange range = new NewspaperDateRange(rs.getDate("FromDate"), rs.getDate("ToDate"));
+                    entity.setNewspaperDateRange(range);
                     if (rs.next()) {
                         throw new InconsistentDatabaseException("Found more than one newspaper entity for newspaperID '" 
                                 + newspaperID + "' on date '" + date + "'");
-
                     }
                 } else {
                     log.warn("No newspaper entity for newspaperID '" + newspaperID + "' on date '" + date + "' found!");
@@ -201,11 +200,11 @@ public class MfPakDAO {
      * Method to get the list of valid NewspaperDateRanges for a given batchID. 
      * The date ranges is sorted by from date ascending.  
      * @param batchID The id of the batch to get the NewspaperDateRanges for.  
-     * @return The list of NewspaperDateRanges for the batch
-     * @throws InconsistentDatabaseException if no date ranges can be found for the provided batchID.
+     * @return The list of NewspaperDateRanges if any could be found, or null if non could be found.
+     *  I.e. the list will never be empty.
      */
-    public List<NewspaperDateRange> getBatchDateRanges(String batchID) throws SQLException, InconsistentDatabaseException {
-        String selectSql = "SELECT FromDate, ToDate FROM BatchContent" 
+    public List<NewspaperDateRange> getBatchDateRanges(String batchID) throws SQLException {
+        final String selectSql = "SELECT FromDate, ToDate FROM BatchContent" 
                 + " WHERE BatchRowId = (SELECT RowId FROM Batch WHERE BatchId = ?)"
                 + " ORDER BY FromDate ASC";
         List<NewspaperDateRange> ranges;
@@ -220,8 +219,7 @@ public class MfPakDAO {
                     ranges.add(range);
                 }
                 if(ranges.isEmpty()) {
-                    throw new InconsistentDatabaseException("No date ranges for batch: '" + batchID 
-                            +"' could be found in the database");
+                    ranges = null;
                 }
             }
         }

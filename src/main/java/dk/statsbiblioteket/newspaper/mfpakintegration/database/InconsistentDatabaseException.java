@@ -9,4 +9,8 @@ public class InconsistentDatabaseException extends RuntimeException {
     public InconsistentDatabaseException(String message) {
         super(message);
     }
+    
+    public InconsistentDatabaseException(String message, Throwable e) {
+        super(message, e);
+    }
 }
