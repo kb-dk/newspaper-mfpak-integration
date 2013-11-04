@@ -47,7 +47,7 @@ public class NewspaperDateRange {
     public boolean isIncluded(Date date) {
         boolean included = true;
         
-        if(!((date.compareTo(fromDate) >= 0) && (date.compareTo(toDate) <= 0))) {
+        if((date.compareTo(fromDate) < 0) || (date.compareTo(toDate) > 0)) {
             included = false;
         }
         
