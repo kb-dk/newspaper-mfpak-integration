@@ -1,3 +1,60 @@
+drop table if exists SpreadSheetNewsPaper cascade;
+create table SpreadSheetNewsPaper
+(
+	RowId SERIAL PRIMARY KEY , 	
+	NewsPaperId VARCHAR (255),
+	Created TIMESTAMP default NOW()
+);
+
+drop table if exists SpreadSheetNewsPaperTitle cascade;
+create table SpreadSheetNewsPaperTitle
+(
+	RowId SERIAL PRIMARY KEY , 	
+	SpreadSheetNewsPaperRowId int references SpreadSheetNewsPaper(RowId),
+	Name VARCHAR (255) NOT NULL,
+	FromDate DATE,
+	ToDate DATE,
+	DDA VARCHAR(20),
+	PublicationLocation VARCHAR(255),
+	Created TIMESTAMP default NOW()
+);
+
+drop table if exists SpreadSheetBatch cascade;
+create table SpreadSheetBatch
+(
+	RowId SERIAL PRIMARY KEY, 
+	BatchId BIGINT,          -- this is the SB barcode
+	CartonNumber INT NOT NULL,
+	MultiFilm boolean,  -- this is a summary of the batch content. True if a Batch has more than 15 entries in Film, else false 
+	SpreadSheetNewsPaperRowId INT references SpreadSheetNewsPaper(RowId),
+	Created TIMESTAMP default NOW(),
+	Modified TIMESTAMP
+);
+
+drop table if exists SpreadSheetFilm cascade;
+create table SpreadSheetFilm
+(
+	RowId SERIAL PRIMARY KEY, 
+	SpreadSheetBatchRowId INT references SpreadSheetBatch(RowId),
+	FromDate DATE,
+	ToDate DATE,
+	Exposures INT,
+	TypeFace TYPEFACE,
+	Note TEXT,
+	Created TIMESTAMP default NOW(),
+	Modified TIMESTAMP
+);
+
+drop table if exists SpreadSheetStrike cascade;
+create table SpreadSheetStrike
+(
+	RowId SERIAL PRIMARY KEY, 
+	SpreadSheetFilmRowId INT references SpreadSheetFilm(RowId) NOT NULL,
+	FromDate DATE,
+	ToDate DATE,
+	Created TIMESTAMP default NOW()
+);
+
 drop table if exists NewsPaper cascade;
 create table NewsPaper
 (
@@ -5,6 +62,9 @@ create table NewsPaper
 	NewsPaperId VARCHAR (255),
 	Created TIMESTAMP default NOW()
 );
+
+COMMENT ON TABLE NewsPaper IS 'This is SB newspaper identification table';
+COMMENT ON COLUMN NewsPaper.NewsPaperId IS '1. sheet in the spreadsheet column AvisID';
 
 drop table if exists NewsPaperTitle cascade;
 create table NewsPaperTitle
@@ -18,6 +78,8 @@ create table NewsPaperTitle
 	PublicationLocation VARCHAR(255),
 	Created TIMESTAMP default NOW()
 );
+
+COMMENT ON COLUMN NewsPaperTitle.Name IS 'Name/title of the NewPaper in a given period';
 
 drop table if exists Consignment  cascade;
 create table Consignment 
@@ -42,7 +104,7 @@ drop table if exists ConsignmentContent cascade;
 create table ConsignmentContent 
 (
 	RowId SERIAL PRIMARY KEY, 
-	ConsignmentRowId int references Consignment(RowId) NOT NULL,
+	ConsignmentRowId int references Consignment(RowId),
 	ShippingContainerRowId int references ShippingContainer(RowId) NOT NULL,
 	BatchRowId int references Batch(RowId) NOT NULL,
 	Created TIMESTAMP default NOW()
@@ -56,21 +118,20 @@ create table Batch
 	CartonNumber INT NOT NULL,
 	Picture BYTEA,
 	Weight NUMERIC(9,3),
-	MultiFilm boolean,  -- this is a summary of the batch content. True if a Batch has more than 15 entries in BatchContent, else false 
+	MultiFilm boolean,  -- this is a summary of the batch content. True if a Batch has more than 15 entries in Film, else false 
 	NewsPaperRowId INT references NewsPaper(RowId),
 	Created TIMESTAMP default NOW(),
 	Modified TIMESTAMP
 );
 
 drop type if exists TYPEFACE cascade;
-create type TYPEFACE AS ENUM ('fracture', 'mixed', 'latin');
+create type TYPEFACE AS ENUM ('fraktur', 'mixed', 'latin');
 
-drop table if exists BatchContent cascade;
-create table BatchContent
+drop table if exists Film cascade;
+create table Film
 (
 	RowId SERIAL PRIMARY KEY, 
 	BatchRowId INT references Batch(RowId),
-	NewsPaperTitleRowId INT references NewsPaperTitle(RowId),
 	FromDate DATE,
 	ToDate DATE,
 	Exposures INT,
@@ -78,6 +139,16 @@ create table BatchContent
 	Note TEXT,
 	Created TIMESTAMP default NOW(),
 	Modified TIMESTAMP
+);
+
+drop table if exists Strike cascade;
+create table Strike
+(
+	RowId SERIAL PRIMARY KEY, 
+	FilmRowId INT references Film(RowId) NOT NULL,
+	FromDate DATE,
+	ToDate DATE,
+	Created TIMESTAMP default NOW()
 );
 
 drop table if exists Status cascade;
@@ -121,25 +192,59 @@ create table BatchHistory
 	Created TIMESTAMP default NOW()
 );
 
---keep track of last update from spreadsheet
-drop table if exists System cascade;
-create table System 
+
+drop table if exists SystemSetting cascade;
+create table SystemSetting 
 (	
-	Key VARCHAR (50) PRIMARY KEY,
+	RowId SERIAL PRIMARY KEY,
+	Key VARCHAR (50) UNIQUE NOT NULL,
 	Value TEXT,
 	Modified TIMESTAMP default NOW(),
 	Created TIMESTAMP default NOW()
 );
 
-insert into System (key, value) values ('Spreadsheet load version', '1');
+
+insert into SystemSetting (key, value) values ('Spreadsheet load version', '1');
+
+drop type if exists ORDERSTATUS cascade;
+create type ORDERSTATUS AS ENUM ('Forecast', 'Ordered and packing', 'Packing completed', 'Order closed');
 
 drop table if exists Order_ cascade;
 create table Order_ 
 (
 	RowId SERIAL PRIMARY KEY, 
-	OrderId INT UNIQUE NOT NULL ,
+	OrderId INT UNIQUE NOT NULL,
+	ORDERSTATUS status NOT NULL,
+	ApprovedBy VARCHAR(255),
+    ApprovedDate TIMESTAMP,	
+	Modified TIMESTAMP, 
 	Created TIMESTAMP  default NOW()
 );
+
+drop table if exists OrderLine cascade;
+create table OrderLine 
+(
+	RowId SERIAL PRIMARY KEY, 
+	OrderRowId INT references Order_(RowId),
+	Priority INT, 
+	NewsPaperRowId INT references NewsPaper(RowId),
+	FromDate DATE,
+	ToDate DATE,
+	Note TEXT,
+	OptionB1 boolean,
+	OptionB2 boolean,
+	OptionB3 boolean,
+	OptionB4 boolean,
+	OptionB5 boolean,
+	OptionB6 boolean,
+	OptionB7 boolean,
+	OptionB8 boolean,
+	OptionB9 boolean,
+	Modified TIMESTAMP, 
+	Created TIMESTAMP default NOW()
+);
+
+
 
 DROP FUNCTION if exists shipped(VARCHAR(50), VARCHAR(50), INTEGER);
 DROP LANGUAGE plpgsql;

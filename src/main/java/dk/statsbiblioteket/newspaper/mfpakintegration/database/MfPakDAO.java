@@ -204,7 +204,7 @@ public class MfPakDAO {
      *  I.e. the list will never be empty.
      */
     public List<NewspaperDateRange> getBatchDateRanges(String batchID) throws SQLException {
-        final String selectSql = "SELECT FromDate, ToDate FROM BatchContent" 
+        final String selectSql = "SELECT FromDate, ToDate FROM Film" 
                 + " WHERE BatchRowId = (SELECT RowId FROM Batch WHERE BatchId = ?)"
                 + " ORDER BY FromDate ASC";
         List<NewspaperDateRange> ranges;

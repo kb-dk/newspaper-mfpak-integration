@@ -59,13 +59,13 @@ INSERT INTO Batch (BatchId, CartonNumber, NewsPaperRowId) VALUES (400022028245, 
     (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'boersen'));
 
 -- Yes deliberately mangle the date ordering. 
-INSERT INTO BatchContent (BatchRowId, FromDate, ToDate) VALUES (
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES (
     (SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1920-10-01', '1940-10-01');
 
-INSERT INTO BatchContent (BatchRowId, FromDate, ToDate) VALUES (
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES (
     (SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1899-10-01', '1900-10-01');
 
-INSERT INTO BatchContent (BatchRowId, FromDate, ToDate) VALUES (
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES (
     (SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1910-10-01', '1919-10-01');
 
 
