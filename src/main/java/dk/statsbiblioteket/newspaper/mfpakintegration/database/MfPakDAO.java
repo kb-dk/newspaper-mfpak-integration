@@ -3,6 +3,7 @@ package dk.statsbiblioteket.newspaper.mfpakintegration.database;
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.Event;
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -194,6 +195,38 @@ public class MfPakDAO {
             }
         }
         return entity;
+    }
+    
+    /**
+     * Method to get the list of valid NewspaperDateRanges for a given batchID. 
+     * The date ranges is sorted by from date ascending.  
+     * @param batchID The id of the batch to get the NewspaperDateRanges for.  
+     * @return The list of NewspaperDateRanges for the batch
+     * @throws InconsistentDatabaseException if no date ranges can be found for the provided batchID.
+     */
+    public List<NewspaperDateRange> getBatchDateRanges(String batchID) throws SQLException, InconsistentDatabaseException {
+        String selectSql = "SELECT FromDate, ToDate FROM BatchContent" 
+                + " WHERE BatchRowId = (SELECT RowId FROM Batch WHERE BatchId = ?)"
+                + " ORDER BY FromDate ASC";
+        List<NewspaperDateRange> ranges;
+        try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(selectSql)) {
+            stmt.setLong(1, Long.parseLong(batchID));
+            try(ResultSet rs = stmt.executeQuery()) {
+                ranges = new ArrayList<NewspaperDateRange>();
+                while(rs.next()) {
+                    Date from = rs.getDate("FromDate");
+                    Date to = rs.getDate("ToDate");
+                    NewspaperDateRange range = new NewspaperDateRange(from, to);
+                    ranges.add(range);
+                }
+                if(ranges.isEmpty()) {
+                    throw new InconsistentDatabaseException("No date ranges for batch: '" + batchID 
+                            +"' could be found in the database");
+                }
+            }
+        }
+        
+        return ranges;
     }
 
     /**

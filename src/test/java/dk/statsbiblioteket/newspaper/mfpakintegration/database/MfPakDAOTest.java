@@ -1,13 +1,9 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration.database;
 
-import dk.statsbiblioteket.medieplatform.autonomous.Batch;
-import dk.statsbiblioteket.medieplatform.autonomous.Event;
-import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
-
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.AssertJUnit.assertNull;
+import static org.testng.AssertJUnit.assertTrue;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -16,6 +12,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import dk.statsbiblioteket.medieplatform.autonomous.Batch;
+import dk.statsbiblioteket.medieplatform.autonomous.Event;
+import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 
 public class MfPakDAOTest {
 
@@ -102,6 +105,33 @@ public class MfPakDAOTest {
         
         NewspaperEntity entity = dao.getNewspaperEntity(NEWSPAPER_ID, validDate);
         assertNull(entity);
+    }
 
+    @Test(groups = {"integrationTest"})
+    public void testgetBatchDateRanges() throws SQLException, ParseException {
+        MfPakDAO dao = new MfPakDAO(configuration);
+        List<NewspaperDateRange> dateRanges = dao.getBatchDateRanges("400022028245");
+        assertNotNull(dateRanges);
+        assertEquals(3, dateRanges.size());
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date firstFromDate = df.parse("1899-10-01");
+        assertEquals(firstFromDate, dateRanges.get(0).getFromDate()); 
+        Date secondFromDate = df.parse("1910-10-01");
+        assertEquals(secondFromDate, dateRanges.get(1).getFromDate()); 
+        Date thirdFromDate = df.parse("1920-10-01");
+        assertEquals(thirdFromDate, dateRanges.get(2).getFromDate()); 
+    }
+    
+    @Test(groups = {"integrationTest"})
+    public void testgetBatchDateRangesNoBatch() throws SQLException, ParseException {
+        MfPakDAO dao = new MfPakDAO(configuration);
+        String NON_EXISTING_BATCH_ID = "999999999999";
+        try {
+        List<NewspaperDateRange> dateRanges = dao.getBatchDateRanges(NON_EXISTING_BATCH_ID);
+        assertTrue(false); // Where is assertFail()??
+        } catch (InconsistentDatabaseException e) {
+            assertNotNull(e); //Yay we got the expected exception..
+        }
+        
     }
 }

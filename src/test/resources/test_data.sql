@@ -50,3 +50,24 @@ INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, ToDate, DDA, Publica
     'Kiøbenhavns Kongelig alene priviligerede Adresse-Contoirs Efterretninger',
 '1759-05-04', '1854-12-30', '1-35', 'København');
 
+-- Add test data for batch date interval
+INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, ToDate, DDA, PublicationLocation) VALUES 
+( (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'boersen'),
+    'Børsen', '1899-10-01', '1970-08-28', '1-177', 'København'); 
+
+INSERT INTO Batch (BatchId, CartonNumber, NewsPaperRowId) VALUES (400022028245, 123, 
+    (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'boersen'));
+
+-- Yes deliberately mangle the date ordering. 
+INSERT INTO BatchContent (BatchRowId, FromDate, ToDate) VALUES (
+    (SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1920-10-01', '1940-10-01');
+
+INSERT INTO BatchContent (BatchRowId, FromDate, ToDate) VALUES (
+    (SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1899-10-01', '1900-10-01');
+
+INSERT INTO BatchContent (BatchRowId, FromDate, ToDate) VALUES (
+    (SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1910-10-01', '1919-10-01');
+
+
+
+

@@ -6,7 +6,7 @@ import static org.testng.AssertJUnit.*;
 
 import java.util.Date;
 
-public class NewspaperDataRangeTest {
+public class NewspaperDateRangeTest {
 
     @Test
     public void testDataRange() {
