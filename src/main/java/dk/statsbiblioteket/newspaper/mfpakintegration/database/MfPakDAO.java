@@ -147,7 +147,7 @@ public class MfPakDAO {
                     log.warn("No newspaper ID for batch: '" + barcode + "' found!");
                     return null;
                 } else {
-                    String newspaperID = rs.getString(1);
+                    String newspaperID = rs.getString("NewsPaperId");
                     if (rs.next()) {
                         throw new InconsistentDatabaseException("Found more than one batch with the barcode '" + barcode + "'");
                     }
@@ -180,10 +180,10 @@ public class MfPakDAO {
                 if (newspaperEntityExists) {
                     entity = new NewspaperEntity();
                     entity.setNewspaperID(newspaperID);
-                    entity.setNewspaperTitle(rs.getString(1));
-                    entity.setPublicationLocation(rs.getString(2));
-                    entity.setStartDate(rs.getDate(3));
-                    entity.setEndDate(rs.getDate(4));
+                    entity.setNewspaperTitle(rs.getString("Name"));
+                    entity.setPublicationLocation(rs.getString("PublicationLocation"));
+                    entity.setStartDate(rs.getDate("FromDate"));
+                    entity.setEndDate(rs.getDate("ToDate"));
                     if (rs.next()) {
                         throw new InconsistentDatabaseException("Found more than one newspaper entity for newspaperID '" 
                                 + newspaperID + "' on date '" + date + "'");
