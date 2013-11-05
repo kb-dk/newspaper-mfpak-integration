@@ -79,4 +79,16 @@ INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES (
 INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES (
     (SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1971-10-01', '1971-12-17');
 
+INSERT INTO Order_ (OrderId, status) VALUES (1, 'Packing completed');
+
+INSERT INTO OrderLine (OrderRowId, NewsPaperRowId, OptionB1, OptionB2, OptionB3, OptionB4, 
+    OptionB5, OptionB6, OptionB7, OptionB8, OptionB9) VALUES (
+    (SELECT RowId FROM Order_ WHERE OrderId = 1), 
+    (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'boersen'),
+    true, true, true, true, true, true, true, true, true);
+
+INSERT INTO OrderBatch (OrderRowId, OrderLineRowId, BatchRowId) VALUES (
+    (SELECT RowId FROM Order_ WHERE OrderId = 1), 
+    (SELECT RowId FROM OrderLine LIMIT 1), 
+    (SELECT RowId FROM Batch WHERE BatchId = 400022028245));
 

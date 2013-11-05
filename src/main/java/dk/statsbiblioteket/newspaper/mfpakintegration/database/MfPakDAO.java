@@ -274,6 +274,50 @@ public class MfPakDAO {
     }
     
     /**
+     * Method to get the options ordered for the given batch
+     * @param batchID the ID of the batch
+     * @return {@link NewspaperBatchOptions} The options for the given batch.
+     * @throws SQLException 
+     */
+    public NewspaperBatchOptions getBatchOptions(String batchID) throws SQLException, InconsistentDatabaseException {
+        NewspaperBatchOptions options = null;
+        final String selectSql = "SELECT OptionB1, OptionB2, OptionB3, OptionB4,"
+                + " OptionB5, OptionB6, OptionB7, OptionB8, OptionB9 FROM OrderLine"
+                + " WHERE RowId = ("
+                    + " SELECT OrderLineRowId FROM OrderBatch"
+                    + " WHERE BatchRowID = ("
+                        + " SELECT RowId FROM Batch where BatchId = ?))";
+        
+        try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(selectSql)) {
+            stmt.setLong(1, Long.parseLong(batchID));
+            try (ResultSet rs = stmt.executeQuery()) {
+                boolean newspaperOptionsExists = rs.next();
+                if (!newspaperOptionsExists) {
+                    log.warn("No batch options entry for batch: '" + batchID + "' found!");
+                    return null;
+                } else {
+                    options = new NewspaperBatchOptions();
+                    options.setOptionB1(rs.getBoolean("OptionB1"));
+                    options.setOptionB2(rs.getBoolean("OptionB2"));
+                    options.setOptionB3(rs.getBoolean("OptionB3"));
+                    options.setOptionB4(rs.getBoolean("OptionB4"));
+                    options.setOptionB5(rs.getBoolean("OptionB5"));
+                    options.setOptionB6(rs.getBoolean("OptionB6"));
+                    options.setOptionB7(rs.getBoolean("OptionB7"));
+                    options.setOptionB8(rs.getBoolean("OptionB8"));
+                    options.setOptionB9(rs.getBoolean("OptionB9"));
+                    if (rs.next()) {
+                        throw new InconsistentDatabaseException("Found more than one set of batch options for batch '" 
+                                + batchID + "'");
+                    }
+                }
+            }
+        }
+        
+        return options;
+    }
+    
+    /**
      * Creates a event object based on the status in the MfPak DB.
      *
      * @param status           The name in the status table for this batch.

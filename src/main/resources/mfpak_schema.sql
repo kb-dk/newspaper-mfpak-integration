@@ -6,6 +6,10 @@ create table SpreadSheetNewsPaper
 	Created TIMESTAMP default NOW()
 );
 
+COMMENT ON TABLE SpreadSheetNewsPaper IS 'This table contains the daily spreed sheet load. All entries are deleted during load';
+COMMENT ON COLUMN NewsPaper.NewsPaperId IS '1. sheet in the spreadsheet - column Avis ID';
+
+
 drop table if exists SpreadSheetNewsPaperTitle cascade;
 create table SpreadSheetNewsPaperTitle
 (
@@ -19,17 +23,27 @@ create table SpreadSheetNewsPaperTitle
 	Created TIMESTAMP default NOW()
 );
 
+COMMENT ON TABLE SpreadSheetNewsPaperTitle IS 'This table contains the daily spreed sheet load. All entries are deleted during load';
+
 drop table if exists SpreadSheetBatch cascade;
 create table SpreadSheetBatch
 (
 	RowId SERIAL PRIMARY KEY, 
-	BatchId BIGINT,          -- this is the SB barcode
+	BatchId BIGINT,          
 	CartonNumber INT NOT NULL,
-	MultiFilm boolean,  -- this is a summary of the batch content. True if a Batch has more than 15 entries in Film, else false 
+	MultiFilm boolean,  
 	SpreadSheetNewsPaperRowId INT references SpreadSheetNewsPaper(RowId),
 	Created TIMESTAMP default NOW(),
 	Modified TIMESTAMP
 );
+
+COMMENT ON TABLE SpreadSheetBatch IS 'This table contains the daily spreed sheet load. All entries are deleted during load';
+COMMENT ON COLUMN SpreadSheetBatch.BatchId IS 'This field contains the batch identier/barcode';
+COMMENT ON COLUMN SpreadSheetBatch.MultiFilm IS 'Has value True if there are reals known to contain more than one film.';
+
+
+drop type if exists TYPEFACE cascade;
+create type TYPEFACE AS ENUM ('fraktur', 'mixed', 'latin');
 
 drop table if exists SpreadSheetFilm cascade;
 create table SpreadSheetFilm
@@ -45,6 +59,8 @@ create table SpreadSheetFilm
 	Modified TIMESTAMP
 );
 
+COMMENT ON TABLE SpreadSheetFilm IS 'This table contains the daily spreed sheet load. All entries are deleted during load';
+
 drop table if exists SpreadSheetStrike cascade;
 create table SpreadSheetStrike
 (
@@ -55,6 +71,8 @@ create table SpreadSheetStrike
 	Created TIMESTAMP default NOW()
 );
 
+COMMENT ON TABLE SpreadSheetStrike IS 'This table contains the daily spreed sheet load. All entries are deleted during load';
+
 drop table if exists NewsPaper cascade;
 create table NewsPaper
 (
@@ -63,7 +81,7 @@ create table NewsPaper
 	Created TIMESTAMP default NOW()
 );
 
-COMMENT ON TABLE NewsPaper IS 'This is SB newspaper identification table';
+COMMENT ON TABLE NewsPaper IS 'This is SB newspaper identification table on newspapers ids in order';
 COMMENT ON COLUMN NewsPaper.NewsPaperId IS '1. sheet in the spreadsheet column AvisID';
 
 drop table if exists NewsPaperTitle cascade;
@@ -79,6 +97,7 @@ create table NewsPaperTitle
 	Created TIMESTAMP default NOW()
 );
 
+COMMENT ON TABLE NewsPaperTitle IS 'Contains newspaper titles of titles in order';
 COMMENT ON COLUMN NewsPaperTitle.Name IS 'Name/title of the NewPaper in a given period';
 
 drop table if exists Consignment  cascade;
@@ -86,19 +105,25 @@ create table Consignment
 (
 	RowId SERIAL PRIMARY KEY , 
 	ConsignmentId VARCHAR (50) UNIQUE NOT NULL, 
-	DriverName VARCHAR (255),  --name of the person who handled the container
+	DriverName VARCHAR (255),  
 	DestinationIsSB boolean NOT NULL,
 	Created TIMESTAMP default NOW()	
 );
+
+COMMENT ON TABLE Consignment IS 'Contains the transport indentification for a consignment';
+COMMENT ON COLUMN Consignment.DriverName IS 'Name of the person who handled the transport/consignment';
 
 drop table if exists ShippingContainer cascade;
 create table ShippingContainer 
 (
 	RowId SERIAL PRIMARY KEY, 
-	CreatedBy VARCHAR (255),  --name of the person who handled the container
+	CreatedBy VARCHAR (255),  
 	ShippingContainerId VARCHAR (50) UNIQUE NOT NULL, 
 	Created TIMESTAMP default NOW()
 );
+
+COMMENT ON TABLE ShippingContainer IS 'Contains the transport indentification for a shippingcontainer';
+COMMENT ON COLUMN ShippingContainer.CreatedBy IS 'Name of the person logged into MFPak when the ShippingContainer registration was created. Holds the value ninestars when called from FUNCTION shipped';
 
 drop table if exists ConsignmentContent cascade;
 create table ConsignmentContent 
@@ -110,22 +135,27 @@ create table ConsignmentContent
 	Created TIMESTAMP default NOW()
 );
 
+COMMENT ON TABLE ShippingContainer IS 'ConsignmentContent creates the link between consignment, shippingcontainer and a batch';
+
 drop table if exists Batch cascade;
 create table Batch
 (
 	RowId SERIAL PRIMARY KEY, 
-	BatchId BIGINT,          -- this is the SB barcode
+	BatchId BIGINT,         
 	CartonNumber INT NOT NULL,
 	Picture BYTEA,
 	Weight NUMERIC(9,3),
-	MultiFilm boolean,  -- this is a summary of the batch content. True if a Batch has more than 15 entries in Film, else false 
+	MultiFilm boolean,  
 	NewsPaperRowId INT references NewsPaper(RowId),
 	Created TIMESTAMP default NOW(),
 	Modified TIMESTAMP
 );
 
-drop type if exists TYPEFACE cascade;
-create type TYPEFACE AS ENUM ('fraktur', 'mixed', 'latin');
+COMMENT ON TABLE Batch IS 'Contains batches.';
+COMMENT ON COLUMN Batch.BatchId IS 'This field contains the batch identier/barcode';
+COMMENT ON COLUMN Batch.MultiFilm IS 'Has value True if there are reals known to contain more than one film.';
+
+
 
 drop table if exists Film cascade;
 create table Film
@@ -140,6 +170,8 @@ create table Film
 	Created TIMESTAMP default NOW(),
 	Modified TIMESTAMP
 );
+COMMENT ON TABLE Film IS 'Contains film information on batches.';
+
 
 drop table if exists Strike cascade;
 create table Strike
@@ -150,6 +182,7 @@ create table Strike
 	ToDate DATE,
 	Created TIMESTAMP default NOW()
 );
+COMMENT ON TABLE Film IS 'Contains strike information on films.';
 
 drop table if exists Status cascade;
 create table Status 
@@ -158,6 +191,7 @@ create table Status
 	Name VARCHAR (255),
 	Created TIMESTAMP default NOW()
 );
+COMMENT ON TABLE Status IS 'Contains status description for a batch.';
 
 insert into Status (Name) values ('Initial');
 insert into Status (Name) values ('Batch added to shipping container');
@@ -176,13 +210,15 @@ create table BatchStatus
 	Created TIMESTAMP  default NOW()
 );
 
---copy of the batch if changed occur who, where and what, picture not included
+COMMENT ON TABLE Status IS 'Newest record holds the current status of a batch.';
+
+
 drop table if exists BatchHistory;
 create table BatchHistory 
 (
 	RowId SERIAL PRIMARY KEY, 
 	BatchRowId INT  references Batch(RowId),
-	BatchId BIGINT,          -- this is the SB barcode
+	BatchId BIGINT,          
 	CartonNumber INT NOT NULL,
 	Weight NUMERIC(9,3),
 	MultiFilm boolean,
@@ -191,7 +227,7 @@ create table BatchHistory
 	CreatedBy VARCHAR (255),
 	Created TIMESTAMP default NOW()
 );
-
+COMMENT ON TABLE BatchHistory IS 'Copy of the batch if changes occur.';
 
 drop table if exists SystemSetting cascade;
 create table SystemSetting 
@@ -203,6 +239,7 @@ create table SystemSetting
 	Created TIMESTAMP default NOW()
 );
 
+COMMENT ON TABLE SystemSetting IS 'Contains application settings.';
 
 insert into SystemSetting (key, value) values ('Spreadsheet load version', '1');
 
@@ -214,12 +251,14 @@ create table Order_
 (
 	RowId SERIAL PRIMARY KEY, 
 	OrderId INT UNIQUE NOT NULL,
-	ORDERSTATUS status NOT NULL,
+	status ORDERSTATUS NOT NULL,
 	ApprovedBy VARCHAR(255),
     ApprovedDate TIMESTAMP,	
 	Modified TIMESTAMP, 
 	Created TIMESTAMP  default NOW()
 );
+
+COMMENT ON TABLE Order_ IS 'Contains orders.';
 
 drop table if exists OrderLine cascade;
 create table OrderLine 
@@ -231,18 +270,20 @@ create table OrderLine
 	FromDate DATE,
 	ToDate DATE,
 	Note TEXT,
-	OptionB1 boolean,
-	OptionB2 boolean,
-	OptionB3 boolean,
-	OptionB4 boolean,
-	OptionB5 boolean,
-	OptionB6 boolean,
-	OptionB7 boolean,
-	OptionB8 boolean,
-	OptionB9 boolean,
+	OptionB1 boolean NOT NULL,
+	OptionB2 boolean NOT NULL,
+	OptionB3 boolean NOT NULL,
+	OptionB4 boolean NOT NULL,
+	OptionB5 boolean NOT NULL,
+	OptionB6 boolean NOT NULL,
+	OptionB7 boolean NOT NULL,
+	OptionB8 boolean NOT NULL,
+	OptionB9 boolean NOT NULL,
 	Modified TIMESTAMP, 
 	Created TIMESTAMP default NOW()
 );
+
+COMMENT ON TABLE Order_ IS 'Contains order lines for a given order.';
 
 drop table if exists OrderBatch cascade;
 create table OrderBatch 
@@ -254,6 +295,8 @@ create table OrderBatch
 	Modified TIMESTAMP, 
 	Created TIMESTAMP  default NOW()
 );
+
+COMMENT ON TABLE OrderBatch IS 'Links a batch to an orderline (and order).';
 
 DROP FUNCTION if exists shipped(VARCHAR(50), VARCHAR(50), INTEGER);
 DROP LANGUAGE plpgsql;

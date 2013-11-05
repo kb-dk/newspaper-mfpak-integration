@@ -149,4 +149,28 @@ public class MfPakDAOTest {
         List<NewspaperTitle> titles = dao.getBatchNewspaperTitles(NON_EXISTING_BATCH_ID);
         assertNull("There should not be any date ranges for the non-existing batch", titles);
     }
+    
+    @Test(groups = {"integrationTest"})
+    public void testGetBatchOptions() throws SQLException {
+        MfPakDAO dao = new MfPakDAO(configuration);
+        NewspaperBatchOptions options = dao.getBatchOptions("400022028245");
+        assertNotNull(options);
+        assertEquals(true, options.isOptionB1());
+        assertEquals(true, options.isOptionB2());
+        assertEquals(true, options.isOptionB3());
+        assertEquals(true, options.isOptionB4());
+        assertEquals(true, options.isOptionB5());
+        assertEquals(true, options.isOptionB6());
+        assertEquals(true, options.isOptionB7());
+        assertEquals(true, options.isOptionB8());
+        assertEquals(true, options.isOptionB9());
+    }
+    
+    @Test(groups = {"integrationTest"})
+    public void testGetBatchOptionsNoBatch() throws SQLException, ParseException {
+        MfPakDAO dao = new MfPakDAO(configuration);
+        String NON_EXISTING_BATCH_ID = "999999999999";
+        NewspaperBatchOptions options = dao.getBatchOptions(NON_EXISTING_BATCH_ID);
+        assertNull("There should not be any options for the non-existing batch", options);
+    }
 }
