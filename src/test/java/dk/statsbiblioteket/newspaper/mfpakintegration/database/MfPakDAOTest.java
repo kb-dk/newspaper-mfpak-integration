@@ -108,11 +108,11 @@ public class MfPakDAOTest {
     }
 
     @Test(groups = {"integrationTest"})
-    public void testgetBatchDateRanges() throws SQLException, ParseException {
+    public void testGetBatchDateRanges() throws SQLException, ParseException {
         MfPakDAO dao = new MfPakDAO(configuration);
         List<NewspaperDateRange> dateRanges = dao.getBatchDateRanges("400022028245");
         assertNotNull(dateRanges);
-        assertEquals(3, dateRanges.size());
+        assertEquals(4, dateRanges.size());
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date firstFromDate = df.parse("1899-10-01");
         assertEquals(firstFromDate, dateRanges.get(0).getFromDate()); 
@@ -120,13 +120,33 @@ public class MfPakDAOTest {
         assertEquals(secondFromDate, dateRanges.get(1).getFromDate()); 
         Date thirdFromDate = df.parse("1920-10-01");
         assertEquals(thirdFromDate, dateRanges.get(2).getFromDate()); 
+        Date fourthFromDate = df.parse("1971-10-01");
+        assertEquals(fourthFromDate, dateRanges.get(3).getFromDate());
     }
     
     @Test(groups = {"integrationTest"})
-    public void testgetBatchDateRangesNoBatch() throws SQLException, ParseException {
+    public void testGetBatchDateRangesNoBatch() throws SQLException, ParseException {
         MfPakDAO dao = new MfPakDAO(configuration);
         String NON_EXISTING_BATCH_ID = "999999999999";
         List<NewspaperDateRange> dateRanges = dao.getBatchDateRanges(NON_EXISTING_BATCH_ID);
         assertNull("There should not be any date ranges for the non-existing batch", dateRanges);
+    }
+    
+    @Test(groups = {"integrationTest"})
+    public void testGetBatchNewspaperTitles() throws SQLException {
+        MfPakDAO dao = new MfPakDAO(configuration);
+        List<NewspaperTitle> titles = dao.getBatchNewspaperTitles("400022028245");
+        assertNotNull(titles);
+        assertEquals(2, titles.size());
+        assertEquals("Børsen", titles.get(0).getTitle());
+        assertEquals("Det nye Børsen", titles.get(1).getTitle());
+    }
+    
+    @Test(groups = {"integrationTest"})
+    public void testGetBatchNewspaperTitlesNoBatch() throws SQLException, ParseException {
+        MfPakDAO dao = new MfPakDAO(configuration);
+        String NON_EXISTING_BATCH_ID = "999999999999";
+        List<NewspaperTitle> titles = dao.getBatchNewspaperTitles(NON_EXISTING_BATCH_ID);
+        assertNull("There should not be any date ranges for the non-existing batch", titles);
     }
 }

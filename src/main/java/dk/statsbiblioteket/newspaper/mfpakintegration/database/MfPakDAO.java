@@ -227,6 +227,45 @@ public class MfPakDAO {
         return ranges;
     }
 
+    public List<NewspaperTitle> getBatchNewspaperTitles(String batchID) throws SQLException {
+        List<NewspaperTitle> titles = null;
+        final String selectSql = "SELECT Name, FromDate, ToDate FROM NewsPaperTitle" 
+                + " WHERE NewsPaperRowId = (SELECT NewsPaperRowId FROM Batch WHERE BatchId = ?)"
+                + " AND ToDate >= (SELECT FromDate FROM Film"
+                    + " WHERE BatchRowId = (SELECT RowId FROM Batch WHERE BatchId = ?)"
+                    + " ORDER BY FromDate ASC LIMIT 1)"
+                + " AND FromDate <= (SELECT ToDate FROM Film"
+                    + " WHERE BatchRowId = (SELECT RowId FROM Batch WHERE BatchId = ?)"
+                    + " ORDER BY ToDate DESC LIMIT 1)"
+                + " ORDER BY FromDate ASC";
+        
+        try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(selectSql)) {
+            stmt.setLong(1, Long.parseLong(batchID));
+            stmt.setLong(2, Long.parseLong(batchID));
+            stmt.setLong(3, Long.parseLong(batchID));
+            try(ResultSet rs = stmt.executeQuery()) {
+                titles = new ArrayList<NewspaperTitle>();
+                while(rs.next()) {
+                    Date from = rs.getDate("FromDate");
+                    Date to = rs.getDate("ToDate");
+                    if(to == null) {
+                        to = new Date(Long.MAX_VALUE);
+                    }
+                    NewspaperDateRange range = new NewspaperDateRange(from, to);
+                    NewspaperTitle title = new NewspaperTitle();
+                    title.setTitle(rs.getString("Name"));
+                    title.setDateRange(range);
+                    titles.add(title);
+                }
+                if(titles.isEmpty()) {
+                    titles = null;
+                }
+            }
+        }
+        
+        return titles;
+    }
+    
     /**
      * Creates a event object based on the status in the MfPak DB.
      *

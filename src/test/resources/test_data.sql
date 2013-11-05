@@ -55,6 +55,14 @@ INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, ToDate, DDA, Publica
 ( (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'boersen'),
     'Børsen', '1899-10-01', '1970-08-28', '1-177', 'København'); 
 
+INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, ToDate, DDA, PublicationLocation) VALUES 
+( (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'boersen'),
+    'Det nye Børsen', '1970-09-01', '1972-01-31', '1-177', 'København');
+
+INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, DDA, PublicationLocation) VALUES 
+( (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'boersen'),
+    'Børsen', '1972-02-01', '1-177', 'København');
+
 INSERT INTO Batch (BatchId, CartonNumber, NewsPaperRowId) VALUES (400022028245, 123, 
     (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'boersen'));
 
@@ -68,6 +76,7 @@ INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES (
 INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES (
     (SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1910-10-01', '1919-10-01');
 
-
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES (
+    (SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1971-10-01', '1971-12-17');
 
 
