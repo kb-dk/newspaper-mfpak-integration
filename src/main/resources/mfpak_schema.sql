@@ -244,7 +244,16 @@ create table OrderLine
 	Created TIMESTAMP default NOW()
 );
 
-
+drop table if exists OrderBatch cascade;
+create table OrderBatch 
+(
+	RowId SERIAL PRIMARY KEY, 
+	OrderRowId INT references Order_(RowId),
+	OrderLineRowId INT references OrderLine(RowId),
+	BatchRowId INT references Batch(RowId),	
+	Modified TIMESTAMP, 
+	Created TIMESTAMP  default NOW()
+);
 
 DROP FUNCTION if exists shipped(VARCHAR(50), VARCHAR(50), INTEGER);
 DROP LANGUAGE plpgsql;
