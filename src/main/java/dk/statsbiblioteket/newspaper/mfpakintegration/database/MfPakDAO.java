@@ -198,7 +198,8 @@ public class MfPakDAO {
     
     /**
      * Method to get the list of valid NewspaperDateRanges for a given batchID. 
-     * The date ranges is sorted by from date ascending.  
+     * The date ranges is sorted by from date ascending. The number of items in the list is the same 
+     * as the number of films in the given batch.
      * @param batchID The id of the batch to get the NewspaperDateRanges for.  
      * @return The list of NewspaperDateRanges if any could be found, or null if none could be found.
      *  I.e. the list will never be empty.

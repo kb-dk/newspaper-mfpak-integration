@@ -1,7 +1,9 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration.database;
 
 /**
- * Class to represent the chosen options for a batch.  
+ * Class to represent the chosen options for a batch. 
+ * For reference of what each option means see the Ninestars contract 
+ * page 50 and forward (page 72 in the PDF file).  
  */
 public class NewspaperBatchOptions {
 
