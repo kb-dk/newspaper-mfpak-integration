@@ -50,6 +50,10 @@ INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, ToDate, DDA, Publica
     'Kiøbenhavns Kongelig alene priviligerede Adresse-Contoirs Efterretninger',
 '1759-05-04', '1854-12-30', '1-35', 'København');
 
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES (
+    (SELECT RowId FROM Batch WHERE BatchId = 400022028241), '1795-06-13', '1795-06-15');
+
+
 -- Add test data for batch date interval
 INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, ToDate, DDA, PublicationLocation) VALUES 
 ( (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'boersen'),
