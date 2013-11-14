@@ -16,6 +16,8 @@ import java.util.List;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
+
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.Event;
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
@@ -173,4 +175,28 @@ public class MfPakDAOTest {
         NewspaperBatchOptions options = dao.getBatchOptions(NON_EXISTING_BATCH_ID);
         assertNull("There should not be any options for the non-existing batch", options);
     }
+    
+    public void testGetBatchShipmentDate() throws SQLException, ParseException {
+        MfPakDAO dao = new MfPakDAO(configuration);
+        String EXISTING_BATCH_ID = "400022028241";
+        Date shipmentDate = dao.getBatchShipmentDate(EXISTING_BATCH_ID);
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date expectedDate = df.parse("2013-11-11");
+        assertEquals(expectedDate, shipmentDate);
+    }
+    
+    public void testGetBatchShipmentDateNoSuchBatch() throws SQLException {
+        MfPakDAO dao = new MfPakDAO(configuration);
+        String NON_EXISTING_BATCH_ID = "999999999999";
+        Date shipmentDate = dao.getBatchShipmentDate(NON_EXISTING_BATCH_ID);
+        assertNull(shipmentDate);
+    }
+    
+    public void testGetBatchShipmentDateNonShippedBatch() throws SQLException {
+        MfPakDAO dao = new MfPakDAO(configuration);
+        String NON_SHIPPED_BATCH_ID = "400022028245";
+        Date shipmentDate = dao.getBatchShipmentDate(NON_SHIPPED_BATCH_ID);
+        assertNull(shipmentDate); 
+    }
+    
 }

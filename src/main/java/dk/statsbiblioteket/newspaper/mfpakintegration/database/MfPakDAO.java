@@ -319,6 +319,40 @@ public class MfPakDAO {
     }
     
     /**
+     * Retrieve the date that a batch was shipped from SB
+     * @param batchID The ID of the batch
+     * @return Date the date that the batch was shipped, null if no shipment has been registered
+     * @throws InconsistentDatabaseException if more that one shipment date is found for the batch
+     */
+    public Date getBatchShipmentDate(String batchID) throws SQLException {
+        Date shipmentDate = null;
+        
+        final String selectSql = "SELECT Created FROM BatchStatus"
+                + " WHERE BatchRowId = (SELECT RowId FROM Batch"
+                    + " WHERE Name = ?)"
+                + " AND StatusRowId = (SELECT RowId FROM Status"
+                    + " WHERE Name = 'Batch shipped to supplier');";
+        
+        try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(selectSql)) {
+            stmt.setLong(1, Long.parseLong(batchID));
+            try (ResultSet rs = stmt.executeQuery()) {
+                boolean shipmentDateFound = rs.next();
+                if (!shipmentDateFound) {
+                    log.warn("No shipment date for batch: '" + batchID + "' found!");
+                } else {
+                    shipmentDate = rs.getDate("NewsPaperId");
+                    if (rs.next()) {
+                        throw new InconsistentDatabaseException(
+                                "Found more than one shipment date for batch '" + batchID + "'");
+                    }
+                }
+            }
+        }
+        
+        return shipmentDate;
+    }
+    
+    /**
      * Creates a event object based on the status in the MfPak DB.
      *
      * @param status           The name in the status table for this batch.
