@@ -329,7 +329,7 @@ public class MfPakDAO {
         
         final String selectSql = "SELECT Created FROM BatchStatus"
                 + " WHERE BatchRowId = (SELECT RowId FROM Batch"
-                    + " WHERE Name = ?)"
+                    + " WHERE BatchId = ?)"
                 + " AND StatusRowId = (SELECT RowId FROM Status"
                     + " WHERE Name = 'Batch shipped to supplier');";
         
@@ -340,7 +340,7 @@ public class MfPakDAO {
                 if (!shipmentDateFound) {
                     log.warn("No shipment date for batch: '" + batchID + "' found!");
                 } else {
-                    shipmentDate = rs.getDate("NewsPaperId");
+                    shipmentDate = rs.getDate("Created");
                     if (rs.next()) {
                         throw new InconsistentDatabaseException(
                                 "Found more than one shipment date for batch '" + batchID + "'");
