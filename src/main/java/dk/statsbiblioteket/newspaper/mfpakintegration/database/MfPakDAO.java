@@ -229,15 +229,18 @@ public class MfPakDAO {
     }
 
     /**
-     * Method to get the list of valid NewspaperTitles. The list of titles are all titles covered from
+     * Method to get the list of valid NewspaperEntities. The list of entities are all entities covered from
      * the earliest date on the films that the batch's is comprised of and to the last date. 
      * @param batchID The ID of the batch to get titles for.
-     * @return The list of NewspaperTitles if any could be found, or null if none could be found.
+     * @return The list of NewspaperEntity if any could be found, or null if none could be found.
      *  I.e. the list will never be empty.  
      */
-    public List<NewspaperTitle> getBatchNewspaperTitles(String batchID) throws SQLException {
-        List<NewspaperTitle> titles = null;
-        final String selectSql = "SELECT Name, FromDate, ToDate FROM NewsPaperTitle" 
+    public List<NewspaperEntity> getBatchNewspaperEntities(String batchID) throws SQLException {
+        List<NewspaperEntity> entities = null;
+        
+        final String selectSql = "SELECT Name, FromDate, ToDate, PublicationLocation, NewsPaper.NewsPaperId"  
+                + " FROM NewsPaperTitle"
+                + " JOIN NewsPaper ON NewsPaperTitle.NewsPaperRowId = NewsPaper.RowId" 
                 + " WHERE NewsPaperRowId = (SELECT NewsPaperRowId FROM Batch WHERE BatchId = ?)"
                 + " AND ToDate >= (SELECT FromDate FROM Film"
                     + " WHERE BatchRowId = (SELECT RowId FROM Batch WHERE BatchId = ?)"
@@ -252,7 +255,7 @@ public class MfPakDAO {
             stmt.setLong(2, Long.parseLong(batchID));
             stmt.setLong(3, Long.parseLong(batchID));
             try(ResultSet rs = stmt.executeQuery()) {
-                titles = new ArrayList<NewspaperTitle>();
+                entities = new ArrayList<NewspaperEntity>();
                 while(rs.next()) {
                     Date from = rs.getDate("FromDate");
                     Date to = rs.getDate("ToDate");
@@ -260,18 +263,20 @@ public class MfPakDAO {
                         to = new Date(Long.MAX_VALUE);
                     }
                     NewspaperDateRange range = new NewspaperDateRange(from, to);
-                    NewspaperTitle title = new NewspaperTitle();
-                    title.setTitle(rs.getString("Name"));
-                    title.setDateRange(range);
-                    titles.add(title);
+                    NewspaperEntity entity = new NewspaperEntity();
+                    entity.setNewspaperTitle(rs.getString("Name"));
+                    entity.setNewspaperDateRange(range);
+                    entity.setNewspaperID(rs.getString("NewsPaperId"));
+                    entity.setPublicationLocation(rs.getString("PublicationLocation"));
+                    entities.add(entity);
                 }
-                if(titles.isEmpty()) {
-                    titles = null;
+                if(entities.isEmpty()) {
+                    entities = null;
                 }
             }
         }
         
-        return titles;
+        return entities;
     }
     
     /**
