@@ -7,3 +7,4 @@ and getBatchOptions DAO operations.
 Added getBatchShipmentDate
 Change getNewspaperTitles to getNewspaperEntities
 Updated dependencies for process-monitor-datasource modules
+Update parent-pom version
