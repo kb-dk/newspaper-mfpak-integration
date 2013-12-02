@@ -97,6 +97,23 @@ INSERT INTO OrderBatch (OrderRowId, OrderLineRowId, BatchRowId) VALUES (
     (SELECT RowId FROM OrderLine LIMIT 1), 
     (SELECT RowId FROM Batch WHERE BatchId = 400022028245));
 
+
+-- Order information for batch number **41
+INSERT INTO Order_ (OrderId, status) VALUES (2, 'Packing completed');
+
+INSERT INTO OrderLine (OrderRowId, NewsPaperRowId, OptionB1, OptionB2, OptionB3, OptionB4,
+    OptionB5, OptionB6, OptionB7, OptionB8, OptionB9) VALUES (
+    (SELECT RowId FROM Order_ WHERE OrderId = 2),
+    (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'adresseavisen1759'),
+    true, true, true, true, true, true, true, true, true);
+
+INSERT INTO OrderBatch (OrderRowId, OrderLineRowId, BatchRowId) VALUES (
+    (SELECT RowId FROM Order_ WHERE OrderId = 2),
+    (SELECT RowId FROM OrderLine LIMIT 1),
+    (SELECT RowId FROM Batch WHERE BatchId = 400022028241));
+
+
+
 -- Performance test batch
 INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028242, 0, (SELECT rowid FROM newspaper WHERE NewsPaperId = 'adresseavisen1759'));
 INSERT INTO batchstatus (statusrowId, batchrowId, Created) SELECT rowId, LASTVAL(), '2013-11-11' FROM status WHERE name='Batch shipped to supplier';
