@@ -44,6 +44,7 @@ public class DBConnector {
             if(configuration.getDatabasePassword() != null) {
                 connectionPool.setPassword(configuration.getDatabasePassword());
             }
+            //connectionPool.setCheckoutTimeout(3000);
         } catch (Exception e) {
             throw new IllegalStateException("Could not connect to the database '" + configuration + "'", e);
         }
