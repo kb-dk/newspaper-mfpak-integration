@@ -135,6 +135,6 @@ INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch
 
 INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028243, 0, (SELECT rowid FROM newspaper WHERE NewsPaperId = 'adresseavisen1759'));
 INSERT INTO batchstatus (statusrowId, batchrowId, Created) SELECT rowId, LASTVAL(), '2013-11-12' FROM status WHERE name='Batch shipped to supplier';
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028242), '1795-06-16', '1795-06-17');
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028242), '1795-06-18', '1795-06-19');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028243), '1795-06-16', '1795-06-17');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028243), '1795-06-18', '1795-06-19');
 
