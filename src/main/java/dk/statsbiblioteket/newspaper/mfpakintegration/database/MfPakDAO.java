@@ -70,7 +70,7 @@ public class MfPakDAO {
             try (ResultSet rs = statement2.executeQuery()) {
                 while (rs.next()) {
                     String batchId = rs.getString("batchrowId");
-                    Timestamp createdTimestamp = rs.getTimestamp("created");  //We expect to add this to the API at some later point in time.
+                    Timestamp createdTimestamp = rs.getTimestamp("created"); 
                     String status = rs.getString("name");
                     Batch batch = batchesById.get(batchId);
                     if (batch != null) {
