@@ -1,11 +1,5 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration.database;
 
-import dk.statsbiblioteket.medieplatform.autonomous.Batch;
-import dk.statsbiblioteket.medieplatform.autonomous.Event;
-import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -14,10 +8,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertNull;
-import static org.testng.AssertJUnit.assertTrue;
+import dk.statsbiblioteket.medieplatform.autonomous.Batch;
+import dk.statsbiblioteket.medieplatform.autonomous.Event;
+import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import static org.testng.AssertJUnit.*;
 
 public class MfPakDAOTest {
 
@@ -109,7 +106,7 @@ public class MfPakDAOTest {
     @Test(groups = {"integrationTest"})
     public void testGetBatchDateRanges() throws SQLException, ParseException {
         MfPakDAO dao = new MfPakDAO(configuration);
-        List<NewspaperDateRange> dateRanges = dao.getBatchDateRanges("400022028245");
+        List<NewspaperDateRange> dateRanges = dao.getBatchDateRanges("400022028242");
         assertNotNull(dateRanges);
         assertEquals(4, dateRanges.size());
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -134,7 +131,7 @@ public class MfPakDAOTest {
     @Test(groups = {"integrationTest"})
     public void testGetBatchNewspaperTitles() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
-        List<NewspaperEntity> titles = dao.getBatchNewspaperEntities("400022028245");
+        List<NewspaperEntity> titles = dao.getBatchNewspaperEntities("400022028242");
         assertNotNull(titles);
         assertEquals(2, titles.size());
         assertEquals("Børsen", titles.get(0).getNewspaperTitle());
@@ -152,7 +149,7 @@ public class MfPakDAOTest {
     @Test(groups = {"integrationTest"})
     public void testGetBatchOptions() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
-        NewspaperBatchOptions options = dao.getBatchOptions("400022028245");
+        NewspaperBatchOptions options = dao.getBatchOptions("400022028242");
         assertNotNull(options);
         assertEquals(true, options.isOptionB1());
         assertEquals(true, options.isOptionB2());
@@ -194,7 +191,7 @@ public class MfPakDAOTest {
     @Test(groups = {"integrationTest"})
     public void testGetBatchShipmentDateNonShippedBatch() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
-        String NON_SHIPPED_BATCH_ID = "400022028245";
+        String NON_SHIPPED_BATCH_ID = "400022028242";
         Date shipmentDate = dao.getBatchShipmentDate(NON_SHIPPED_BATCH_ID);
         assertNull(shipmentDate); 
     }
