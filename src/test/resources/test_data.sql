@@ -39,6 +39,7 @@ INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028241, 
 --INSERT INTO batchstatus (statusrowId, batchrowId) SELECT rowId, LASTVAL() FROM status WHERE name='Batch shipped to supplier';
 INSERT INTO batchstatus (statusrowId, batchrowId, Created) SELECT rowId, LASTVAL(), '2013-11-11' FROM status WHERE name='Batch shipped to supplier';
 
+
 INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, ToDate, DDA, PublicationLocation) VALUES 
 ( (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'adresseavisen1759'), 
     'Kiøbenhavns Kongelig alene priviligerede Adresse-Contoirs Efterretninger',
@@ -102,8 +103,8 @@ INSERT INTO OrderBatch (OrderRowId, OrderLineRowId, BatchRowId) VALUES (
 -- Performance test full batch
 INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028245, 0, (SELECT rowid FROM newspaper WHERE NewsPaperId = 'adresseavisen1759'));
 INSERT INTO batchstatus (statusrowId, batchrowId, Created) SELECT rowId, LASTVAL(), '2013-11-11' FROM status WHERE name='Batch shipped to supplier';
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1795-06-16', '1797-04-24');
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1797-04-24', '1797-03-05');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1795-06-16', '1796-04-24');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1796-04-24', '1797-03-05');
 INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1797-03-05', '1798-01-13');
 INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1798-01-14', '1798-11-24');
 INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1798-11-25', '1799-10-10');
@@ -116,6 +117,10 @@ INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch
 INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1804-12-17', '1805-10-30');
 INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1805-10-31', '1806-09-10');
 INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1806-09-10', '1807-07-23');
+INSERT INTO OrderBatch (OrderRowId, OrderLineRowId, BatchRowId) VALUES (
+    (SELECT RowId FROM Order_ WHERE OrderId = 2),
+    (SELECT RowId FROM OrderLine LIMIT 1),
+    (SELECT RowId FROM Batch WHERE BatchId = 400022028245));
 
 INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028243, 0, (SELECT rowid FROM newspaper WHERE NewsPaperId = 'adresseavisen1759'));
 INSERT INTO batchstatus (statusrowId, batchrowId, Created) SELECT rowId, LASTVAL(), '2013-11-12' FROM status WHERE name='Batch shipped to supplier';
@@ -126,19 +131,39 @@ INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch
 INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028250, 0, (SELECT rowid FROM newspaper WHERE NewsPaperId = 'adresseavisen1759'));
 INSERT INTO batchstatus (statusrowId, batchrowId, Created) SELECT rowId, LASTVAL(), '2013-11-11' FROM status WHERE name='Batch shipped to supplier';
 INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028250), '1795-06-16', '1795-06-29');
+INSERT INTO OrderBatch (OrderRowId, OrderLineRowId, BatchRowId) VALUES (
+    (SELECT RowId FROM Order_ WHERE OrderId = 2),
+    (SELECT RowId FROM OrderLine LIMIT 1),
+    (SELECT RowId FROM Batch WHERE BatchId = 400022028250));
 
 INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028251, 0, (SELECT rowid FROM newspaper WHERE NewsPaperId = 'adresseavisen1759'));
 INSERT INTO batchstatus (statusrowId, batchrowId, Created) SELECT rowId, LASTVAL(), '2013-11-11' FROM status WHERE name='Batch shipped to supplier';
 INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028251), '1795-06-16', '1795-06-29');
+INSERT INTO OrderBatch (OrderRowId, OrderLineRowId, BatchRowId) VALUES (
+    (SELECT RowId FROM Order_ WHERE OrderId = 2),
+    (SELECT RowId FROM OrderLine LIMIT 1),
+    (SELECT RowId FROM Batch WHERE BatchId = 400022028251));
 
 INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028252, 0, (SELECT rowid FROM newspaper WHERE NewsPaperId = 'adresseavisen1759'));
 INSERT INTO batchstatus (statusrowId, batchrowId, Created) SELECT rowId, LASTVAL(), '2013-11-11' FROM status WHERE name='Batch shipped to supplier';
 INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028252), '1795-06-16', '1795-06-29');
+INSERT INTO OrderBatch (OrderRowId, OrderLineRowId, BatchRowId) VALUES (
+    (SELECT RowId FROM Order_ WHERE OrderId = 2),
+    (SELECT RowId FROM OrderLine LIMIT 1),
+    (SELECT RowId FROM Batch WHERE BatchId = 400022028252));
 
 INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028253, 0, (SELECT rowid FROM newspaper WHERE NewsPaperId = 'adresseavisen1759'));
 INSERT INTO batchstatus (statusrowId, batchrowId, Created) SELECT rowId, LASTVAL(), '2013-11-11' FROM status WHERE name='Batch shipped to supplier';
 INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028253), '1795-06-16', '1795-06-29');
+INSERT INTO OrderBatch (OrderRowId, OrderLineRowId, BatchRowId) VALUES (
+    (SELECT RowId FROM Order_ WHERE OrderId = 2),
+    (SELECT RowId FROM OrderLine LIMIT 1),
+    (SELECT RowId FROM Batch WHERE BatchId = 400022028253));
 
 INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028254, 0, (SELECT rowid FROM newspaper WHERE NewsPaperId = 'adresseavisen1759'));
 INSERT INTO batchstatus (statusrowId, batchrowId, Created) SELECT rowId, LASTVAL(), '2013-11-11' FROM status WHERE name='Batch shipped to supplier';
 INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028254), '1795-06-16', '1795-06-29');
+INSERT INTO OrderBatch (OrderRowId, OrderLineRowId, BatchRowId) VALUES (
+    (SELECT RowId FROM Order_ WHERE OrderId = 2),
+    (SELECT RowId FROM OrderLine LIMIT 1),
+    (SELECT RowId FROM Batch WHERE BatchId = 400022028254));
