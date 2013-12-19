@@ -99,28 +99,27 @@ INSERT INTO OrderBatch (OrderRowId, OrderLineRowId, BatchRowId) VALUES (
     (SELECT RowId FROM OrderLine LIMIT 1),
     (SELECT RowId FROM Batch WHERE BatchId = 400022028241));
 
-
 -- Performance test full batch
 INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028245, 0, (SELECT rowid FROM newspaper WHERE NewsPaperId = 'adresseavisen1759'));
 INSERT INTO batchstatus (statusrowId, batchrowId, Created) SELECT rowId, LASTVAL(), '2013-11-11' FROM status WHERE name='Batch shipped to supplier';
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1795-06-16', '1796-04-24');
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1796-04-24', '1797-03-05');
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1797-03-05', '1798-01-13');
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1798-01-14', '1798-11-24');
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1798-11-25', '1799-10-10');
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1799-10-11', '1800-08-21');
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1800-08-22', '1801-07-03');
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1801-07-04', '1802-05-16');
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1802-05-16', '1803-03-25');
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1803-03-25', '1804-02-02');
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1804-02-03', '1804-12-17');
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1804-12-17', '1805-10-30');
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1805-10-31', '1806-09-10');
-INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1806-09-10', '1807-07-23');
 INSERT INTO OrderBatch (OrderRowId, OrderLineRowId, BatchRowId) VALUES (
-    (SELECT RowId FROM Order_ WHERE OrderId = 2),
-    (SELECT RowId FROM OrderLine LIMIT 1),
-    (SELECT RowId FROM Batch WHERE BatchId = 400022028245));
+  (SELECT RowId FROM Order_ WHERE OrderId = 2),
+  (SELECT RowId FROM OrderLine LIMIT 1),
+  (SELECT RowId FROM Batch WHERE BatchId = 400022028245));
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1795-06-16', '1796-05-30');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1796-05-30', '1797-05-14');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1797-05-14', '1798-04-28');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1798-04-28', '1799-04-12');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1799-04-12', '1800-03-27');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1800-03-27', '1801-03-11');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1801-03-11', '1802-02-23');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1802-02-23', '1803-02-07');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1803-02-07', '1804-01-22');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1804-01-22', '1805-01-05');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1805-01-05', '1805-12-20');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1805-12-20', '1806-12-04');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1806-12-04', '1807-11-18');
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES ((SELECT RowId FROM Batch WHERE BatchId = 400022028245), '1807-11-18', '1808-11-01');
 
 INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028243, 0, (SELECT rowid FROM newspaper WHERE NewsPaperId = 'adresseavisen1759'));
 INSERT INTO batchstatus (statusrowId, batchrowId, Created) SELECT rowId, LASTVAL(), '2013-11-12' FROM status WHERE name='Batch shipped to supplier';
