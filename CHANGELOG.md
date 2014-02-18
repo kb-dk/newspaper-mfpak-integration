@@ -1,3 +1,6 @@
+1.4
+* Updated to newspaper-parent 1.1.
+
 1.3
 * Updated to newspaper-batch-event-framework 1.4
 * Fixed bug in getBatchNewspaperEntities
