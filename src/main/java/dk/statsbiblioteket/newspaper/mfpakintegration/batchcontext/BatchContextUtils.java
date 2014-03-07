@@ -25,6 +25,34 @@ public class BatchContextUtils {
         context.setDateRanges(mfPakDAO.getBatchDateRanges(batch.getBatchID()));
         context.setShipmentDate(mfPakDAO.getBatchShipmentDate(batch.getBatchID()));
         
+        verifyBatchContext(context);
+        
         return context;
+    }
+    
+    
+    private static void verifyBatchContext(BatchContext context) {
+        if(context.getAvisId() == null) {
+            throw new InvalidBatchContextException("No 'avisID' could be found for batch '" 
+                    + context.getBatch().getBatchID() + "'");
+        }
+        if(context.getBatchOptions() == null) {
+            throw new InvalidBatchContextException("No order options could be found for batch '" 
+                    + context.getBatch().getBatchID() + "'. "
+                    + "This might mean that no order have been placed for that batch.");
+        }
+        if(context.getShipmentDate() == null) {
+            throw new InvalidBatchContextException("No shipment date for batch '" 
+                    + context.getBatch().getBatchID() + "' could be found. "
+                    + "This might mean that the batch have not been shipped yet.");
+        }
+        if(context.getDateRanges() == null) {
+            throw new InvalidBatchContextException("No date ranges for batch '" + context.getBatch().getBatchID() 
+                    + "' could be found.");
+        }
+        if(context.getEntities() == null) {
+            throw new InvalidBatchContextException("No title and publication information could be found "
+                    + "for batch '" + context.getBatch().getBatchID() + "'");
+        }
     }
 }

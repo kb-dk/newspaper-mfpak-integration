@@ -54,7 +54,11 @@ public class BatchContext {
     }
 
     public List<NewspaperEntity> getEntities() {
-        return Collections.unmodifiableList(entities);
+        if(entities == null) {
+            return null;
+        } else {
+            return Collections.unmodifiableList(entities);    
+        }
     }
     
     void setEntities(List<NewspaperEntity> entities) {
