@@ -62,6 +62,7 @@ public class MfPakDAO {
                 while (rs.next()) {
                     Long barcode = rs.getLong("batchId");
                     Batch batch = new Batch();
+                    batch.setRoundTripNumber(0);
                     batch.setBatchID(barcode.toString());
                     batch.setEventList(new ArrayList<Event>());
                     batchesById.put(rs.getString("rowId"), batch);
@@ -105,6 +106,7 @@ public class MfPakDAO {
                     return null;
                 } else {
                     Batch batch = new Batch();
+                    batch.setRoundTripNumber(0);
                     batch.setBatchID(barcode);
                     int id = rs.getInt("rowId");
                     batch.setEventList(new ArrayList<Event>());
