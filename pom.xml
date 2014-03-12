@@ -25,6 +25,10 @@
         </repository>
     </repositories>
 
+    <properties>
+        <autonoumous.component.framework.version>1.6-SNAPSHOT</autonoumous.component.framework.version>
+    </properties>
+
     <scm>
         <url>https://github.com/statsbiblioteket/newspaper-mfpak-integration</url>
         <connection>scm:git:https://github.com/statsbiblioteket/newspaper-mfpak-integration.git</connection>
@@ -41,18 +45,18 @@
         <dependency>
             <groupId>dk.statsbiblioteket.newspaper</groupId>
             <artifactId>process-monitor-datasource-interfaces</artifactId>
-            <version>1.6-SNAPSHOT</version>
+            <version>${autonoumous.component.framework.version}</version>
         </dependency>
         <dependency>
             <groupId>dk.statsbiblioteket.newspaper</groupId>
             <artifactId>process-monitor-datasource-tck</artifactId>
-            <version>1.6-SNAPSHOT</version>
+            <version>${autonoumous.component.framework.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>dk.statsbiblioteket.newspaper</groupId>
             <artifactId>batch-event-framework-common</artifactId>
-            <version>1.6-SNAPSHOT</version>
+            <version>${autonoumous.component.framework.version}</version>
         </dependency>
         <dependency>
             <groupId>c3p0</groupId>
