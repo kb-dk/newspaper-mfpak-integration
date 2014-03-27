@@ -2,6 +2,7 @@
 * Use version 1.6 of batch event framework
 * Add checks of BatchContext objects
 * Make sure that Batch objects delivered is marked as roundtrip 0
+* Updated to newspaper-parent 1.2
 
 1.4
 * Updated to newspaper-parent 1.1, supporting a new test strategy
