@@ -2,7 +2,7 @@ package dk.statsbiblioteket.newspaper.mfpakintegration.database;
 
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.Event;
-import dk.statsbiblioteket.newspaper.mfpakintegration.MFPakEventNameMapper;
+import dk.statsbiblioteket.newspaper.mfpakintegration.EventID;
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -375,7 +375,7 @@ public class MfPakDAO {
         event.setSuccess(true);
         event.setDate(createdTimestamp);
         String eventID;
-        eventID = MFPakEventNameMapper.mfPakStatusToEventId(status);
+        eventID = EventID.fromMfPak(status).getFormal();
         event.setEventID(eventID);
         return event;
     }
@@ -398,7 +398,7 @@ public class MfPakDAO {
     }
 
     public Iterator<Batch> getTriggeredBatches(Collection<String> pastSuccessfulEventsMFPak, Collection<String> pastFailedEventsMFPak,
-                                           Collection<String> futureEventsMFPak, Batch... batches) {
+                                           Collection<String> futureEventsMFPak, Collection<Batch> batches) {
         return null;
     }
 }

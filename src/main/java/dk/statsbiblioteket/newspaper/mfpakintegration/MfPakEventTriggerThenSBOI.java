@@ -21,9 +21,15 @@ public class MfPakEventTriggerThenSBOI extends MfPakEventTriggerAbstract impleme
 
 
     @Override
+    public Iterator<Batch> getTriggeredBatches(Collection<String> strings, Collection<String> strings2,
+                                               Collection<String> strings3) throws CommunicationException {
+        return getTriggeredBatches(strings, strings2, strings3, null);
+    }
+
+    @Override
     public Iterator<Batch> getTriggeredBatches(Collection<String> pastSuccessfulEvents,
                                                Collection<String> pastFailedEvents, Collection<String> futureEvents,
-                                               Batch... batches) throws CommunicationException {
+                                               Collection<Batch> batches) throws CommunicationException {
         EventSorter events = new EventSorter(pastSuccessfulEvents, pastFailedEvents, futureEvents);
 
 
@@ -39,7 +45,7 @@ public class MfPakEventTriggerThenSBOI extends MfPakEventTriggerAbstract impleme
                     events.getPastSuccessfulEventsRest(),
                     events.getPastFailedEventsRest(),
                     events.getFutureEventsRest(),
-                    asArray(mfPakResult));
+                    asList(mfPakResult));
         } else {
             return mfPakResult;
         }

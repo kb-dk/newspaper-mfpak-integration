@@ -21,9 +21,15 @@ public class MfPakEventTriggerAfterSBOI extends MfPakEventTriggerAbstract implem
 
 
     @Override
+    public Iterator<Batch> getTriggeredBatches(Collection<String> strings, Collection<String> strings2,
+                                               Collection<String> strings3) throws CommunicationException {
+        return getTriggeredBatches(strings,strings2,strings3,null);
+    }
+
+    @Override
     public Iterator<Batch> getTriggeredBatches(Collection<String> pastSuccessfulEvents,
                                                Collection<String> pastFailedEvents, Collection<String> futureEvents,
-                                               Batch... batches) throws CommunicationException {
+                                               Collection<Batch> batches) throws CommunicationException {
         EventSorter events = new EventSorter(pastSuccessfulEvents, pastFailedEvents, futureEvents);
 
         Iterator<Batch> sboiResults = getSboiEventIndex().getTriggeredBatches(
@@ -36,11 +42,13 @@ public class MfPakEventTriggerAfterSBOI extends MfPakEventTriggerAbstract implem
             return getDao().getTriggeredBatches(
                     events.getPastSuccessfulEventsMFPak(),
                     events.getPastFailedEventsMFPak(),
-                    events.getFutureEventsMFPak(), asArray(sboiResults));
+                    events.getFutureEventsMFPak(),
+                    asList(sboiResults));
         } else {
             return sboiResults;
         }
     }
+
 
 
 }

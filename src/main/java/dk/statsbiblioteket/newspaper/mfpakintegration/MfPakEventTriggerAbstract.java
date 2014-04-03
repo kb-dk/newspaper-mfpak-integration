@@ -33,20 +33,15 @@ public abstract class MfPakEventTriggerAbstract implements EventTrigger {
         return sboiEventIndex;
     }
 
-    public static Batch[] asArray(Collection<Batch> mfPakResult) {
-        return mfPakResult.toArray(new Batch[mfPakResult.size()]);
-    }
-
-    public static Batch[] asArray(Iterator<Batch> sboiResults) {
+    public Collection<Batch> asList(Iterator<Batch> sboiResults) {
         ArrayList<Batch> result = new ArrayList<>();
         while (sboiResults.hasNext()) {
             Batch next = sboiResults.next();
             result.add(next);
         }
-        return asArray(result);
+        return result;
+
     }
-
-
 
 
     protected class EventSorter {
@@ -104,7 +99,7 @@ public abstract class MfPakEventTriggerAbstract implements EventTrigger {
 
             ArrayList<String> result = new ArrayList<>(events.size());
             for (String event : events) {
-                if (MFPakEventNameMapper.isEventId(event)) {
+                if (EventID.fromFormal(event) != null){
                     result.add(event);
                 }
             }
