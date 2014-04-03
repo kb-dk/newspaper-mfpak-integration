@@ -14,7 +14,7 @@ public class MfPakTCKTestSuite
 
     private MfPakConfiguration configuration;
 
-    @BeforeMethod(groups = {"integrationTest"})
+    @BeforeMethod(groups = {"externalTest"})
     public void loadConfiguration()
             throws
             IOException {
@@ -29,7 +29,7 @@ public class MfPakTCKTestSuite
 
     @Override
     public Pair<String, Integer> getValidBatchID() {
-        return new Pair<>("4004", 1);
+        return new Pair<>("4004", 0);
     }
 
     @Override
