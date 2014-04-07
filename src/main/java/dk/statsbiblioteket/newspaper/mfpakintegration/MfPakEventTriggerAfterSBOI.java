@@ -8,6 +8,7 @@ import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfigu
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -39,11 +40,15 @@ public class MfPakEventTriggerAfterSBOI extends MfPakEventTriggerAbstract implem
                 batches);
 
         if (sboiResults.hasNext()) {
-            return getDao().getTriggeredBatches(
-                    events.getPastSuccessfulEventsMFPak(),
-                    events.getPastFailedEventsMFPak(),
-                    events.getFutureEventsMFPak(),
-                    asList(sboiResults));
+            try {
+                return getDao().getTriggeredBatches(
+                        events.getPastSuccessfulEventsMFPak(),
+                        events.getPastFailedEventsMFPak(),
+                        events.getFutureEventsMFPak(),
+                        asList(sboiResults));
+            } catch (SQLException e) {
+                throw new CommunicationException(e);
+            }
         } else {
             return sboiResults;
         }

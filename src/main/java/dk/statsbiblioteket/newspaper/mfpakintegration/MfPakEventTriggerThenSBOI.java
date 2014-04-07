@@ -8,6 +8,7 @@ import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfigu
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -33,11 +34,16 @@ public class MfPakEventTriggerThenSBOI extends MfPakEventTriggerAbstract impleme
         EventSorter events = new EventSorter(pastSuccessfulEvents, pastFailedEvents, futureEvents);
 
 
-        Iterator<Batch> mfPakResult = getDao().getTriggeredBatches(
-                events.getPastSuccessfulEventsMFPak(),
-                events.getPastFailedEventsMFPak(),
-                events.getFutureEventsMFPak(),
-                batches);
+        Iterator<Batch> mfPakResult = null;
+        try {
+            mfPakResult = getDao().getTriggeredBatches(
+                    events.getPastSuccessfulEventsMFPak(),
+                    events.getPastFailedEventsMFPak(),
+                    events.getFutureEventsMFPak(),
+                    batches);
+        } catch (SQLException e) {
+            throw new CommunicationException(e);
+        }
 
 
         if (mfPakResult.hasNext()) {
