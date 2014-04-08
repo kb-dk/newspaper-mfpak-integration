@@ -206,8 +206,9 @@ public class MfPakDAOTest {
     @Test(groups = {"integrationTest"})
     public void testGetTriggeredBatches() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
-        Collection<String> pastSuccessful = Arrays.asList("Initial", "Batch added to shipping container");
-        Collection<String> futureEvents = Arrays.asList("Batch shipped to supplier");
+        Collection<String> pastSuccessful = Arrays.asList(EventID.INITIAL.getFormal(), 
+                EventID.ADDED_TO_SHIPPING_CONTAINER.getFormal());
+        Collection<String> futureEvents = Arrays.asList(EventID.SHIPPED_TO_SUPPLIER.getFormal());
         Collection<Batch> batches = new HashSet<>();
         Batch b1 = new Batch();
         b1.setBatchID("4001");
@@ -235,8 +236,8 @@ public class MfPakDAOTest {
     @Test(groups = {"integrationTest"})
     public void testGetTriggeredBatchesWithEmptyBatchesLimitation() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
-        Collection<String> pastSuccessful = Arrays.asList("Initial");
-        Collection<String> futureEvents = Arrays.asList("Batch shipped to supplier");
+        Collection<String> pastSuccessful = Arrays.asList(EventID.INITIAL.getFormal());
+        Collection<String> futureEvents = Arrays.asList(EventID.SHIPPED_TO_SUPPLIER.getFormal());
         Collection<Batch> batches = new HashSet<>();
         Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, null, futureEvents, batches);
         assertFalse(mfpakBatches.hasNext());

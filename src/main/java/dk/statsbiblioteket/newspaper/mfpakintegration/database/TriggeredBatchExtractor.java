@@ -91,19 +91,19 @@ public class TriggeredBatchExtractor {
         if(pastSuccessfulEvents != null && !pastSuccessfulEvents.isEmpty()) {
             appendLimit(selectSql, haveLimit, inclusiveNamesSql);
             haveLimit = true;
-            argList.add(collectionToCommaSeperatedList(pastSuccessfulEvents));
+            argList.add(collectionToCommaSeparatedList(pastSuccessfulEvents));
         }
         
         if(futureEvents != null && !futureEvents.isEmpty()) {
             appendLimit(selectSql, haveLimit, exclusiveNamesSql);
             haveLimit = true;
-            argList.add(collectionToCommaSeperatedList(futureEvents));
+            argList.add(collectionToCommaSeparatedList(futureEvents));
         }
         
         if(batches != null) {
             appendLimit(selectSql, haveLimit, batchLimitSql);
             haveLimit = true;
-            argList.add(batchesToCommaSeperatedList(batches));
+            argList.add(batchesToCommaSeparatedList(batches));
         }
         
         return selectSql.toString();
@@ -118,7 +118,7 @@ public class TriggeredBatchExtractor {
         sql.append(limitSql);
     }
     
-    private static String collectionToCommaSeperatedList(Collection<String> collection) {
+    private static String collectionToCommaSeparatedList(Collection<String> collection) {
         StringBuilder sb = new StringBuilder();
         
         boolean first = true;
@@ -128,13 +128,13 @@ public class TriggeredBatchExtractor {
             } else {
                 first = false;
             }
-            sb.append("'" + EventID.fromFormal(s) + "'");
+            sb.append("'").append(EventID.fromFormal(s).getMfpak()).append("'");
         }
         
         return sb.toString();
     }
     
-    private static String batchesToCommaSeperatedList(Collection<Batch> batches) {
+    private static String batchesToCommaSeparatedList(Collection<Batch> batches) {
         StringBuilder sb = new StringBuilder();
         
         boolean first = true;
@@ -144,7 +144,7 @@ public class TriggeredBatchExtractor {
             } else {
                 first = false;
             }
-            sb.append("'" + b.getBatchID() + "'");
+            sb.append("'").append(b.getBatchID()).append("'");
         }
         
         return sb.toString();
