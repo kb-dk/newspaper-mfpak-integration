@@ -4,6 +4,7 @@ import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.Event;
 import dk.statsbiblioteket.newspaper.mfpakintegration.EventID;
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -421,6 +423,10 @@ public class MfPakDAO {
                                                Collection<String> pastFailedEventsMFPak,
                                                Collection<String> futureEventsMFPak, Collection<Batch> batches) throws SQLException {
         Iterator<Batch> iter;
+        
+        if(batches != null && batches.isEmpty()) {
+            return Collections.emptyIterator();
+        }
         try (Connection conn = getConnection()) {
             TriggeredBatchExtractor extractor = new TriggeredBatchExtractor(conn);
             iter = extractor.getTriggeredBatches(pastSuccessfulEventsMFPak, futureEventsMFPak, batches);

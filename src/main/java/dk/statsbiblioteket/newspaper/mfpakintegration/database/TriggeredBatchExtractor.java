@@ -80,46 +80,42 @@ public class TriggeredBatchExtractor {
                 + " JOIN batchstatus ON batch.rowid = batchstatus.batchrowid"
                 + " JOIN status ON batchstatus.statusrowid = status.rowid");
         final String inclusiveNamesSql = " name IN (?)";
-        final String exclusiveNamesSql = " name NOT IN (?)";
+        final String exclusiveNamesSql = " batchid NOT IN (SELECT batchid FROM Batch" 
+                + " JOIN batchstatus ON batch.rowid = batchstatus.batchrowid"
+                + " JOIN status ON batchstatus.statusrowid = status.rowid"
+                + " WHERE name IN ( ? ))";
         final String batchLimitSql = " batchid IN (?)";
         
         boolean haveLimit = false;
-                
         
-        if(pastSuccessfulEvents != null) {
-            if(!haveLimit) {
-                selectSql.append(" WHERE");
-                haveLimit = true;
-            } else {
-                selectSql.append(" AND");
-            }
-            selectSql.append(inclusiveNamesSql);
+        if(pastSuccessfulEvents != null && !pastSuccessfulEvents.isEmpty()) {
+            appendLimit(selectSql, haveLimit, inclusiveNamesSql);
+            haveLimit = true;
             argList.add(collectionToCommaSeperatedList(pastSuccessfulEvents));
         }
         
-        if(futureEvents != null) {
-            if(!haveLimit) {
-                selectSql.append(" WHERE");
-                haveLimit = true;
-            } else {
-                selectSql.append(" AND");
-            }
-            selectSql.append(exclusiveNamesSql);
+        if(futureEvents != null && !futureEvents.isEmpty()) {
+            appendLimit(selectSql, haveLimit, exclusiveNamesSql);
+            haveLimit = true;
             argList.add(collectionToCommaSeperatedList(futureEvents));
         }
         
         if(batches != null) {
-            if(!haveLimit) {
-                selectSql.append(" WHERE");
-                haveLimit = true;
-            } else {
-                selectSql.append(" AND");
-            }
-            selectSql.append(batchLimitSql);
+            appendLimit(selectSql, haveLimit, batchLimitSql);
+            haveLimit = true;
             argList.add(batchesToCommaSeperatedList(batches));
         }
         
         return selectSql.toString();
+    }
+    
+    private void appendLimit(StringBuilder sql, boolean firstLimit, String limitSql) {
+        if(!firstLimit) {
+            sql.append(" WHERE");
+        } else {
+            sql.append(" AND");
+        }
+        sql.append(limitSql);
     }
     
     private static String collectionToCommaSeperatedList(Collection<String> collection) {
