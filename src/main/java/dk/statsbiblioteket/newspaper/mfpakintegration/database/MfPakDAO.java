@@ -420,7 +420,80 @@ public class MfPakDAO {
     public Iterator<Batch> getTriggeredBatches(Collection<String> pastSuccessfulEventsMFPak,
                                                Collection<String> pastFailedEventsMFPak,
                                                Collection<String> futureEventsMFPak, Collection<Batch> batches) throws SQLException{
-
-        return null;
+        final String baseSelectSql = "SELECT batchid, name, batchstatus.created FROM Batch" 
+                + " JOIN batchstatus ON batch.rowid = batchstatus.batchrowid"
+                + " JOIN status ON batchstatus.statusrowid = status.rowid"
+                + " WHERE name IN (?)"
+                + " AND name NOT IN (?)";
+        final String batchLimitSql = " AND batchid IN (?)";
+        
+        Map<String, Batch> mfpakBatches = new HashMap<>();
+        
+        String selectSql = baseSelectSql;
+        if(batches != null) {
+            selectSql += batchLimitSql;
+        }
+        
+        try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(selectSql)) {
+            stmt.setString(1, collectionToCommaSeperatedList(pastSuccessfulEventsMFPak));
+            stmt.setString(2, collectionToCommaSeperatedList(futureEventsMFPak));
+            if(batches != null) {
+                stmt.setString(3, batchesToCommaSeperatedList(batches));
+            }
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Batch currentBatch = null;
+                    Long batchID = rs.getLong("batchid");
+                    if(!mfpakBatches.containsKey(batchID.toString())) {
+                        currentBatch = new Batch();
+                        currentBatch.setRoundTripNumber(0);
+                        currentBatch.setBatchID(batchID.toString());
+                        currentBatch.setEventList(new ArrayList<Event>());
+                        mfpakBatches.put(batchID.toString(), currentBatch);
+                    } else {
+                        currentBatch = mfpakBatches.get(batchID.toString());
+                    }
+                    
+                    Timestamp createdTimestamp = rs.getTimestamp("created");
+                    String status = rs.getString("name");
+                    currentBatch.getEventList().add(createEvent(status, createdTimestamp));
+                }
+        
+            }
+        }
+        
+        return mfpakBatches.values().iterator();
+    }
+    
+    private static String collectionToCommaSeperatedList(Collection<String> collection) {
+        StringBuilder sb = new StringBuilder();
+        
+        boolean first = true;
+        for(String s : collection) {
+            if(!first) {
+                sb.append(", ");
+            } else {
+                first = false;
+            }
+            sb.append("'" + EventID.fromFormal(s) + "'");
+        }
+        
+        return sb.toString();
+    }
+    
+    private static String batchesToCommaSeperatedList(Collection<Batch> batches) {
+        StringBuilder sb = new StringBuilder();
+        
+        boolean first = true;
+        for(Batch b : batches) {
+            if(!first) {
+                sb.append(", ");
+            } else {
+                first = false;
+            }
+            sb.append("'" + b.getBatchID() + "'");
+        }
+        
+        return sb.toString();
     }
 }

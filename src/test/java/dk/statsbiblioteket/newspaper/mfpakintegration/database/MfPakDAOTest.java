@@ -5,12 +5,19 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.Event;
+import dk.statsbiblioteket.newspaper.mfpakintegration.EventID;
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -195,5 +202,35 @@ public class MfPakDAOTest {
         Date shipmentDate = dao.getBatchShipmentDate(NON_SHIPPED_BATCH_ID);
         assertNull(shipmentDate); 
     }
+    
+    @Test(groups = {"integrationTest"})
+    public void testGetTriggeredBatches() throws SQLException {
+        MfPakDAO dao = new MfPakDAO(configuration);
+        Collection<String> pastSuccessful = Arrays.asList("Initial");
+        Collection<String> futureEvents = Arrays.asList("Batch shipped to supplier");
+        Collection<Batch> batches = new HashSet<>();
+        Batch b1 = new Batch();
+        b1.setBatchID("4001");
+        batches.add(b1);
+        Batch b2 = new Batch();
+        b2.setBatchID("4002");
+        batches.add(b2);
+        Batch b3 = new Batch();
+        b3.setBatchID("4003");
+        batches.add(b3);
+        Batch b4 = new Batch();
+        b4.setBatchID("4004");
+        batches.add(b4);
+        
+        Set<String> expectedBatchIDs = new HashSet<>();
+        expectedBatchIDs.add("4001");
+        expectedBatchIDs.add("4004");
+        
+        Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, null, futureEvents, batches);
+        while(mfpakBatches.hasNext()) {
+            assertTrue(expectedBatchIDs.contains(mfpakBatches.next()));
+        }
+    }
+    
     
 }
