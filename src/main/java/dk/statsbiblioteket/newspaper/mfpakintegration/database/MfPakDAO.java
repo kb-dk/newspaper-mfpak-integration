@@ -27,12 +27,7 @@ public class MfPakDAO {
     private static Logger log = LoggerFactory.getLogger(MfPakDAO.class);
     protected DBConnector connector = null;
     private final MfPakConfiguration configuration;
-    public static final String GET_BATCH_ID = "SELECT rowId FROM batch WHERE batchId=?";
-    public static final String GET_EVENTS = "SELECT name, batchstatus.created FROM batchstatus, status WHERE batchstatus.statusrowId=status.rowId AND batchstatus.batchrowId=?";
-    public static final String GET_ALL_BARCODES = "SELECT  batchId, rowId FROM batch";
-    public static final String GET_ALL_EVENTS = "SELECT batchrowId, name, batchstatus.created from batchstatus, status where statusrowId = status.rowId ";
-    public static final String GET_NEWSPAPER_ID = "SELECT NewsPaperId FROM NewsPaper WHERE RowId = (SELECT NewsPaperRowId FROM Batch WHERE BatchId = ?) ";
-
+  
     public MfPakDAO(MfPakConfiguration configuration) {
         this.configuration = configuration;
         try {
@@ -56,10 +51,14 @@ public class MfPakDAO {
      * @return The list of batches.
      */
     public List<Batch> getAllBatches() throws SQLException {
+        final String selectAllBarcodesSql = "SELECT batchId, rowId FROM batch";
+        final String selectAllEventsSql = "SELECT batchrowId, name, batchstatus.created"
+                + " FROM batchstatus, status"
+                + " WHERE statusrowId = status.rowId ";
         Map<String, Batch> batchesById = new HashMap<>();
         try (Connection con = getConnection();
-             PreparedStatement statement = con.prepareStatement(GET_ALL_BARCODES);
-             PreparedStatement statement2 = con.prepareStatement(GET_ALL_EVENTS)) {
+             PreparedStatement statement = con.prepareStatement(selectAllBarcodesSql);
+             PreparedStatement statement2 = con.prepareStatement(selectAllEventsSql)) {
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     Long barcode = rs.getLong("batchId");
@@ -99,7 +98,12 @@ public class MfPakDAO {
      * @return the batch.
      */
     public Batch getBatchByBarcode(String barcode) throws SQLException {
-        try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(GET_BATCH_ID)) {
+        final String getBatchIdSql = "SELECT rowId FROM batch WHERE batchId=?";
+        final String getEventsSql = "SELECT name, batchstatus.created"
+                + " FROM batchstatus, status"
+                + " WHERE batchstatus.statusrowId=status.rowId"
+                + " AND batchstatus.batchrowId=?";
+        try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(getBatchIdSql)) {
             stmt.setLong(1, Long.parseLong(barcode));//TODO parse errors?
             try (ResultSet rs = stmt.executeQuery()) {
                 boolean batchExists = rs.next();
@@ -112,7 +116,7 @@ public class MfPakDAO {
                     batch.setBatchID(barcode);
                     int id = rs.getInt("rowId");
                     batch.setEventList(new ArrayList<Event>());
-                    try (PreparedStatement stmt2 = con.prepareStatement(GET_EVENTS)) {
+                    try (PreparedStatement stmt2 = con.prepareStatement(getEventsSql)) {
                         stmt2.setInt(1, id);
                         try (ResultSet rs2 = stmt2.executeQuery()) {
                             while (rs2.next()) {
@@ -143,7 +147,10 @@ public class MfPakDAO {
      * @throws InconsistentDatabaseException if more than one newspaperID is found.
      */
     public String getNewspaperID(String barcode) throws SQLException, InconsistentDatabaseException {
-        try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(GET_NEWSPAPER_ID)) {
+        final String getNewspaperIDSql = "SELECT NewsPaperId"
+                + " FROM NewsPaper"
+                + " WHERE RowId = (SELECT NewsPaperRowId FROM Batch WHERE BatchId = ?) ";
+        try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(getNewspaperIDSql)) {
             stmt.setLong(1, Long.parseLong(barcode));
             try (ResultSet rs = stmt.executeQuery()) {
                 boolean newspaperIDExists = rs.next();
