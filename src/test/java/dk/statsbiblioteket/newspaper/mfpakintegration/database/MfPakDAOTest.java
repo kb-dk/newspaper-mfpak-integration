@@ -203,7 +203,7 @@ public class MfPakDAOTest {
         assertNull(shipmentDate); 
     }
     
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetTriggeredBatches() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
         Collection<String> pastSuccessful = Arrays.asList(EventID.INITIAL.getFormal(), 
@@ -233,7 +233,7 @@ public class MfPakDAOTest {
         }
     }
     
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetTriggeredBatchesWithEmptyBatchesLimitation() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
         Collection<String> pastSuccessful = Arrays.asList(EventID.INITIAL.getFormal());
