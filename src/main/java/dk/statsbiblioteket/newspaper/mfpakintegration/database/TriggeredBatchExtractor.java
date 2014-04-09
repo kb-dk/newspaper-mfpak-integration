@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -145,14 +144,14 @@ public class TriggeredBatchExtractor {
     }
 
     private static String buildPlaceholdersString(int numberOfPlaceholders) {
-        String placeholders = "";
+        StringBuilder placeholders = new StringBuilder("");
         for(int i = 0; i<numberOfPlaceholders; i++) {
             if(i == 0) {
-                placeholders += "?";
+                placeholders.append("?");
             } else {
-                placeholders += ", ?";
+                placeholders.append(", ?");
             }
         }
-        return placeholders;
+        return placeholders.toString();
     }
 }
