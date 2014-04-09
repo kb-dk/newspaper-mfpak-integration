@@ -41,14 +41,11 @@ public class TriggeredBatchExtractor {
             Collection<String> futureEvents, Collection<Batch> batches) throws SQLException {
 
         Map<String, Batch> mfpakBatches = new HashMap<>();
-        List<String> argList = new ArrayList<>();
         
-        String selectSql = buildSql(pastSuccessfulEvents, futureEvents, batches, argList);
-        log.debug("Extracting triggered batches with sql '{}' and parameters '{}'", selectSql, argList);
+        String selectSql = buildSql(pastSuccessfulEvents, futureEvents, batches);
+        log.debug("Extracting triggered batches with sql '{}'", selectSql);
         try (PreparedStatement stmt = connection.prepareStatement(selectSql)) {
-            for(int i = 0; i<argList.size(); i++) {
-                stmt.setString(i+1, argList.get(i));
-            }
+            addParameters(stmt, pastSuccessfulEvents, futureEvents, batches);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Batch currentBatch = null;
@@ -75,38 +72,67 @@ public class TriggeredBatchExtractor {
     }
     
     private String buildSql(Collection<String> pastSuccessfulEvents, Collection<String> futureEvents, 
-            Collection<Batch> batches, List<String> argList) {
+            Collection<Batch> batches) {
         final StringBuilder selectSql = new StringBuilder("SELECT batchid, name, batchstatus.created FROM Batch" 
                 + " JOIN batchstatus ON batch.rowid = batchstatus.batchrowid"
                 + " JOIN status ON batchstatus.statusrowid = status.rowid");
-        final String inclusiveNamesSql = " name IN (?)";
+        final String inclusiveNameSql = " batchid IN (SELECT batchid FROM Batch" 
+                + " JOIN batchstatus ON batch.rowid = batchstatus.batchrowid"
+                + " JOIN status ON batchstatus.statusrowid = status.rowid"
+                + " WHERE name = ? )";
         final String exclusiveNamesSql = " batchid NOT IN (SELECT batchid FROM Batch" 
                 + " JOIN batchstatus ON batch.rowid = batchstatus.batchrowid"
                 + " JOIN status ON batchstatus.statusrowid = status.rowid"
-                + " WHERE name IN ( ? ))";
-        final String batchLimitSql = " batchid IN (?)";
+                + " WHERE name IN ( #### ))";
+        final String batchLimitSql = " batchid IN ( #### )";
         
         boolean haveLimit = false;
         
         if(pastSuccessfulEvents != null && !pastSuccessfulEvents.isEmpty()) {
-            appendLimit(selectSql, haveLimit, inclusiveNamesSql);
-            haveLimit = true;
-            argList.add(collectionToCommaSeparatedList(pastSuccessfulEvents));
+            for(String event : pastSuccessfulEvents) {
+                appendLimit(selectSql, haveLimit, inclusiveNameSql);
+                haveLimit = true;
+            }
         }
         
         if(futureEvents != null && !futureEvents.isEmpty()) {
-            appendLimit(selectSql, haveLimit, exclusiveNamesSql);
+            String placeholders = buildPlaceholdersString(futureEvents.size());
+            appendLimit(selectSql, haveLimit, exclusiveNamesSql.replace("####", placeholders));
             haveLimit = true;
-            argList.add(collectionToCommaSeparatedList(futureEvents));
         }
         
         if(batches != null) {
-            appendLimit(selectSql, haveLimit, batchLimitSql);
+            String placeholders = buildPlaceholdersString(batches.size());
+            appendLimit(selectSql, haveLimit, batchLimitSql.replace("####", placeholders));
             haveLimit = true;
-            argList.add(batchesToCommaSeparatedList(batches));
         }
         
         return selectSql.toString();
+    }
+    
+    private void addParameters(PreparedStatement stmt, Collection<String> pastSuccessfulEvents, 
+            Collection<String> futureEvents, Collection<Batch> batches) throws SQLException {
+        int i = 1;
+        if(pastSuccessfulEvents != null && !pastSuccessfulEvents.isEmpty()) {
+            for(String event : pastSuccessfulEvents) {
+                stmt.setString(i, EventID.fromFormal(event).getMfpak());
+                i++;
+            }
+        }
+        
+        if(futureEvents != null && !futureEvents.isEmpty()) {
+            for(String event : futureEvents) {
+                stmt.setString(i, EventID.fromFormal(event).getMfpak());
+                i++;
+            }
+        }
+        
+        if(batches != null) {
+            for(Batch b : batches) {
+                stmt.setLong(i, Long.parseLong(b.getBatchID()));
+                i++;
+            }
+        }
     }
     
     private void appendLimit(StringBuilder sql, boolean firstLimit, String limitSql) {
@@ -117,38 +143,16 @@ public class TriggeredBatchExtractor {
         }
         sql.append(limitSql);
     }
-    
-    private static String collectionToCommaSeparatedList(Collection<String> collection) {
-        StringBuilder sb = new StringBuilder();
-        
-        boolean first = true;
-        for(String s : collection) {
-            if(!first) {
-                sb.append(", ");
+
+    private static String buildPlaceholdersString(int numberOfPlaceholders) {
+        String placeholders = "";
+        for(int i = 0; i<numberOfPlaceholders; i++) {
+            if(i == 0) {
+                placeholders += "?";
             } else {
-                first = false;
+                placeholders += ", ?";
             }
-            sb.append("'").append(EventID.fromFormal(s).getMfpak()).append("'");
         }
-        
-        return sb.toString();
+        return placeholders;
     }
-    
-    private static String batchesToCommaSeparatedList(Collection<Batch> batches) {
-        StringBuilder sb = new StringBuilder();
-        
-        boolean first = true;
-        for(Batch b : batches) {
-            if(!first) {
-                sb.append(", ");
-            } else {
-                first = false;
-            }
-            sb.append("'").append(b.getBatchID()).append("'");
-        }
-        
-        return sb.toString();
-    }
-    
-    
 }

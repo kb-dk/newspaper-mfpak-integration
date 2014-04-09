@@ -27,7 +27,7 @@ public class MfPakDAOTest {
 
     private MfPakConfiguration configuration;
 
-    @BeforeMethod(groups = {"integrationTest"})
+    @BeforeMethod(groups = {"integrationTest", "externalTest"})
     public void loadConfiguration() throws IOException {
         ConfigurationProvider configurationProvider = new ConfigurationProvider();
         configuration = configurationProvider.loadConfiguration();
@@ -195,7 +195,7 @@ public class MfPakDAOTest {
         assertNull(shipmentDate);
     }
 
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetBatchShipmentDateNonShippedBatch() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
         String NON_SHIPPED_BATCH_ID = "400022028242";
@@ -228,6 +228,7 @@ public class MfPakDAOTest {
         expectedBatchIDs.add("4003");
         
         Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, null, futureEvents, batches);
+        assertTrue(mfpakBatches.hasNext());
         while(mfpakBatches.hasNext()) {
             assertTrue(expectedBatchIDs.contains(mfpakBatches.next()));
         }
