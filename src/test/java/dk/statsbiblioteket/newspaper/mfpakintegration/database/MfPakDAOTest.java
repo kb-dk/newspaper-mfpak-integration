@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -38,7 +39,7 @@ public class MfPakDAOTest {
      * in the database and at least one event each of types "Shipping" and "Received".
      * @throws Exception
      */
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetAllBatches() throws Exception {
         MfPakDAO dao = new MfPakDAO(configuration);
         List<Batch> batches = dao.getAllBatches();
@@ -59,7 +60,7 @@ public class MfPakDAOTest {
         assertTrue("Should have at least one Received event", created >= 1);
     }
 
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetBatchByBarcode() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
         Batch batch = dao.getBatchByBarcode("4004");
@@ -67,21 +68,21 @@ public class MfPakDAOTest {
         assertEquals("Batch should have three events.", 4, batch.getEventList().size());
     }
 
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetEvent() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
         Event event = dao.getEvent("4002", "Initial");
         assertNotNull("Should have found this event.", event);
     }
     
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetNewspaperID() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
         String daoNewspaperID = dao.getNewspaperID("4001");
         assertTrue("boersen".equals(daoNewspaperID));
     }
     
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetNewspaperEntity() throws SQLException, ParseException {
         String NEWSPAPER_ID = "adresseavisen1759";
         String EXPECTED_NEWSPAPER_TITLE = "Kiøbenhavns Kongelig alene priviligerede Adresse-Contoirs Efterretninger";
@@ -99,7 +100,7 @@ public class MfPakDAOTest {
         assertTrue(validDate.before(entity.getNewspaperDateRange().getToDate()));
     }
     
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetNewspaperEntityBadDate() throws SQLException, ParseException {
         String NEWSPAPER_ID = "adresseavisen1759";
         MfPakDAO dao = new MfPakDAO(configuration);
@@ -110,7 +111,7 @@ public class MfPakDAOTest {
         assertNull(entity);
     }
 
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetBatchDateRanges() throws SQLException, ParseException {
         MfPakDAO dao = new MfPakDAO(configuration);
         List<NewspaperDateRange> dateRanges = dao.getBatchDateRanges("400022028242");
@@ -127,7 +128,7 @@ public class MfPakDAOTest {
         assertEquals(fourthFromDate, dateRanges.get(3).getFromDate());
     }
     
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetBatchDateRangesNoBatch() throws SQLException, ParseException {
         MfPakDAO dao = new MfPakDAO(configuration);
         String NON_EXISTING_BATCH_ID = "999999999999";
@@ -135,7 +136,7 @@ public class MfPakDAOTest {
         assertNull("There should not be any date ranges for the non-existing batch", dateRanges);
     }
     
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetBatchNewspaperTitles() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
         List<NewspaperEntity> titles = dao.getBatchNewspaperEntities("400022028242");
@@ -145,7 +146,7 @@ public class MfPakDAOTest {
         assertEquals("Det nye Børsen", titles.get(1).getNewspaperTitle());
     }
     
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetBatchNewspaperTitlesNoBatch() throws SQLException, ParseException {
         MfPakDAO dao = new MfPakDAO(configuration);
         String NON_EXISTING_BATCH_ID = "999999999999";
@@ -153,7 +154,7 @@ public class MfPakDAOTest {
         assertNull("There should not be any date ranges for the non-existing batch", titles);
     }
     
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetBatchOptions() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
         NewspaperBatchOptions options = dao.getBatchOptions("400022028242");
@@ -169,7 +170,7 @@ public class MfPakDAOTest {
         assertEquals(true, options.isOptionB9());
     }
     
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetBatchOptionsNoBatch() throws SQLException, ParseException {
         MfPakDAO dao = new MfPakDAO(configuration);
         String NON_EXISTING_BATCH_ID = "999999999999";
@@ -177,7 +178,7 @@ public class MfPakDAOTest {
         assertNull("There should not be any options for the non-existing batch", options);
     }
 
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetBatchShipmentDate() throws SQLException, ParseException {
         MfPakDAO dao = new MfPakDAO(configuration);
         String EXISTING_BATCH_ID = "400022028241";
@@ -187,7 +188,7 @@ public class MfPakDAOTest {
         assertEquals(expectedDate, shipmentDate);
     }
 
-    @Test(groups = {"integrationTest"})
+    @Test(groups = {"externalTest"})
     public void testGetBatchShipmentDateNoSuchBatch() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
         String NON_EXISTING_BATCH_ID = "999999999999";
@@ -204,35 +205,127 @@ public class MfPakDAOTest {
     }
     
     @Test(groups = {"externalTest"})
-    public void testGetTriggeredBatches() throws SQLException {
+    public void testBatchTriggerInitialNotRecv() throws SQLException {
         MfPakDAO dao = new MfPakDAO(configuration);
-        Collection<String> pastSuccessful = Arrays.asList(EventID.INITIAL.getFormal(), 
-                EventID.ADDED_TO_SHIPPING_CONTAINER.getFormal());
-        Collection<String> futureEvents = Arrays.asList(EventID.SHIPPED_TO_SUPPLIER.getFormal());
+        Collection<String> pastSuccessful = Arrays.asList(EventID.INITIAL.getFormal());
+        Collection<String> futureEvents = Arrays.asList(EventID.RECEIVED_FROM_SUPPLIER.getFormal());
+        
         Collection<Batch> batches = new HashSet<>();
         Batch b1 = new Batch();
-        b1.setBatchID("4001");
+        b1.setBatchID("1001");
         batches.add(b1);
         Batch b2 = new Batch();
-        b2.setBatchID("4002");
+        b2.setBatchID("1002");
         batches.add(b2);
         Batch b3 = new Batch();
-        b3.setBatchID("4003");
+        b3.setBatchID("1003");
         batches.add(b3);
         Batch b4 = new Batch();
-        b4.setBatchID("4004");
+        b4.setBatchID("1004");
         batches.add(b4);
         
         Set<String> expectedBatchIDs = new HashSet<>();
-        expectedBatchIDs.add("4002");
-        expectedBatchIDs.add("4003");
+        expectedBatchIDs.add("1001");
+        expectedBatchIDs.add("1002");
+        expectedBatchIDs.add("1003");
         
         Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, null, futureEvents, batches);
         assertTrue(mfpakBatches.hasNext());
         while(mfpakBatches.hasNext()) {
-            assertTrue(expectedBatchIDs.contains(mfpakBatches.next()));
+            Batch batch = mfpakBatches.next();
+            assertTrue(expectedBatchIDs.contains(batch.getBatchID()));
         }
     }
+    
+    @Test(groups = {"externalTest"})
+    public void testBatchTriggerAddedToShippingNotRecv() throws SQLException {
+        MfPakDAO dao = new MfPakDAO(configuration);
+        Collection<String> pastSuccessful = Arrays.asList(EventID.ADDED_TO_SHIPPING_CONTAINER.getFormal());
+        Collection<String> futureEvents = Arrays.asList(EventID.RECEIVED_FROM_SUPPLIER.getFormal());
+        Collection<Batch> batches = new HashSet<>();
+        Batch b1 = new Batch();
+        b1.setBatchID("1001");
+        batches.add(b1);
+        Batch b2 = new Batch();
+        b2.setBatchID("1002");
+        batches.add(b2);
+        Batch b3 = new Batch();
+        b3.setBatchID("1003");
+        batches.add(b3);
+        Batch b4 = new Batch();
+        b4.setBatchID("1004");
+        batches.add(b4);
+        
+        Set<String> expectedBatchIDs = new HashSet<>();
+        expectedBatchIDs.add("1002");
+        expectedBatchIDs.add("1003");
+        
+        Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, null, futureEvents, batches);
+        assertTrue(mfpakBatches.hasNext());
+        while(mfpakBatches.hasNext()) {
+            Batch batch = mfpakBatches.next();
+            assertTrue(expectedBatchIDs.contains(batch.getBatchID()));
+        }
+    }
+    
+    @Test(groups = {"externalTest"})
+    public void testBatchTriggerAllAddedToContainerButBatchIDLimited() throws SQLException {
+        MfPakDAO dao = new MfPakDAO(configuration);
+        Collection<String> pastSuccessful = Arrays.asList(EventID.ADDED_TO_SHIPPING_CONTAINER.getFormal());
+        Collection<String> futureEvents = new ArrayList<>();
+        
+        Collection<Batch> batches = new HashSet<>();
+        Batch b1 = new Batch();
+        b1.setBatchID("1001");
+        batches.add(b1);
+        Batch b4 = new Batch();
+        b4.setBatchID("1004");
+        batches.add(b4);
+        
+        Set<String> expectedBatchIDs = new HashSet<>();
+        expectedBatchIDs.add("1004");
+        
+        Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, null, futureEvents, batches);
+        assertTrue(mfpakBatches.hasNext());
+        while(mfpakBatches.hasNext()) {
+            Batch batch = mfpakBatches.next();
+            assertTrue(expectedBatchIDs.contains(batch.getBatchID()));
+        }
+    }
+    
+    @Test(groups = {"externalTest"})
+    public void testBatchTriggerInitialAndAddedToShippingNotShippedOrRecv() throws SQLException {
+        MfPakDAO dao = new MfPakDAO(configuration);
+        Collection<String> pastSuccessful = Arrays.asList(EventID.INITIAL.getFormal(), 
+                EventID.ADDED_TO_SHIPPING_CONTAINER.getFormal());
+        Collection<String> futureEvents = Arrays.asList(EventID.SHIPPED_TO_SUPPLIER.getFormal(), 
+                EventID.RECEIVED_FROM_SUPPLIER.getFormal());
+        
+        Collection<Batch> batches = new HashSet<>();
+        Batch b1 = new Batch();
+        b1.setBatchID("1001");
+        batches.add(b1);
+        Batch b2 = new Batch();
+        b2.setBatchID("1002");
+        batches.add(b2);
+        Batch b3 = new Batch();
+        b3.setBatchID("1003");
+        batches.add(b3);
+        Batch b4 = new Batch();
+        b4.setBatchID("1004");
+        batches.add(b4);
+        
+        Set<String> expectedBatchIDs = new HashSet<>();
+        expectedBatchIDs.add("1002");
+        
+        Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, null, futureEvents, batches);
+        assertTrue(mfpakBatches.hasNext());
+        while(mfpakBatches.hasNext()) {
+            Batch batch = mfpakBatches.next();
+            assertTrue(expectedBatchIDs.contains(batch.getBatchID()));
+        }
+    }
+
     
     @Test(groups = {"externalTest"})
     public void testGetTriggeredBatchesWithEmptyBatchesLimitation() throws SQLException {
