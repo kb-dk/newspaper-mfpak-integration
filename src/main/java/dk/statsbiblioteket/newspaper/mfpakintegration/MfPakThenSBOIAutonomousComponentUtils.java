@@ -23,7 +23,7 @@ import javax.xml.bind.JAXBException;
 import java.net.MalformedURLException;
 import java.util.Properties;
 
-public class MfPakThenSBOIAutonomousComponentUtils {
+public class MfPakThenSBOIAutonomousComponentUtils extends AutonomousComponentUtils {
     private static Logger log = LoggerFactory.getLogger(SBOIDomsAutonomousComponentUtils.class);
 
 

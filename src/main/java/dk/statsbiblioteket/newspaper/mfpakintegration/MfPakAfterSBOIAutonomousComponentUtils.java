@@ -3,7 +3,6 @@ package dk.statsbiblioteket.newspaper.mfpakintegration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dk.statsbiblioteket.doms.central.connectors.fedora.pidGenerator.PIDGeneratorException;
 import dk.statsbiblioteket.medieplatform.autonomous.AutonomousComponentUtils;
 import dk.statsbiblioteket.medieplatform.autonomous.CallResult;
 import dk.statsbiblioteket.medieplatform.autonomous.ConfigConstants;
@@ -23,7 +22,7 @@ import javax.xml.bind.JAXBException;
 import java.net.MalformedURLException;
 import java.util.Properties;
 
-public class MfPakAfterSBOIAutonomousComponentUtils {
+public class MfPakAfterSBOIAutonomousComponentUtils extends AutonomousComponentUtils {
     private static Logger log = LoggerFactory.getLogger(SBOIDomsAutonomousComponentUtils.class);
 
 
