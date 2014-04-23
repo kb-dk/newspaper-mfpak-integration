@@ -10,7 +10,7 @@
 
     <groupId>dk.statsbiblioteket.newspaper</groupId>
     <artifactId>newspaper-mfpak-integration</artifactId>
-    <version>1.6-SNAPSHOT</version>
+    <version>1.6</version>
 
     <repositories>
         <repository>
@@ -33,7 +33,7 @@
         <url>https://github.com/statsbiblioteket/newspaper-mfpak-integration</url>
         <connection>scm:git:https://github.com/statsbiblioteket/newspaper-mfpak-integration.git</connection>
         <developerConnection>scm:git:git@github.com:statsbiblioteket/newspaper-mfpak-integration.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>newspaper-mfpak-integration-1.6</tag>
     </scm>
 
     <dependencies>
@@ -45,18 +45,18 @@
         <dependency>
             <groupId>dk.statsbiblioteket.newspaper</groupId>
             <artifactId>process-monitor-datasource-interfaces</artifactId>
-            <version>${autonoumous.component.framework.version}</version>
+            <version>1.7</version>
         </dependency>
         <dependency>
             <groupId>dk.statsbiblioteket.newspaper</groupId>
             <artifactId>process-monitor-datasource-tck</artifactId>
-            <version>${autonoumous.component.framework.version}</version>
+            <version>1.7</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>dk.statsbiblioteket.newspaper</groupId>
             <artifactId>sboi-doms-autonomous-component</artifactId>
-            <version>${autonoumous.component.framework.version}</version>
+            <version>1.7</version>
         </dependency>
         <dependency>
             <groupId>com.mchange</groupId>
