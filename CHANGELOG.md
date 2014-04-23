@@ -1,3 +1,8 @@
+1.6
+* Use newest version (1.7) of batch event framework, which supports alternative triggers
+* Implement MFPAK-based triggers
+* Code and test cleanup
+
 1.5
 * Use version 1.6 of batch event framework
 * Add checks of BatchContext objects
