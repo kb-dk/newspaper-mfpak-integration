@@ -39,7 +39,6 @@ INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400022028241, 
 --INSERT INTO batchstatus (statusrowId, batchrowId) SELECT rowId, LASTVAL() FROM status WHERE name='Batch shipped to supplier';
 INSERT INTO batchstatus (statusrowId, batchrowId, Created) SELECT rowId, LASTVAL(), '2013-11-11' FROM status WHERE name='Batch shipped to supplier';
 
-
 INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, ToDate, DDA, PublicationLocation) VALUES 
 ( (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'adresseavisen1759'), 
     'Kiøbenhavns Kongelig alene priviligerede Adresse-Contoirs Efterretninger',
@@ -47,6 +46,35 @@ INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, ToDate, DDA, Publica
 
 INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES (
     (SELECT RowId FROM Batch WHERE BatchId = 400022028241), '1795-06-01', '1795-06-15');
+
+
+-- Database content for supporting the single bad film of the first pilot batch
+INSERT INTO newspaper (NewsPaperId) VALUES ('morgenavisenjyllandsposten');
+
+INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, ToDate, DDA, PublicationLocation) VALUES 
+( (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'morgenavisenjyllandsposten'), 
+    'Jyllandsposten',
+'1871-09-16', '1937-12-21', '59-14', 'Århus');
+
+INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, ToDate, DDA, PublicationLocation) VALUES 
+( (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'morgenavisenjyllandsposten'), 
+    'Jyllands-Posten',
+'1937-12-22', '1969-09-17', '59-14', 'Århus');
+
+INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, ToDate, DDA, PublicationLocation) VALUES 
+( (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'morgenavisenjyllandsposten'), 
+    'Morgenavisen Jyllands-Posten',
+'1969-09-18', NULL, '59-14', 'Århus');
+
+-- This creates a batch
+INSERT INTO batch (batchid, cartonnumber, NewsPaperRowId) values (400026952148, 0, (SELECT rowid FROM newspaper WHERE NewsPaperId = 'morgenavisenjyllandsposten'));
+-- Creates the shipped status
+INSERT INTO batchstatus (statusrowId, batchrowId, Created) SELECT rowId, LASTVAL(), '2013-11-11' FROM status WHERE name='Batch shipped to supplier';
+
+-- Add the single film that's needed for the check
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES (
+    (SELECT RowId FROM Batch WHERE BatchId = 400026952148), '2002-01-21', '2002-01-31');
+
 
 
 -- Add test data for batch date interval
