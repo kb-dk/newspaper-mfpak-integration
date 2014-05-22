@@ -1,6 +1,8 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration.batchcontext;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.newspaper.mfpakintegration.database.MfPakDAO;
@@ -9,14 +11,20 @@ import dk.statsbiblioteket.newspaper.mfpakintegration.database.MfPakDAO;
  * Util class to work with BatchContext objects 
  */
 public class BatchContextUtils {
+    private final static Map<String, BatchContext> batchContexts = new HashMap<>();
 
     /**
-     * Method to obtain a populated BatchContext object.
+     * Method to obtain a populated BatchContext object. This will be cached, and the same object returned
+     * on successive calls.
+     *
      * @param mfPakDAO The DAO to extract information with.
      * @param batch The batch to extract the information for. 
      * @throws SQLException in case of SQL errors.
      */
-    public static BatchContext buildBatchContext(MfPakDAO mfPakDAO, Batch batch) throws SQLException {
+    public synchronized static BatchContext buildBatchContext(MfPakDAO mfPakDAO, Batch batch) throws SQLException {
+        if (batchContexts.containsKey(batch.getBatchID())) {
+            return batchContexts.get(batch.getBatchID());
+        }
         BatchContext context = new BatchContext(batch);
         
         context.setEntities(mfPakDAO.getBatchNewspaperEntities(batch.getBatchID()));
@@ -26,7 +34,7 @@ public class BatchContextUtils {
         context.setShipmentDate(mfPakDAO.getBatchShipmentDate(batch.getBatchID()));
         
         verifyBatchContext(context);
-        
+        batchContexts.put(batch.getBatchID(), context);
         return context;
     }
     
