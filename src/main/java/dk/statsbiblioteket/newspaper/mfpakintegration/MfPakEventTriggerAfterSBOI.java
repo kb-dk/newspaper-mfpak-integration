@@ -22,9 +22,9 @@ public class MfPakEventTriggerAfterSBOI extends MfPakEventTriggerAbstract implem
 
 
     @Override
-    public Iterator<Batch> getTriggeredBatches(Collection<String> strings, Collection<String> strings2,
-                                               Collection<String> strings3) throws CommunicationException {
-        return getTriggeredBatches(strings,strings2,strings3,null);
+    public Iterator<Batch> getTriggeredBatches(Collection<String> pastSuccessfulEvents, Collection<String> pastFailedEvents,
+                                               Collection<String> futureEvents) throws CommunicationException {
+        return getTriggeredBatches(pastSuccessfulEvents,pastFailedEvents,futureEvents,null);
     }
 
     @Override
