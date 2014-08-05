@@ -52,7 +52,7 @@ public class MfPakEventTriggerThenSBOI extends MfPakEventTriggerAbstract impleme
                     events.getPastFailedEventsRest(),
                     events.getFutureEventsRest(),
                     asList(mfPakResult));
-        } else {
+        } else { //TODO: Notice that we do NOT merge the mfpak batches with the SBOI batches here. This is left as an exercise to the user....
             return mfPakResult;
         }
     }
