@@ -13,18 +13,24 @@ import java.util.Properties;
  * Enables loading of the configuration from external folder to emulate configuration injection.
  */
 public class  ConfigurationProvider {
-    private Logger log = LoggerFactory.getLogger(getClass());
-    private final Properties properties = new Properties();
+    private static Logger log = LoggerFactory.getLogger(ConfigurationProvider.class);
 
     public MfPakConfiguration loadConfiguration() throws IOException {
+        Properties properties = loadProperties();
+        return  createConfiguration(properties);
+    }
+
+    public static Properties loadProperties() throws IOException {
         String pathToProperties = System.getProperty("integration.test.newspaper.properties");
+
         if (pathToProperties == null)  {
             throw new IllegalStateException("Environment variable 'integration.test.newspaper.properties' is " +
                     "not defined, configuration can not be loaded");
         }
         log.info("Loading configuration from: " + pathToProperties);
+        Properties properties = new Properties();
         properties.load(new FileInputStream(pathToProperties));
-        return  createConfiguration(properties);
+        return properties;
     }
 
     private MfPakConfiguration createConfiguration (Properties properties) {
