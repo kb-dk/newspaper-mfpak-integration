@@ -10,7 +10,7 @@
 
     <groupId>dk.statsbiblioteket.newspaper</groupId>
     <artifactId>newspaper-mfpak-integration</artifactId>
-    <version>1.9</version>
+    <version>1.10-SNAPSHOT</version>
 
     <repositories>
         <repository>
@@ -33,7 +33,7 @@
         <url>https://github.com/statsbiblioteket/newspaper-mfpak-integration</url>
         <connection>scm:git:https://github.com/statsbiblioteket/newspaper-mfpak-integration.git</connection>
         <developerConnection>scm:git:git@github.com:statsbiblioteket/newspaper-mfpak-integration.git</developerConnection>
-        <tag>newspaper-mfpak-integration-1.9</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <dependencies>
