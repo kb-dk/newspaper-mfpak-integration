@@ -75,7 +75,16 @@ INSERT INTO batchstatus (statusrowId, batchrowId, Created) SELECT rowId, LASTVAL
 INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES (
     (SELECT RowId FROM Batch WHERE BatchId = 400026952148), '2002-01-21', '2002-01-31');
 
-
+INSERT INTO Order_ (OrderId, status) VALUES (3, 'Packing completed');
+INSERT INTO OrderLine (OrderRowId, NewsPaperRowId, OptionB1, OptionB2, OptionB3, OptionB4, 
+    OptionB5, OptionB6, OptionB7, OptionB8, OptionB9) VALUES (
+    (SELECT RowId FROM Order_ WHERE OrderId = 3), 
+    (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'morgenavisenjyllandsposten'),
+    true, true, true, true, true, true, true, true, true);
+INSERT INTO OrderBatch (OrderRowId, OrderLineRowId, BatchRowId) VALUES (
+    (SELECT RowId FROM Order_ WHERE OrderId = 3), 
+    (SELECT RowId FROM OrderLine LIMIT 1), 
+    (SELECT RowId FROM Batch WHERE BatchId = 400026952148));
 
 -- Add test data for batch date interval
 INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, ToDate, DDA, PublicationLocation) VALUES 
