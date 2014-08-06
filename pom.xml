@@ -26,7 +26,7 @@
     </repositories>
 
     <properties>
-        <autonoumous.component.framework.version>1.9-SNAPSHOT</autonoumous.component.framework.version>
+        <autonoumous.component.framework.version>1.9</autonoumous.component.framework.version>
     </properties>
 
     <scm>
@@ -45,12 +45,12 @@
         <dependency>
             <groupId>dk.statsbiblioteket.newspaper</groupId>
             <artifactId>process-monitor-datasource-interfaces</artifactId>
-            <version>1.8-SNAPSHOT</version>
+            <version>${autonoumous.component.framework.version}</version>
         </dependency>
         <dependency>
             <groupId>dk.statsbiblioteket.newspaper</groupId>
             <artifactId>process-monitor-datasource-tck</artifactId>
-            <version>1.8-SNAPSHOT</version>
+            <version>${autonoumous.component.framework.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
