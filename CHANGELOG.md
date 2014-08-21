@@ -1,7 +1,10 @@
-1.8
+1.10
+* Update batch event framework dependencies to 1.10
 
+1.9
 * Update batch event framework dependencies to 1.9, fixing not finding work when events from MF-PAK is the first
 
+1.8
 1.7
 
 * Cache batch context read from database.
