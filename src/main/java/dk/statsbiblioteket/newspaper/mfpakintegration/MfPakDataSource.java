@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Provides a MfPak system implementation of a newspaper process datasource.
  */
-public class MfPakDataSource implements DataSource {
+public class MfPakDataSource implements DataSource,AutoCloseable {
     private Logger log = LoggerFactory.getLogger(getClass());
     private MfPakDAO dao;
 
@@ -89,5 +89,10 @@ public class MfPakDataSource implements DataSource {
         } else {
             return event;
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        dao.close();
     }
 }

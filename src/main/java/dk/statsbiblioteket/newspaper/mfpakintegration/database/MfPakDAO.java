@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Handles all calls to the actual database backend.
  */
-public class MfPakDAO {
+public class MfPakDAO implements AutoCloseable{
     private static Logger log = LoggerFactory.getLogger(MfPakDAO.class);
     protected DBConnector connector = null;
     private final MfPakConfiguration configuration;
@@ -433,6 +433,12 @@ public class MfPakDAO {
         }
         
         return iter; 
+    }
+
+    public synchronized void close(){
+        if (connector != null){
+            connector.destroy();
+        }
     }
   
 }

@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-public abstract class MfPakEventTriggerAbstract implements EventTrigger {
+public abstract class MfPakEventTriggerAbstract implements EventTrigger,AutoCloseable {
 
     private static Logger log = LoggerFactory.getLogger(MfPakEventTriggerAbstract.class);
     private final MfPakDAO dao;
@@ -121,4 +121,8 @@ public abstract class MfPakEventTriggerAbstract implements EventTrigger {
         }
     }
 
+    @Override
+    public void close() throws Exception {
+        dao.close();
+    }
 }

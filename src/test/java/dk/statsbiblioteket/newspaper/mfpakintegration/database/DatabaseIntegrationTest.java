@@ -20,7 +20,8 @@ public class DatabaseIntegrationTest {
 
     @Test(groups = {"integrationTest"})
     public void databaseConnectionTest() throws SQLException {
-        MfPakDAO dao = new MfPakDAO(configuration);
-        List<Batch> batches = dao.getAllBatches();
+        try(MfPakDAO dao = new MfPakDAO(configuration)) {
+            List<Batch> batches = dao.getAllBatches();
+        }
     }
 }
