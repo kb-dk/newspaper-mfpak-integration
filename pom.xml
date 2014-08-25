@@ -25,7 +25,7 @@
     </repositories>
 
     <properties>
-        <autonoumous.component.framework.version>1.10</autonoumous.component.framework.version>
+        <autonoumous.component.framework.version>1.11-SNAPSHOT</autonoumous.component.framework.version>
     </properties>
 
     <scm>
