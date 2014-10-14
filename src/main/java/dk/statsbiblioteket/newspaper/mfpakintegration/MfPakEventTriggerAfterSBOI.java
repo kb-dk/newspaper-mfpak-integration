@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class MfPakEventTriggerAfterSBOI extends MfPakEventTriggerAbstract implements EventTrigger {
+public class MfPakEventTriggerAfterSBOI extends MfPakEventTriggerAbstract implements EventTrigger<Batch> {
 
     private static Logger log = LoggerFactory.getLogger(MfPakEventTriggerAfterSBOI.class);
 
@@ -22,18 +22,18 @@ public class MfPakEventTriggerAfterSBOI extends MfPakEventTriggerAbstract implem
 
 
     @Override
-    public Iterator<Batch> getTriggeredBatches(Collection<String> pastSuccessfulEvents, Collection<String> pastFailedEvents,
+    public Iterator<Batch> getTriggeredItems(Collection<String> pastSuccessfulEvents, Collection<String> pastFailedEvents,
                                                Collection<String> futureEvents) throws CommunicationException {
-        return getTriggeredBatches(pastSuccessfulEvents,pastFailedEvents,futureEvents,null);
+        return getTriggeredItems(pastSuccessfulEvents,pastFailedEvents,futureEvents,null);
     }
 
     @Override
-    public Iterator<Batch> getTriggeredBatches(Collection<String> pastSuccessfulEvents,
+    public Iterator<Batch> getTriggeredItems(Collection<String> pastSuccessfulEvents,
                                                Collection<String> pastFailedEvents, Collection<String> futureEvents,
                                                Collection<Batch> batches) throws CommunicationException {
         EventSorter events = new EventSorter(pastSuccessfulEvents, pastFailedEvents, futureEvents);
 
-        Iterator<Batch> sboiResults = getSboiEventIndex().getTriggeredBatches(
+        Iterator<Batch> sboiResults = getSboiEventIndex().getTriggeredItems(
                 events.getPastSuccessfulEventsRest(),
                 events.getPastFailedEventsRest(),
                 events.getFutureEventsRest(),
