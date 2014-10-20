@@ -22,6 +22,11 @@ public class MfPakEventTriggerThenSBOI extends MfPakEventTriggerAbstract impleme
 
 
     @Override
+    public Iterator<Batch> getTriggeredItems(Query<Batch> query) throws CommunicationException {
+        return getTriggeredItems(query.getPastSuccessfulEvents(),query.getPastFailedEvents(),query.getFutureEvents(),query.getItems());
+    }
+
+    @Override
     public Iterator<Batch> getTriggeredItems(Collection<String> pastSuccessfulEvents, Collection<String> pastFailedEvents,
                                                Collection<String> futureEvents) throws CommunicationException {
         return getTriggeredItems(pastSuccessfulEvents, pastFailedEvents, futureEvents, null);
