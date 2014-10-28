@@ -74,7 +74,7 @@ public class MfPakThenSBOIAutonomousComponentUtils extends NewspaperBatchAutonom
             mfPakConfiguration.setDatabasePassword(properties.getProperty(ConfigConstants.MFPAK_PASSWORD));
             SBOIEventIndex<Batch> sboiEventIndex = new NewspaperSBOIEventStorage(
                     properties.getProperty(ConfigConstants.AUTONOMOUS_SBOI_URL), new PremisManipulatorFactory<>(
-                    PremisManipulatorFactory.TYPE, new BatchItemFactory()), getEventStorer(properties)
+                    PremisManipulatorFactory.TYPE, new BatchItemFactory()), getEventStorer(properties),Integer.parseInt(properties.getProperty(ConfigConstants.SBOI_PAGESIZE,"100"))
             );
             return new MfPakEventTriggerThenSBOI(mfPakConfiguration, sboiEventIndex);
         } catch (Exception e) {
