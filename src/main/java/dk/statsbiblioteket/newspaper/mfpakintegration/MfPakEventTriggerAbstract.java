@@ -55,10 +55,10 @@ public abstract class MfPakEventTriggerAbstract implements EventTrigger<Batch>,A
         private Collection<String> futureEventsMFPak;
         private Collection<String> futureEventsRest;
 
-        public EventSorter(Collection<String> pastSuccessfulEvents, Collection<String> pastFailedEvents,
+        public EventSorter(Collection<String> pastSuccessfulEvents,
                            Collection<String> futureEvents) {
             this.pastSuccessfulEvents = pastSuccessfulEvents;
-            this.pastFailedEvents = pastFailedEvents;
+
             this.futureEvents = futureEvents;
             invoke();
         }

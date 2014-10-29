@@ -25,7 +25,6 @@ public class MfPakThenSBOIAutonomousComponentUtilsTest {
 
         properties.setProperty(ConfigConstants.AUTONOMOUS_PAST_SUCCESSFUL_EVENTS,"Approved,Data_Archived");
         properties.setProperty(ConfigConstants.AUTONOMOUS_FUTURE_EVENTS, "");
-        properties.setProperty(ConfigConstants.AUTONOMOUS_PAST_FAILED_EVENTS, "");
 
         final Set<Batch> worked = new HashSet<>();
 
