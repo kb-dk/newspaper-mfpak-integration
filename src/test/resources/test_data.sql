@@ -291,5 +291,97 @@ UPDATE batchstatus SET statusrowId = (SELECT rowId from status WHERE "name"='Bat
 INSERT INTO batchstatus (statusrowId,batchrowId) SELECT 1,batchrowId from batchstatus WHERE rowId = LASTVAL();
 UPDATE batchstatus SET statusrowId = (SELECT rowId from status WHERE "name"='Batch approved') WHERE rowId = LASTVAL();
 
+-- Data for batches used for tests in Mediestream aviser
+INSERT INTO newspaper (newspaperid) VALUES ('aktuelt');
+INSERT INTO newspaper (newspaperid) VALUES ('berlingsketidende');
+
+INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, ToDate, DDA, PublicationLocation) VALUES 
+((SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'berlingsketidende'), 'Kiøbenhavnske Danske Post-Tidender', '1749-01-03', '1762-01-01', '1-30', 'København'),
+((SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'berlingsketidende'), 'De til Forsendelse med Posten allene privilegerede Kiøbenhavnske Tidender', '1762-01-04', '1808-09-30', '1-30', 'København'),
+((SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'berlingsketidende'), 'Den til Forsendelse med de Kongelige Rideposter privilegerede Danske Statstidende', '1808-10-03', '1832-12-31', '1-30', 'København'),
+((SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'berlingsketidende'), 'Den til Forsendelse med de Kongelige Brevposter privilegerede Berlingske Politiske og Avertissementstidende', '1833-01-01', '1935-12-31', '1-30', 'København'),
+((SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'berlingsketidende'), 'Berlingske Tidende', '1936-01-01', '2011-01-25', '1-30', 'København'),
+((SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'berlingsketidende'), 'Berlingske', '2011-01-26', NULL, '1-30', 'København');
+
+INSERT INTO NewsPaperTitle (NewsPaperRowId, Name, FromDate, ToDate, DDA, PublicationLocation) VALUES 
+((SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'aktuelt'), 'Socialisten', '1871-07-21', '1874-05-09', '1-137', 'København'),
+((SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'aktuelt'), 'Social-Demokraten', '1874-05-10', '1959-03-31', '1-137', 'København'),
+((SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'aktuelt'), 'Aktuelt', '1959-04-01', '1978-01-16', '1-137', 'København'),
+((SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'aktuelt'), 'Lands-avisen Aktuelt', '1978-01-17', '1982-12-31', '1-137', 'København'),
+((SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'aktuelt'), 'Aktuelt', '1983-01-01', '1987-05-02', '1-137', 'København'),
+((SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'aktuelt'), 'Det Fri Aktuelt', '1987-05-02', '1997-08-07', '1-137', 'København'),
+((SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'aktuelt'), 'Aktuelt', '1997-08-08', '2001-04-06', '1-137', 'København');
+
+INSERT INTO batch (batchid, cartonnumber, newspaperrowid) VALUES (400026951974, 1, (SELECT rowid FROM newspaper WHERE newspaperid = 'berlingsketidende'));
+INSERT INTO batch (batchid, cartonnumber, newspaperrowid) VALUES (400026952091, 1, (SELECT rowid FROM newspaper WHERE newspaperid = 'aktuelt'));
+
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES 
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1749-01-03', '1749-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1750-01-01', '1750-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1751-01-01', '1751-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1752-01-01', '1752-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1753-01-01', '1753-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1754-01-01', '1754-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1755-01-01', '1755-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1756-01-01', '1756-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1757-01-01', '1757-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1758-01-01', '1758-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1759-01-01', '1759-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1760-01-01', '1760-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1761-01-01', '1761-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1762-01-01', '1762-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1763-01-01', '1763-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1764-01-01', '1764-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1765-01-01', '1765-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1766-01-01', '1766-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026951974), '1767-01-01', '1767-12-31');
+
+INSERT INTO Film (BatchRowId, FromDate, ToDate) VALUES 
+((SELECT RowId FROM Batch WHERE BatchId = 400026952091), '1974-07-01', '1974-07-15'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026952091), '1974-07-16', '1974-07-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026952091), '1974-08-01', '1974-08-15'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026952091), '1974-08-16', '1974-08-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026952091), '1974-09-01', '1974-09-15'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026952091), '1974-09-16', '1974-09-30'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026952091), '1974-10-01', '1974-10-15'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026952091), '1974-10-16', '1974-10-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026952091), '1974-11-01', '1974-11-15'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026952091), '1974-11-16', '1974-11-30'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026952091), '1974-12-01', '1974-12-15'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026952091), '1974-12-16', '1974-12-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026952091), '1975-01-01', '1975-01-31'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026952091), '1975-02-01', '1975-02-28'),
+((SELECT RowId FROM Batch WHERE BatchId = 400026952091), '1975-03-01', '1975-03-31');
+
+INSERT INTO OrderLine (OrderRowId, NewsPaperRowId, OptionB1, OptionB2, OptionB3, OptionB4,
+    OptionB5, OptionB6, OptionB7, OptionB8, OptionB9) VALUES (
+    (SELECT RowId FROM Order_ WHERE OrderId = 2),
+    (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'berlingsketidende'),
+    false, true, true, false, false, false, false, false, false);
+INSERT INTO OrderBatch (OrderRowId, OrderLineRowId, BatchRowId) VALUES (
+     (SELECT RowId FROM Order_ WHERE OrderId = 2),
+     CURRVAL('orderline_rowid_seq'),
+     (SELECT RowId FROM Batch WHERE BatchId = 400026951974));
 
 
+INSERT INTO OrderLine (OrderRowId, NewsPaperRowId, OptionB1, OptionB2, OptionB3, OptionB4,
+    OptionB5, OptionB6, OptionB7, OptionB8, OptionB9) VALUES (
+    (SELECT RowId FROM Order_ WHERE OrderId = 2),
+    (SELECT RowId FROM NewsPaper WHERE NewsPaperId = 'aktuelt'),
+    true, false, true, false, false, false, true, false, false);
+INSERT INTO OrderBatch (OrderRowId, OrderLineRowId, BatchRowId) VALUES (
+     (SELECT RowId FROM Order_ WHERE OrderId = 2),
+     CURRVAL('orderline_rowid_seq'),
+     (SELECT RowId FROM Batch WHERE BatchId = 400026952091));
+
+INSERT INTO batchstatus (batchrowid, statusrowid) VALUES 
+((SELECT rowid FROM batch where batchid = 400026951974), 2),
+((SELECT rowid FROM batch where batchid = 400026951974), 3),
+((SELECT rowid FROM batch where batchid = 400026951974), 7),
+((SELECT rowid FROM batch where batchid = 400026951974), 5);
+
+INSERT INTO batchstatus (batchrowid, statusrowid) VALUES 
+((SELECT rowid FROM batch where batchid = 400026952091), 2),
+((SELECT rowid FROM batch where batchid = 400026952091), 3),
+((SELECT rowid FROM batch where batchid = 400026952091), 7),
+((SELECT rowid FROM batch where batchid = 400026952091), 5);
