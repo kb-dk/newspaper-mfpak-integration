@@ -1,5 +1,8 @@
 package dk.statsbiblioteket.newspaper.mfpakintegration;
 
+import dk.statsbiblioteket.medieplatform.autonomous.Batch;
+import dk.statsbiblioteket.medieplatform.autonomous.BatchItemFactory;
+import dk.statsbiblioteket.medieplatform.autonomous.NewspaperSBOIEventStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,10 +15,9 @@ import dk.statsbiblioteket.medieplatform.autonomous.DomsEventStorageFactory;
 import dk.statsbiblioteket.medieplatform.autonomous.EventStorer;
 import dk.statsbiblioteket.medieplatform.autonomous.EventTrigger;
 import dk.statsbiblioteket.medieplatform.autonomous.InitialisationException;
-import dk.statsbiblioteket.medieplatform.autonomous.NewspaperIDFormatter;
 import dk.statsbiblioteket.medieplatform.autonomous.PremisManipulatorFactory;
 import dk.statsbiblioteket.medieplatform.autonomous.RunnableComponent;
-import dk.statsbiblioteket.medieplatform.autonomous.SBOIDomsAutonomousComponentUtils;
+import dk.statsbiblioteket.medieplatform.autonomous.NewspaperBatchAutonomousComponentUtils;
 import dk.statsbiblioteket.medieplatform.autonomous.SBOIEventIndex;
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 
@@ -23,8 +25,8 @@ import javax.xml.bind.JAXBException;
 import java.net.MalformedURLException;
 import java.util.Properties;
 
-public class MfPakThenSBOIAutonomousComponentUtils extends AutonomousComponentUtils {
-    private static Logger log = LoggerFactory.getLogger(SBOIDomsAutonomousComponentUtils.class);
+public class MfPakThenSBOIAutonomousComponentUtils extends NewspaperBatchAutonomousComponentUtils {
+    private static Logger log = LoggerFactory.getLogger(MfPakThenSBOIAutonomousComponentUtils.class);
 
 
     /**
@@ -57,22 +59,22 @@ public class MfPakThenSBOIAutonomousComponentUtils extends AutonomousComponentUt
      *     experienced in order to be eligible to be worked on by this component
      * @see AutonomousComponentUtils#startAutonomousComponent(Properties, RunnableComponent, EventTrigger, EventStorer)
      */
-    public static CallResult startAutonomousComponent(Properties properties, RunnableComponent component) {
+    public static CallResult<Batch> startAutonomousComponent(Properties properties, RunnableComponent<Batch> component) {
         return AutonomousComponentUtils.startAutonomousComponent(properties, component,
                                                                  getEventTrigger(properties),
                                                                  getEventStorer(properties)
         );
     }
 
-    private static synchronized EventTrigger getEventTrigger(Properties properties) {
+    private static synchronized EventTrigger<Batch> getEventTrigger(Properties properties) {
         try {
             MfPakConfiguration mfPakConfiguration = new MfPakConfiguration();
             mfPakConfiguration.setDatabaseUrl(properties.getProperty(ConfigConstants.MFPAK_URL));
             mfPakConfiguration.setDatabaseUser(properties.getProperty(ConfigConstants.MFPAK_USER));
             mfPakConfiguration.setDatabasePassword(properties.getProperty(ConfigConstants.MFPAK_PASSWORD));
-            SBOIEventIndex sboiEventIndex = new SBOIEventIndex(
-                    properties.getProperty(ConfigConstants.AUTONOMOUS_SBOI_URL), new PremisManipulatorFactory(
-                    new NewspaperIDFormatter(), PremisManipulatorFactory.TYPE), getEventStorer(properties)
+            SBOIEventIndex<Batch> sboiEventIndex = new NewspaperSBOIEventStorage(
+                    properties.getProperty(ConfigConstants.AUTONOMOUS_SBOI_URL), new PremisManipulatorFactory<>(
+                    PremisManipulatorFactory.TYPE, new BatchItemFactory()), getEventStorer(properties),Integer.parseInt(properties.getProperty(ConfigConstants.SBOI_PAGESIZE,"100"))
             );
             return new MfPakEventTriggerThenSBOI(mfPakConfiguration, sboiEventIndex);
         } catch (Exception e) {
@@ -81,12 +83,13 @@ public class MfPakThenSBOIAutonomousComponentUtils extends AutonomousComponentUt
         }
     }
 
-    private static synchronized DomsEventStorage getEventStorer(Properties properties) {
-        DomsEventStorageFactory domsEventStorageFactory = new DomsEventStorageFactory();
+    private static synchronized DomsEventStorage<Batch> getEventStorer(Properties properties) {
+        DomsEventStorageFactory<Batch> domsEventStorageFactory = new DomsEventStorageFactory<>();
         domsEventStorageFactory.setFedoraLocation(properties.getProperty(ConfigConstants.DOMS_URL));
         domsEventStorageFactory.setPidGeneratorLocation(properties.getProperty(ConfigConstants.DOMS_PIDGENERATOR_URL));
         domsEventStorageFactory.setUsername(properties.getProperty(ConfigConstants.DOMS_USERNAME));
         domsEventStorageFactory.setPassword(properties.getProperty(ConfigConstants.DOMS_PASSWORD));
+        domsEventStorageFactory.setItemFactory(new BatchItemFactory());
         try {
             return domsEventStorageFactory.createDomsEventStorage();
         } catch (Exception e) {

@@ -14,13 +14,13 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-public abstract class MfPakEventTriggerAbstract implements EventTrigger,AutoCloseable {
+public abstract class MfPakEventTriggerAbstract implements EventTrigger<Batch>,AutoCloseable {
 
     private static Logger log = LoggerFactory.getLogger(MfPakEventTriggerAbstract.class);
     private final MfPakDAO dao;
-    private SBOIEventIndex sboiEventIndex;
+    private SBOIEventIndex<Batch> sboiEventIndex;
 
-    public MfPakEventTriggerAbstract(MfPakConfiguration configuration, SBOIEventIndex sboiEventIndex) {
+    public MfPakEventTriggerAbstract(MfPakConfiguration configuration, SBOIEventIndex<Batch> sboiEventIndex) {
         this.sboiEventIndex = sboiEventIndex;
         dao = new MfPakDAO(configuration);
     }
@@ -29,7 +29,7 @@ public abstract class MfPakEventTriggerAbstract implements EventTrigger,AutoClos
         return dao;
     }
 
-    public SBOIEventIndex getSboiEventIndex() {
+    public SBOIEventIndex<Batch> getSboiEventIndex() {
         return sboiEventIndex;
     }
 

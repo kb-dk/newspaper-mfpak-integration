@@ -12,29 +12,34 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class MfPakEventTriggerThenSBOI extends MfPakEventTriggerAbstract implements EventTrigger {
+public class MfPakEventTriggerThenSBOI extends MfPakEventTriggerAbstract implements EventTrigger<Batch> {
 
     private static Logger log = LoggerFactory.getLogger(MfPakEventTriggerThenSBOI.class);
 
-    public MfPakEventTriggerThenSBOI(MfPakConfiguration configuration, SBOIEventIndex sboiEventIndex) {
+    public MfPakEventTriggerThenSBOI(MfPakConfiguration configuration, SBOIEventIndex<Batch> sboiEventIndex) {
         super(configuration, sboiEventIndex);
     }
 
 
     @Override
-    public Iterator<Batch> getTriggeredBatches(Collection<String> pastSuccessfulEvents, Collection<String> pastFailedEvents,
-                                               Collection<String> futureEvents) throws CommunicationException {
-        return getTriggeredBatches(pastSuccessfulEvents, pastFailedEvents, futureEvents, null);
+    public Iterator<Batch> getTriggeredItems(Query<Batch> query) throws CommunicationException {
+        return getTriggeredItems(query.getPastSuccessfulEvents(),query.getPastFailedEvents(),query.getFutureEvents(),query.getItems());
     }
 
     @Override
-    public Iterator<Batch> getTriggeredBatches(Collection<String> pastSuccessfulEvents,
+    public Iterator<Batch> getTriggeredItems(Collection<String> pastSuccessfulEvents, Collection<String> pastFailedEvents,
+                                               Collection<String> futureEvents) throws CommunicationException {
+        return getTriggeredItems(pastSuccessfulEvents, pastFailedEvents, futureEvents, null);
+    }
+
+    @Override
+    public Iterator<Batch> getTriggeredItems(Collection<String> pastSuccessfulEvents,
                                                Collection<String> pastFailedEvents, Collection<String> futureEvents,
                                                Collection<Batch> batches) throws CommunicationException {
         EventSorter events = new EventSorter(pastSuccessfulEvents, pastFailedEvents, futureEvents);
 
 
-        Iterator<Batch> mfPakResult = null;
+        Iterator<Batch> mfPakResult;
         try {
             mfPakResult = getDao().getTriggeredBatches(
                     events.getPastSuccessfulEventsMFPak(),
@@ -47,11 +52,10 @@ public class MfPakEventTriggerThenSBOI extends MfPakEventTriggerAbstract impleme
 
 
         if (mfPakResult.hasNext()) {
-            return getSboiEventIndex().getTriggeredBatches(
-                    events.getPastSuccessfulEventsRest(),
-                    events.getPastFailedEventsRest(),
-                    events.getFutureEventsRest(),
-                    asList(mfPakResult));
+            return getSboiEventIndex().getTriggeredItems(events.getPastSuccessfulEventsRest(),
+                                                                events.getPastFailedEventsRest(),
+                                                                events.getFutureEventsRest(),
+                                                                asList(mfPakResult));
         } else { //TODO: Notice that we do NOT merge the mfpak batches with the SBOI batches here. This is left as an exercise to the user....
             return mfPakResult;
         }

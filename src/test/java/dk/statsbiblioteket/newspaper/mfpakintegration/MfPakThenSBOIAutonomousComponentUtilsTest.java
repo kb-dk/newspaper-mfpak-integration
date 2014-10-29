@@ -2,6 +2,7 @@ package dk.statsbiblioteket.newspaper.mfpakintegration;
 
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ConfigConstants;
+import dk.statsbiblioteket.medieplatform.autonomous.Item;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.RunnableComponent;
 import dk.statsbiblioteket.newspaper.mfpakintegration.database.ConfigurationProvider;
@@ -28,7 +29,7 @@ public class MfPakThenSBOIAutonomousComponentUtilsTest {
 
         final Set<Batch> worked = new HashSet<>();
 
-        MfPakThenSBOIAutonomousComponentUtils.startAutonomousComponent(properties,new RunnableComponent() {
+        MfPakThenSBOIAutonomousComponentUtils.startAutonomousComponent(properties,new RunnableComponent<Batch>() {
             @Override
             public String getComponentName() {
                 return "TestComponent";
@@ -45,7 +46,7 @@ public class MfPakThenSBOIAutonomousComponentUtilsTest {
             }
 
             @Override
-            public void doWorkOnBatch(Batch batch, ResultCollector resultCollector) throws Exception {
+            public void doWorkOnItem(Batch batch, ResultCollector resultCollector) throws Exception {
                 worked.add(batch);
             }
         });

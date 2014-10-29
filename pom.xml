@@ -24,10 +24,6 @@
         </repository>
     </repositories>
 
-    <properties>
-        <autonoumous.component.framework.version>1.11-SNAPSHOT</autonoumous.component.framework.version>
-    </properties>
-
     <scm>
         <url>https://github.com/statsbiblioteket/newspaper-mfpak-integration</url>
         <connection>scm:git:https://github.com/statsbiblioteket/newspaper-mfpak-integration.git</connection>
@@ -44,18 +40,18 @@
         <dependency>
             <groupId>dk.statsbiblioteket.newspaper</groupId>
             <artifactId>process-monitor-datasource-interfaces</artifactId>
-            <version>${autonoumous.component.framework.version}</version>
+            <version>1.12-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>dk.statsbiblioteket.newspaper</groupId>
             <artifactId>process-monitor-datasource-tck</artifactId>
-            <version>${autonoumous.component.framework.version}</version>
+            <version>1.12-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>dk.statsbiblioteket.newspaper</groupId>
-            <artifactId>sboi-doms-autonomous-component</artifactId>
-            <version>${autonoumous.component.framework.version}</version>
+            <artifactId>newspaper-autonomous-component</artifactId>
+            <version>1.12-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.mchange</groupId>
