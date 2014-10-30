@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -30,7 +31,6 @@ public class MfPakEventTriggerThenSBOI extends MfPakEventTriggerAbstract impleme
         Iterator<Batch> mfPakResult;
         try {
             mfPakResult = getDao().getTriggeredBatches(events.getPastSuccessfulEventsMFPak(),
-                                                              events.getPastFailedEventsMFPak(),
                                                               events.getFutureEventsMFPak(),
                                                               query.getItems());
         } catch (SQLException e) {
