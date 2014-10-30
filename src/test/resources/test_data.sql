@@ -374,14 +374,14 @@ INSERT INTO OrderBatch (OrderRowId, OrderLineRowId, BatchRowId) VALUES (
      CURRVAL('orderline_rowid_seq'),
      (SELECT RowId FROM Batch WHERE BatchId = 400026952091));
 
-INSERT INTO batchstatus (batchrowid, statusrowid) VALUES 
-((SELECT rowid FROM batch where batchid = 400026951974), 2),
-((SELECT rowid FROM batch where batchid = 400026951974), 3),
-((SELECT rowid FROM batch where batchid = 400026951974), 7),
-((SELECT rowid FROM batch where batchid = 400026951974), 5);
+INSERT INTO batchstatus (batchrowid, statusrowid, created) VALUES 
+((SELECT rowid FROM batch where batchid = 400026951974), 2, '2013-11-01 00:00:00'),
+((SELECT rowid FROM batch where batchid = 400026951974), 3, '2013-11-01 00:00:00'),
+((SELECT rowid FROM batch where batchid = 400026951974), 7, '2013-11-01 00:00:00'),
+((SELECT rowid FROM batch where batchid = 400026951974), 5, '2013-11-01 00:00:00');
 
-INSERT INTO batchstatus (batchrowid, statusrowid) VALUES 
-((SELECT rowid FROM batch where batchid = 400026952091), 2),
-((SELECT rowid FROM batch where batchid = 400026952091), 3),
-((SELECT rowid FROM batch where batchid = 400026952091), 7),
-((SELECT rowid FROM batch where batchid = 400026952091), 5);
+INSERT INTO batchstatus (batchrowid, statusrowid, created) VALUES 
+((SELECT rowid FROM batch where batchid = 400026952091), 2, '2013-11-01 00:00:00'),
+((SELECT rowid FROM batch where batchid = 400026952091), 3, '2013-11-01 00:00:00'),
+((SELECT rowid FROM batch where batchid = 400026952091), 7, '2013-11-01 00:00:00'),
+((SELECT rowid FROM batch where batchid = 400026952091), 5, '2013-11-01 00:00:00');
