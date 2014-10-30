@@ -407,20 +407,18 @@ public class MfPakDAO implements AutoCloseable{
     }
 
     /**
-     * Find all batches which have the pastSuccessfulEvents set and do NOT have the futureEventsSet. Unclear about what
-     * to do with pastFailedEvents,  ignore for now. If batches is not null, all results must be contained in batches. This
+     * Find all batches which have the pastSuccessfulEvents set and do NOT have the futureEventsSet.
+     * If batches is not null, all results must be contained in batches. This
      * allows the user to constrain the search to a given group of batches. If it is null, search in all known batches.
      *
      * The event lists have already be sanitized, so they should only contain mfpak events, but in the formal pattern.
      * @see dk.statsbiblioteket.newspaper.mfpakintegration.EventID
      * @param pastSuccessfulEventsMFPak
-     * @param pastFailedEventsMFPak
      * @param futureEventsMFPak
      * @param batches
      * @return an iterator over the found batches.
      */
     public Iterator<Batch> getTriggeredBatches(Collection<String> pastSuccessfulEventsMFPak,
-                                               Collection<String> pastFailedEventsMFPak,
                                                Collection<String> futureEventsMFPak, Collection<Batch> batches) throws SQLException {
         Iterator<Batch> iter;
         

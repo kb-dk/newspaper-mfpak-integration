@@ -241,7 +241,7 @@ public class MfPakDAOTest {
             expectedBatchIDs.add("1001");
             expectedBatchIDs.add("1002");
             expectedBatchIDs.add("1003");
-            Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, null, futureEvents, batches);
+            Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, futureEvents, batches);
             assertTrue(mfpakBatches.hasNext());
             while (mfpakBatches.hasNext()) {
                 Batch batch = mfpakBatches.next();
@@ -271,7 +271,7 @@ public class MfPakDAOTest {
             Set<String> expectedBatchIDs = new HashSet<>();
             expectedBatchIDs.add("1002");
             expectedBatchIDs.add("1003");
-            Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, null, futureEvents, batches);
+            Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, futureEvents, batches);
             assertTrue(mfpakBatches.hasNext());
             while (mfpakBatches.hasNext()) {
                 Batch batch = mfpakBatches.next();
@@ -294,7 +294,7 @@ public class MfPakDAOTest {
             batches.add(b4);
             Set<String> expectedBatchIDs = new HashSet<>();
             expectedBatchIDs.add("1004");
-            Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, null, futureEvents, batches);
+            Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, futureEvents, batches);
             assertTrue(mfpakBatches.hasNext());
             while (mfpakBatches.hasNext()) {
                 Batch batch = mfpakBatches.next();
@@ -323,7 +323,7 @@ public class MfPakDAOTest {
             batches.add(b4);
             Set<String> expectedBatchIDs = new HashSet<>();
             expectedBatchIDs.add("1002");
-            Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, null, futureEvents, batches);
+            Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, futureEvents, batches);
             assertTrue(mfpakBatches.hasNext());
             while (mfpakBatches.hasNext()) {
                 Batch batch = mfpakBatches.next();
@@ -340,7 +340,7 @@ public class MfPakDAOTest {
             Collection<String> pastSuccessful = Arrays.asList(EventID.INITIAL.getFormal());
             Collection<String> futureEvents = Arrays.asList(EventID.SHIPPED_TO_SUPPLIER.getFormal());
             Collection<Batch> batches = new HashSet<>();
-            Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, null, futureEvents, batches);
+            Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, futureEvents, batches);
             assertFalse(mfpakBatches.hasNext());
         }
     }

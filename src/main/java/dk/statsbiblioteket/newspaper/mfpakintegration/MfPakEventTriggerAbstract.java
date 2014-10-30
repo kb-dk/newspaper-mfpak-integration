@@ -46,19 +46,16 @@ public abstract class MfPakEventTriggerAbstract implements EventTrigger<Batch>,A
 
     protected class EventSorter {
         private Collection<String> pastSuccessfulEvents;
-        private Collection<String> pastFailedEvents;
         private Collection<String> futureEvents;
         private Collection<String> pastSuccessfulEventsMFPak;
         private Collection<String> pastSuccessfulEventsRest;
-        private Collection<String> pastFailedEventsMFPak;
-        private Collection<String> pastFailedEventsRest;
         private Collection<String> futureEventsMFPak;
         private Collection<String> futureEventsRest;
 
-        public EventSorter(Collection<String> pastSuccessfulEvents, Collection<String> pastFailedEvents,
+        public EventSorter(Collection<String> pastSuccessfulEvents,
                            Collection<String> futureEvents) {
             this.pastSuccessfulEvents = pastSuccessfulEvents;
-            this.pastFailedEvents = pastFailedEvents;
+
             this.futureEvents = futureEvents;
             invoke();
         }
@@ -69,14 +66,6 @@ public abstract class MfPakEventTriggerAbstract implements EventTrigger<Batch>,A
 
         public Collection<String> getPastSuccessfulEventsRest() {
             return pastSuccessfulEventsRest;
-        }
-
-        public Collection<String> getPastFailedEventsMFPak() {
-            return pastFailedEventsMFPak;
-        }
-
-        public Collection<String> getPastFailedEventsRest() {
-            return pastFailedEventsRest;
         }
 
         public Collection<String> getFutureEventsMFPak() {
@@ -111,9 +100,6 @@ public abstract class MfPakEventTriggerAbstract implements EventTrigger<Batch>,A
         public EventSorter invoke() {
             pastSuccessfulEventsMFPak = mfPakOnly(pastSuccessfulEvents);
             pastSuccessfulEventsRest = remove(pastSuccessfulEvents, pastSuccessfulEventsMFPak);
-
-            pastFailedEventsMFPak = mfPakOnly(pastFailedEvents);
-            pastFailedEventsRest = remove(pastFailedEvents, pastFailedEventsMFPak);
 
             futureEventsMFPak = mfPakOnly(futureEvents);
             futureEventsRest = remove(futureEvents, futureEventsMFPak);
