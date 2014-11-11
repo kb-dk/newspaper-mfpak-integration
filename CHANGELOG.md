@@ -1,3 +1,6 @@
+1.11
+* Update to newest version of item event framework. Note that MFPAK integration only works with batches, not general items.
+
 1.10
 * Update batch event framework dependencies to 1.10
 
