@@ -423,7 +423,7 @@ public class MfPakDAO implements AutoCloseable{
         Iterator<Batch> iter;
         
         if(batches != null && batches.isEmpty()) {
-            return Collections.emptyIterator();
+            batches = null;
         }
         try (Connection conn = getConnection()) {
             TriggeredBatchExtractor extractor = new TriggeredBatchExtractor(conn);

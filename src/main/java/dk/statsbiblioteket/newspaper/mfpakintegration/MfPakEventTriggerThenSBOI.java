@@ -41,8 +41,9 @@ public class MfPakEventTriggerThenSBOI extends MfPakEventTriggerAbstract impleme
         Query<Batch> query2 = new Query<>();
         query2.getPastSuccessfulEvents().addAll(events.getPastSuccessfulEventsRest());
         query2.getFutureEvents().addAll(events.getFutureEventsRest());
-        query2.getItems().addAll(asList(mfPakResult));
-        if (mfPakResult.hasNext()) {
+        final Collection<Batch> mfPakBatches = asList(mfPakResult);
+        query2.getItems().addAll(mfPakBatches);
+        if (!mfPakBatches.isEmpty()) {
             return getSboiEventIndex().getTriggeredItems(query2);
         } else { //TODO: Notice that we do NOT merge the mfpak batches with the SBOI batches here. This is left as an exercise to the user....
             return mfPakResult;

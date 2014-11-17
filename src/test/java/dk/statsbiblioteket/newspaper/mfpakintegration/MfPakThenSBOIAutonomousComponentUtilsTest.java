@@ -15,15 +15,11 @@ import java.util.Set;
 
 public class MfPakThenSBOIAutonomousComponentUtilsTest {
 
-    @Test(groups = {"integrationTest"}, enabled = false)
+    @Test(groups = {"integrationTest"}, enabled = true)
     public void testGetEvents() throws Exception {
         Properties properties = ConfigurationProvider.loadProperties();
 
-        properties.setProperty(ConfigConstants.MFPAK_URL,"jdbc:postgresql://PLACEHOLDER/mfpak-stage?ssl=true");
-        properties.setProperty(ConfigConstants.MFPAK_USER,"mfpak");
-        properties.setProperty(ConfigConstants.MFPAK_PASSWORD,"PLACEHOLDER");
-
-        properties.setProperty(ConfigConstants.AUTONOMOUS_PAST_SUCCESSFUL_EVENTS,"Approved,Data_Archived");
+        properties.setProperty(ConfigConstants.AUTONOMOUS_PAST_SUCCESSFUL_EVENTS,"Data_Archived");
         properties.setProperty(ConfigConstants.AUTONOMOUS_FUTURE_EVENTS, "");
 
         final Set<Batch> worked = new HashSet<>();

@@ -2,11 +2,9 @@ package dk.statsbiblioteket.newspaper.mfpakintegration;
 
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.BatchItemFactory;
-import dk.statsbiblioteket.medieplatform.autonomous.NewspaperSBOIEventStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dk.statsbiblioteket.doms.central.connectors.fedora.pidGenerator.PIDGeneratorException;
 import dk.statsbiblioteket.medieplatform.autonomous.AutonomousComponentUtils;
 import dk.statsbiblioteket.medieplatform.autonomous.CallResult;
 import dk.statsbiblioteket.medieplatform.autonomous.ConfigConstants;
@@ -21,8 +19,6 @@ import dk.statsbiblioteket.medieplatform.autonomous.NewspaperBatchAutonomousComp
 import dk.statsbiblioteket.medieplatform.autonomous.SBOIEventIndex;
 import dk.statsbiblioteket.newspaper.mfpakintegration.configuration.MfPakConfiguration;
 
-import javax.xml.bind.JAXBException;
-import java.net.MalformedURLException;
 import java.util.Properties;
 
 public class MfPakThenSBOIAutonomousComponentUtils extends NewspaperBatchAutonomousComponentUtils {
@@ -74,7 +70,7 @@ public class MfPakThenSBOIAutonomousComponentUtils extends NewspaperBatchAutonom
             mfPakConfiguration.setDatabaseUrl(properties.getProperty(ConfigConstants.MFPAK_URL));
             mfPakConfiguration.setDatabaseUser(properties.getProperty(ConfigConstants.MFPAK_USER));
             mfPakConfiguration.setDatabasePassword(properties.getProperty(ConfigConstants.MFPAK_PASSWORD));
-            SBOIEventIndex<Batch> sboiEventIndex = new NewspaperSBOIEventStorage(
+            SBOIEventIndex<Batch> sboiEventIndex = new MatchMFPakBatchesSBOIEventIndex(
                     properties.getProperty(ConfigConstants.AUTONOMOUS_SBOI_URL), new PremisManipulatorFactory<>(
                     PremisManipulatorFactory.TYPE, new BatchItemFactory()), getEventStorer(properties),Integer.parseInt(properties.getProperty(ConfigConstants.SBOI_PAGESIZE,"100"))
             );
