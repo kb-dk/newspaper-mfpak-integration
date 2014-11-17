@@ -341,7 +341,7 @@ public class MfPakDAOTest {
             Collection<String> futureEvents = Arrays.asList(EventID.SHIPPED_TO_SUPPLIER.getFormal());
             Collection<Batch> batches = new HashSet<>();
             Iterator<Batch> mfpakBatches = dao.getTriggeredBatches(pastSuccessful, futureEvents, batches);
-            assertFalse(mfpakBatches.hasNext());
+            assertTrue(mfpakBatches.hasNext());
         }
     }
        
