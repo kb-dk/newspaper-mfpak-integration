@@ -19,7 +19,7 @@ public class MfPakThenSBOIAutonomousComponentUtilsTest {
     public void testGetEvents() throws Exception {
         Properties properties = ConfigurationProvider.loadProperties();
 
-        properties.setProperty(ConfigConstants.AUTONOMOUS_PAST_SUCCESSFUL_EVENTS,"Data_Archived");
+        properties.setProperty(ConfigConstants.AUTONOMOUS_PAST_SUCCESSFUL_EVENTS,"Approved,Data_Archived");
         properties.setProperty(ConfigConstants.AUTONOMOUS_FUTURE_EVENTS, "");
 
         final Set<Batch> worked = new HashSet<>();
