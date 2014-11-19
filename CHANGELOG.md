@@ -1,4 +1,4 @@
-1.11
+2.0
 * Update to newest version of item event framework. Note that MFPAK integration only works with batches, not general items.
 * Configuration has been extended and changed and example config has been updated. Please update your configuration files.
 
