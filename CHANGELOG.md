@@ -1,3 +1,8 @@
+2.1
+* Use newest version of framework
+  * Retry talking to DOMS on 409 errors
+  * Use POST not GET for Summa queries
+
 2.0
 * Update to newest version of item event framework. Note that MFPAK integration only works with batches, not general items.
 * Configuration has been extended and changed and example config has been updated. Please update your configuration files.
