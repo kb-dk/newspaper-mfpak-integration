@@ -1,3 +1,6 @@
+2.2
+* Use version 2.6 of batch event framework
+
 2.1
 * Use newest version of framework
   * Retry talking to DOMS on 409 errors
