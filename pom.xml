@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>newspaper-mfpak-integration</artifactId>
-    <version>2.2-SNAPSHOT</version>
+    <version>2.2</version>
 
     <repositories>
         <repository>
@@ -28,7 +28,7 @@
         <url>https://github.com/statsbiblioteket/newspaper-mfpak-integration</url>
         <connection>scm:git:https://github.com/statsbiblioteket/newspaper-mfpak-integration.git</connection>
         <developerConnection>scm:git:git@github.com:statsbiblioteket/newspaper-mfpak-integration.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>newspaper-mfpak-integration-2.2</tag>
     </scm>
 
     <dependencies>
