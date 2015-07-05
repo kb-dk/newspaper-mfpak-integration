@@ -46,7 +46,7 @@ public class MatchMFPakBatchesSBOIEventIndex extends NewspaperSBOIEventStorage {
      *
      * @return true if the item match all requirements
      */
-    private boolean match(Batch item, Query<Batch> query) {
+    protected boolean match(Batch item, Query<Batch> query) {
         Set<String> existingEvents = new HashSet<>();
         Set<String> successEvents = new HashSet<>();
         Set<String> oldEvents = new HashSet<>();
